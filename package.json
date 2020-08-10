@@ -12,5 +12,10 @@
     "blessed"
   ],
   "author": "Ilya Malyanov",
-  "license": "GPL-3.0"
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.4",
+    "parcel": "^1.12.4"
+  }
 }
