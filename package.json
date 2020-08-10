@@ -1,0 +1,16 @@
+{
+  "name": "@heruka_urgyen/lit",
+  "version": "0.0.0",
+  "description": "interactive git tools",
+  "main": "src/index.js",
+  "scripts": {},
+  "keywords": [
+    "interactive",
+    "git",
+    "tools",
+    "react",
+    "blessed"
+  ],
+  "author": "Ilya Malyanov",
+  "license": "GPL-3.0"
+}
