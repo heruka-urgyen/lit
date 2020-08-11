@@ -21,6 +21,7 @@
     "parcel": "^1.12.4"
   },
   "dependencies": {
+    "cli-cursor": "^3.1.0",
     "ink": "^3.0.3",
     "prop-types": "^15.7.2",
     "react": "^16.13.1"
