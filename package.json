@@ -4,7 +4,8 @@
   "description": "interactive git tools",
   "main": "src/index.js",
   "scripts": {
-    "dev": "concurrently --raw 'parcel --log-level 0 watch src/index.js --target node' 'nodemon -q dist'"
+    "dev": "concurrently --raw 'parcel --log-level 0 watch src/index.js --target node' 'nodemon -q dist' 'nodemon --watch src --exec npm run lint'",
+    "lint": "eslint src .eslintrc.js"
   },
   "keywords": [
     "interactive",
