@@ -6,8 +6,9 @@
   "scripts": {
     "add": "node dist/add.js",
     "build": "parcel build src/add.js --target node",
-    "dev": "concurrently --raw 'parcel --log-level 0 watch src/add.js --target node' 'nodemon --watch src --exec npm run lint'",
-    "lint": "eslint src .eslintrc.js"
+    "dev": "concurrently --raw 'parcel --log-level 0 watch src/add.js --target node' 'nodemon --watch src --exec npm run lint' 'npm run test'",
+    "lint": "eslint src .eslintrc.js",
+    "test": "ava --watch --verbose"
   },
   "keywords": [
     "interactive",
