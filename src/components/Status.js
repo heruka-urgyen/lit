@@ -35,7 +35,7 @@ const commitFixup = async (commit, exit) => {
 
 const updateLog = async update => {
   const output = await gitLog()
-  update(output.split("\n"))
+  update(output.split("\n").slice(0, -1))
 }
 
 const selectDown = items => i => (i + 1) % items.length
