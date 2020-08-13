@@ -1,6 +1,7 @@
 import React, {useState} from "react"
 import {Box, useApp, useInput} from "ink"
 import stripAnsi from "strip-ansi"
+import useStdoutDimensions from "ink-use-stdout-dimensions"
 
 import Selectable from "./Selectable"
 import runCmd, {gitStatus, gitDiff, gitCommit, gitCommitFixup, gitLog} from "../git-utils"
@@ -105,12 +106,13 @@ const getInputConfig = props => async (input, key) => {
   }
 }
 
-export default function Add({initialLines}) {
+export default function Status({initialLines}) {
   const {exit} = useApp()
   const [mode, setMode] = useState("add")
   const [selected, selectItem] = useState(0)
   const [log, setLog] = useState([])
   const [lines, setLines] = useState(initialLines)
+  const [_, rows] = useStdoutDimensions()
 
   useInput(getInputConfig({
     exit,
@@ -125,13 +127,15 @@ export default function Add({initialLines}) {
   }))
 
   if (mode === "log") {
-    return <Selectable data={log} selected={selected} />
+    const maxHeight = rows ? rows - 5 : log.length
+    return <Selectable maxHeight={maxHeight} data={log} selected={selected} />
   }
 
   if (mode === "add") {
+    const maxHeight = rows ? rows - 5 : lines.length
     return (
       <Box>
-        <Selectable data={lines} selected={selected} />
+        <Selectable maxHeight={maxHeight} data={lines} selected={selected} />
         <Box height={1} />
       </Box>
     )
