@@ -20,6 +20,9 @@
   "author": "Ilya Malyanov",
   "license": "GPL-3.0",
   "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-react": "^7.10.4",
+    "@babel/register": "^7.10.5",
     "ava": "^3.11.1",
     "concurrently": "^5.3.0",
     "eslint": "^7.6.0",
@@ -28,6 +31,7 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^4.0.8",
+    "esm": "^3.2.25",
     "nodemon": "^2.0.4",
     "parcel": "^1.12.4",
     "test-console": "^1.1.0"
@@ -40,5 +44,16 @@
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
     "strip-ansi": "^6.0.0"
+  },
+  "ava": {
+    "require": [
+      "esm",
+      "@babel/register"
+    ]
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-react"
+    ]
   }
 }
