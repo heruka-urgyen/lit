@@ -32,6 +32,7 @@
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^4.0.8",
     "esm": "^3.2.25",
+    "ink-testing-library": "^2.0.1",
     "nodemon": "^2.0.4",
     "parcel": "^1.12.4",
     "test-console": "^1.1.0"
