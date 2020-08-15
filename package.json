@@ -35,7 +35,9 @@
     "eslint-plugin-react": "^7.20.5",
     "eslint-plugin-react-hooks": "^4.0.8",
     "esm": "^3.2.25",
+    "husky": "^4.2.5",
     "ink-testing-library": "^2.0.1",
+    "lint-staged": "^10.2.11",
     "nodemon": "^2.0.4",
     "nyc": "^15.1.0",
     "parcel": "^1.12.4",
@@ -72,5 +74,13 @@
         }
       ]
     ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache"
   }
 }
