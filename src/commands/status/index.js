@@ -7,9 +7,9 @@ import React from "react"
 import cliCursor from "cli-cursor"
 import chalk from "chalk"
 
-import Selector from "./components/Selector"
-import {gitStatus} from "./git-utils"
-import {statusStrToList} from "./util"
+import Selector from "../../components/Selector"
+import {gitStatus} from "../../git-utils"
+import {statusStrToList} from "../../utils"
 
 cliCursor.hide()
 
@@ -38,7 +38,7 @@ gitStatus().on("data", async data => {
 
   const [{render}, Status] = await Promise.all([
     import("ink"),
-    import("./components/Status.js").then(x => x.default),
+    import("./View.js").then(x => x.default),
   ])
 
   render(<Status initialLines={initialLines} />)

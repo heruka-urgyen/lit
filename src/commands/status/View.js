@@ -1,43 +1,10 @@
 import React, {useState} from "react"
 import {Box, useApp, useInput} from "ink"
-import stripAnsi from "strip-ansi"
 import useStdoutDimensions from "ink-use-stdout-dimensions"
 
-import Selectable from "./Selectable"
-import runCmd, {gitStatus, gitDiff, gitCommit, gitCommitFixup, gitLog} from "../git-utils"
-import {statusStrToList} from "../util"
-
-const runCommand = (cmd, f, update) => {
-  const file = f.split(" ").slice(-1)[0].replace("\r", "")
-  runCmd({params: [cmd, file]}).on("close", () => {
-    gitStatus().on("data", data => {
-      update(statusStrToList(data))
-    })
-  })
-}
-
-const commit = async exit => {
-  const output = await gitDiff()
-
-  if (output.length > 0) {
-    process.stdin.pause()
-    await gitCommit()
-    exit()
-  }
-}
-
-const commitFixup = async (commit, exit) => {
-  const hash = stripAnsi(commit).match(/[^\s]+/)[0]
-
-  process.stdin.pause()
-  await gitCommitFixup(hash)
-  exit()
-}
-
-const updateLog = async update => {
-  const output = await gitLog()
-  update(output.split("\n").slice(0, -1))
-}
+import Selectable from "../../components/Selectable"
+import {gitDiff} from "../../git-utils"
+import {runCommand, commit, commitFixup, updateLog} from "./utils"
 
 const selectDown = items => i => (i + 1) % items.length
 const selectUp = items => i => i > 0 ? i - 1 : items.length - 1
