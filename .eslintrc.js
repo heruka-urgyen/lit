@@ -36,4 +36,9 @@ module.exports = {
     }],
     quotes: ["error", "double"],
   },
-};
+  settings: {
+    "import/resolver": {
+      "babel-module": {},
+    },
+  },
+}
