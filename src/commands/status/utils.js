@@ -1,6 +1,6 @@
 import stripAnsi from "strip-ansi"
-import {statusStrToList} from "../../utils"
-import {runCmd, gitStatus, gitDiff, gitCommit, gitCommitFixup, gitLog} from "../../git-utils"
+import {statusStrToList} from "utils"
+import {runCmd, gitStatus, gitDiff, gitCommit, gitCommitFixup, gitLog} from "git-utils"
 
 export const runCommand = (cmd, f, update) => {
   const file = f.split(" ").slice(-1)[0].replace("\r", "")

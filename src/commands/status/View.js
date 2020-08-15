@@ -2,8 +2,8 @@ import React, {useState} from "react"
 import {Box, useApp, useInput} from "ink"
 import useStdoutDimensions from "ink-use-stdout-dimensions"
 
-import Selectable from "../../components/Selectable"
-import {gitDiff} from "../../git-utils"
+import Selectable from "components/Selectable"
+import {gitDiff} from "git-utils"
 import {runCommand, commit, commitFixup, updateLog} from "./utils"
 
 const selectDown = items => i => (i + 1) % items.length
