@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "interactive git tools",
   "main": "src/index.js",
+  "bin": {
+    "lit": "lit-cli.js"
+  },
   "scripts": {
     "status": "node dist/status.js",
     "build": "parcel build src/commands/status/index.js --out-file status --target node",
