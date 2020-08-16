@@ -3,13 +3,12 @@ import test from "ava"
 import {stdout} from "test-console"
 import stripAnsi from "strip-ansi"
 import {render} from "ink-testing-library"
-import {useInput, useApp} from "ink"
 import sinon from "sinon"
 
-import {preRender} from "../src/commands/status/index"
-import Status from "../src/commands/status/View"
-import * as s from "../src/commands/status/utils"
-import * as g from "../src/git-utils"
+import {preRender} from "commands/status/index"
+import Status from "commands/status/View"
+import * as s from "commands/status/utils"
+import * as g from "git-utils"
 
 const delay = (n = 100) => new Promise(r => setTimeout(r, n))
 
@@ -33,7 +32,7 @@ test.afterEach(_ => {
 })
 
 test.serial("pre-render view", t => {
-  const output = stdout.inspectSync(function() {
+  const output = stdout.inspectSync(() => {
     preRender(["M filename"])
   })
 
