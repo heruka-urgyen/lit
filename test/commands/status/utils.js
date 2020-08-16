@@ -3,7 +3,7 @@ import sinon from "sinon"
 
 import p from "process"
 import * as g from "git-utils"
-import {runCommand, commit, commitFixup, updateLog} from "commands/status/utils"
+import {runCommand, commit, commitFixup, commitAmend, updateLog} from "commands/status/utils"
 
 const gs = sinon.stub(g)
 const pauseSpy = sinon.spy(p.stdin, "pause")
@@ -37,6 +37,17 @@ test("commit fixup", async t => {
   commitFixup("123zxc", exit)
   t.truthy(pauseSpy.called)
   await t.truthy(gs.gitCommitFixup.calledWith("123zxc"))
+  t.truthy(exit.called)
+})
+
+test("commit amend", async t => {
+  gs.gitDiff.returns("+ 1")
+  const exit = sinon.spy()
+
+  commitAmend(exit)
+  await t.truthy(gs.gitDiff.called)
+  t.truthy(pauseSpy.called)
+  await t.truthy(gs.gitCommitAmend.called)
   t.truthy(exit.called)
 })
 

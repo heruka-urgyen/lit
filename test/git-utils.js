@@ -3,7 +3,15 @@ import sinon from "sinon"
 
 import * as pty from "node-pty"
 import * as cp from "child_process"
-import {runCmd, gitStatus, gitCommit, gitCommitFixup, gitDiff, gitLog} from "git-utils"
+import {
+  runCmd,
+  gitStatus,
+  gitCommit,
+  gitCommitFixup,
+  gitCommitAmend,
+  gitDiff,
+  gitLog,
+} from "git-utils"
 
 let spawnSpy
 let cpSpawnSpy
@@ -53,6 +61,11 @@ test.serial("gitCommit", t => {
 test.serial("gitCommitFixup", t => {
   gitCommitFixup("123zxc")
   t.truthy(cpSpawnSpy.calledWith("git", ["commit", "--fixup", "123zxc"], {stdio: "inherit"}))
+})
+
+test.serial("gitCommitAmend", t => {
+  gitCommitAmend(["1.js"])
+  t.truthy(cpSpawnSpy.calledWith("git", ["commit", "--amend"], {stdio: "inherit"}))
 })
 
 test.serial("gitDiff", async t => {
