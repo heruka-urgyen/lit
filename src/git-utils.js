@@ -30,3 +30,11 @@ export const gitLog = () => new Promise(
     (e, stdout) => e ? rej(e) : res(stdout),
   ),
 )
+
+export const isGitRepo = () => new Promise(
+  (res, rej) => cp.exec(
+    "git rev-parse --is-inside-work-tree",
+    {encoding: "utf8"},
+    (e, stdout) => e ? rej(e) : res(stdout),
+  ),
+)
