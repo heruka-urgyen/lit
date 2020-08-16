@@ -38,7 +38,7 @@ test.serial("pre-render view", t => {
 
   const res = [
     "",
-    " s - stage | r - reset | c - commit staged | f - fixup | q - quit",
+    " s - stage | r - reset | o - checkout | c - commit staged | f - fixup | q - quit",
     "",
     " ❯ M filename",
     "",
@@ -69,6 +69,7 @@ test.serial("actions on keys in status", async t => {
   const initialLines = [
     "M filename",
     "?? filename2",
+    "M filename3",
   ]
 
   const ARROW_UP = "\u001B[A"
@@ -98,10 +99,15 @@ test.serial("actions on keys in status", async t => {
 
   gitStatus.onCall(0).returns({on: (_, f) => f([
     "M filename",
-    "A filename2",
+    "?? filename2",
     "",
   ].join("\n"))})
   gitStatus.onCall(1).returns({on: (_, f) => f([
+    "M filename",
+    "A filename2",
+    "",
+  ].join("\n"))})
+  gitStatus.onCall(2).returns({on: (_, f) => f([
     "M filename",
     "?? filename2",
     "",
@@ -117,13 +123,19 @@ test.serial("actions on keys in status", async t => {
   const output = render(<Status initialLines={initialLines} />)
 
   await delay()
+  output.stdin.write("k")
+  output.stdin.write("o")
+  await delay()
+  t.deepEqual(output.lastFrame(), res1.join("\n"))
+
+  await delay()
   output.stdin.write("j")
   output.stdin.write(ARROW_DOWN)
   output.stdin.write("j")
   output.stdin.write("k")
   output.stdin.write(ARROW_UP)
 
-  t.deepEqual(output.frames, [
+  t.deepEqual(output.frames.slice(3), [
     res1,
     res2,
     res1,
