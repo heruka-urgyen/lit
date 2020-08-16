@@ -18,6 +18,7 @@ export const preRender = lines => {
   const hint = [
     ` ${green("s")} - stage | `,
     `${red("r")} - reset | `,
+    `${red("o")} - checkout | `,
     `${blue("c")} - commit staged | `,
     `${blue("f")} - fixup | `,
     `${yellow("q")} - quit`,

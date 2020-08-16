@@ -43,6 +43,16 @@ const getInputConfig = props => async (input, key) => {
       runCommand("reset", lines[selected], setLines)
     }
 
+    if (input === "o") {
+      runCommand("checkout", lines[selected], setLines)
+
+      if (lines.length === 1) {
+        exit()
+      } else {
+        selectItem(selectDown(lines))
+      }
+    }
+
     if (input === "c") {
       commit(exit)
     }
