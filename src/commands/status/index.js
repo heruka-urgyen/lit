@@ -14,15 +14,15 @@ import {statusStrToList} from "utils"
 cliCursor.hide()
 
 export const preRender = lines => {
-  const {green, red, blue, yellow} = chalk
+  const {underline, bold, green, red, blue, yellow} = chalk
   const hint = [
-    ` ${green("s")} - stage | `,
-    `${red("r")} - reset | `,
-    `${red("o")} - checkout | `,
-    `${blue("c")} - commit staged | `,
-    `${blue("a")} - amend commit | `,
-    `${blue("f")} - fixup | `,
-    `${yellow("q")} - quit`,
+    ` ${underline(bold(green("s")))}tage | `,
+    `${underline(bold(red("r")))}eset | `,
+    `check${underline(bold(red("o")))}ut | `,
+    `${underline(bold(blue("c")))}ommit | `,
+    `${underline(bold(blue("a")))}mend | `,
+    `${underline(bold(blue("f")))}ixup | `,
+    `${underline(bold(yellow("q")))}uit`,
   ].join("")
 
   const linesToRender = lines.map((el, i) => Selector({isSelected: i === 0, el}))
