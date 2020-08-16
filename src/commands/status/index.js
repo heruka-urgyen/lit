@@ -8,7 +8,7 @@ import cliCursor from "cli-cursor"
 import chalk from "chalk"
 
 import Selector from "components/Selector"
-import {gitStatus} from "git-utils"
+import {isGitRepo, gitStatus} from "git-utils"
 import {statusStrToList} from "utils"
 
 cliCursor.hide()
@@ -32,16 +32,26 @@ export const preRender = lines => {
   )
 }
 
-gitStatus().on("data", async data => {
-  const initialLines = statusStrToList(data)
-  preRender(initialLines)
+const run = async () => {
+  try {
+    await isGitRepo()
 
-  readline.moveCursor(process.stdout, -initialLines[0].length, -initialLines.length - 1)
+    gitStatus().on("data", async data => {
+      const initialLines = statusStrToList(data)
+      preRender(initialLines)
 
-  const [{render}, Status] = await Promise.all([
-    import("ink"),
-    import("./View.js").then(x => x.default),
-  ])
+      readline.moveCursor(process.stdout, -initialLines[0].length, -initialLines.length - 1)
 
-  render(<Status initialLines={initialLines} />)
-})
+      const [{render}, Status] = await Promise.all([
+        import("ink"),
+        import("./View.js").then(x => x.default),
+      ])
+
+      render(<Status initialLines={initialLines} />)
+    })
+  } catch (e) {
+    console.error(e.message)
+  }
+}
+
+run()
