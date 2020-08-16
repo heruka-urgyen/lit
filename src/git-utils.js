@@ -12,6 +12,8 @@ export const gitCommit =
 
 export const gitCommitFixup = hash => gitCommit(["--fixup", hash])
 
+export const gitCommitAmend = () => gitCommit(["--amend"])
+
 export const gitDiff = () => new Promise(
   (res, rej) => cp.exec(
     "git diff --cached --name-only",

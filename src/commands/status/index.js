@@ -20,6 +20,7 @@ export const preRender = lines => {
     `${red("r")} - reset | `,
     `${red("o")} - checkout | `,
     `${blue("c")} - commit staged | `,
+    `${blue("a")} - amend commit | `,
     `${blue("f")} - fixup | `,
     `${yellow("q")} - quit`,
   ].join("")

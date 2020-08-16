@@ -1,6 +1,14 @@
 import stripAnsi from "strip-ansi"
 import {statusStrToList} from "utils"
-import {runCmd, gitStatus, gitDiff, gitCommit, gitCommitFixup, gitLog} from "git-utils"
+import {
+  runCmd,
+  gitStatus,
+  gitDiff,
+  gitCommit,
+  gitCommitAmend,
+  gitCommitFixup,
+  gitLog,
+} from "git-utils"
 
 export const runCommand = (cmd, f, update) => {
   const file = f.split(" ").slice(-1)[0].replace("\r", "")
@@ -27,6 +35,16 @@ export const commitFixup = async (commit, exit) => {
   process.stdin.pause()
   await gitCommitFixup(hash)
   exit()
+}
+
+export const commitAmend = async exit => {
+  const output = await gitDiff()
+
+  if (output.length > 0) {
+    process.stdin.pause()
+    await gitCommitAmend()
+    exit()
+  }
 }
 
 export const updateLog = async update => {

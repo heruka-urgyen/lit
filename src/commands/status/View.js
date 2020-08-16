@@ -4,7 +4,7 @@ import useStdoutDimensions from "ink-use-stdout-dimensions"
 
 import Selectable from "components/Selectable"
 import {gitDiff} from "git-utils"
-import {runCommand, commit, commitFixup, updateLog} from "./utils"
+import {runCommand, commit, commitAmend, commitFixup, updateLog} from "./utils"
 
 const selectDown = items => i => (i + 1) % items.length
 const selectUp = items => i => i > 0 ? i - 1 : items.length - 1
@@ -55,6 +55,10 @@ const getInputConfig = props => async (input, key) => {
 
     if (input === "c") {
       commit(exit)
+    }
+
+    if (input === "a") {
+      commitAmend(exit)
     }
 
     if (input === "f") {
