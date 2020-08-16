@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "description": "interactive git tools",
   "main": "src/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "bin": {
     "lit": "lit-cli.js"
   },
