@@ -11,6 +11,7 @@ import {
   gitCommitAmend,
   gitDiff,
   gitLog,
+  isGitRepo,
 } from "git-utils"
 
 let spawnSpy
@@ -84,6 +85,14 @@ test.serial("gitLog", async t => {
     "git log --color=always --format=" +
     "'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'",
   )
+  t.deepEqual(cpExecSpy.lastCall.args[1], {encoding: "utf8"})
+  t.deepEqual(typeof cpExecSpy.lastCall.args[2], "function")
+})
+
+test.serial("isGitRepo", async t => {
+  isGitRepo()
+
+  t.deepEqual(cpExecSpy.lastCall.args[0], "git rev-parse --is-inside-work-tree")
   t.deepEqual(cpExecSpy.lastCall.args[1], {encoding: "utf8"})
   t.deepEqual(typeof cpExecSpy.lastCall.args[2], "function")
 })

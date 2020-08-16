@@ -104,10 +104,15 @@ test.serial("actions on keys in status", async t => {
   ].join("\n"))})
   gitStatus.onCall(1).returns({on: (_, f) => f([
     "M filename",
-    "A filename2",
+    "?? filename2",
     "",
   ].join("\n"))})
   gitStatus.onCall(2).returns({on: (_, f) => f([
+    "M filename",
+    "A filename2",
+    "",
+  ].join("\n"))})
+  gitStatus.onCall(3).returns({on: (_, f) => f([
     "M filename",
     "?? filename2",
     "",
