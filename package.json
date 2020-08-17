@@ -22,10 +22,11 @@
   },
   "keywords": [
     "interactive",
+    "cli",
     "git",
     "tools",
     "react",
-    "blessed"
+    "ink"
   ],
   "author": "Ilya Malyanov",
   "license": "GPL-3.0",
