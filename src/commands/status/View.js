@@ -20,6 +20,8 @@ const getInputConfig = props => async (input, key) => {
     selected,
     log,
     setLog,
+    allSelected,
+    toggleSelectAll,
   } = props
 
   if (input === "q") {
@@ -35,18 +37,34 @@ const getInputConfig = props => async (input, key) => {
       selectItem(selectUp(lines))
     }
 
+    if (input === "a") {
+      toggleSelectAll(a => !a)
+    }
+
     if (input === "s") {
-      runCommand("add", lines[selected], setLines)
+      if (allSelected) {
+        runCommand("add", lines, setLines)
+      } else {
+        runCommand("add", [lines[selected]], setLines)
+      }
     }
 
     if (input === "r") {
-      runCommand("reset", lines[selected], setLines)
+      if (allSelected) {
+        runCommand("reset", lines, setLines)
+      } else {
+        runCommand("reset", [lines[selected]], setLines)
+      }
     }
 
     if (input === "o") {
-      runCommand("checkout", lines[selected], setLines)
+      if (allSelected) {
+        runCommand("checkout", [lines[selected]], setLines)
+      } else {
+        runCommand("checkout", lines, setLines)
+      }
 
-      if (lines.length === 1) {
+      if (allSelected || lines.length === 1) {
         exit()
       } else {
         selectItem(selectDown(lines))
@@ -91,6 +109,7 @@ export default function Status({initialLines}) {
   const {exit} = useApp()
   const [mode, setMode] = useState("add")
   const [selected, selectItem] = useState(0)
+  const [allSelected, toggleSelectAll] = useState(false)
   const [log, setLog] = useState([])
   const [lines, setLines] = useState(initialLines)
   const [_, rows] = useStdoutDimensions()
@@ -105,6 +124,8 @@ export default function Status({initialLines}) {
     selected,
     log,
     setLog,
+    allSelected,
+    toggleSelectAll,
   }))
 
   if (mode === "log") {
@@ -116,7 +137,12 @@ export default function Status({initialLines}) {
     const maxHeight = rows ? rows - 5 : lines.length
     return (
       <Box>
-        <Selectable maxHeight={maxHeight} data={lines} selected={selected} />
+        <Selectable
+          maxHeight={maxHeight}
+          data={lines}
+          selected={selected}
+          allSelected={allSelected}
+        />
         <Box height={1} />
       </Box>
     )

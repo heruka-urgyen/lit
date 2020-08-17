@@ -10,9 +10,9 @@ import {
   gitLog,
 } from "git-utils"
 
-export const runCommand = async (cmd, f, update) => {
-  const file = f.split(" ").slice(-1)[0].replace("\r", "")
-  await runCmd({params: [cmd, file]})
+export const runCommand = async (cmd, fs, update) => {
+  const files = fs.map(f => f.split(" ").slice(-1)[0].replace("\r", ""))
+  await runCmd({params: [cmd, ...files]})
   const data = await gitStatus()
   update(statusStrToList(data))
 }
