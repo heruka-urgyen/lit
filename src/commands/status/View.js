@@ -58,16 +58,22 @@ const getInputConfig = props => async (input, key) => {
     }
 
     if (input === "o") {
+      let res
+
       if (allSelected) {
-        runCommand("checkout", [lines[selected]], setLines)
+        res = await runCommand("checkout", lines, setLines)
       } else {
-        runCommand("checkout", lines, setLines)
+        res = await runCommand("checkout", [lines[selected]], setLines)
       }
 
-      if (allSelected || lines.length === 1) {
-        exit()
-      } else {
-        selectItem(selectDown(lines))
+      const linesChanged = res.join() !== lines.join()
+
+      if (linesChanged) {
+        if (allSelected || res.length === 0) {
+          exit()
+        } else {
+          selectItem(selectDown(lines))
+        }
       }
     }
 
