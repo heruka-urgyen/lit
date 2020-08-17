@@ -14,15 +14,15 @@ import {statusStrToList, calculateListView} from "utils"
 cliCursor.hide()
 
 export const preRender = lines => {
-  const {underline, bold, green, red, blue, yellow} = chalk
+  const {underline: u, bold: b, green, red, blue, yellow} = chalk
   const hint = [
-    ` ${underline(bold(green("s")))}tage | `,
-    `${underline(bold(red("r")))}eset | `,
-    `check${underline(bold(red("o")))}ut | `,
-    `${underline(bold(blue("c")))}ommit | `,
-    `a${underline(bold(blue("m")))}end | `,
-    `${underline(bold(blue("f")))}ixup | `,
-    `${underline(bold(yellow("q")))}uit`,
+    ` ${u(b(green("s")))}tage | `,
+    `${u(b(red("r")))}eset | `,
+    `check${u(b(red("o")))}ut | `,
+    `${u(b(blue("c")))}ommit | `,
+    `a${u(b(blue("m")))}end | `,
+    `${u(b(blue("f")))}ixup | `,
+    `${u(b(yellow("q")))}uit`,
   ].join("")
 
   const linesToRender = lines.map((el, i) => Selector({isSelected: i === 0, el}))
