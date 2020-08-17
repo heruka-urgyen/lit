@@ -48,6 +48,7 @@ const run = async () => {
 
     render(<Status initialLines={initialLines} />)
   } catch (e) {
+    /* eslint-disable no-console */
     console.error(e.message)
   }
 }
