@@ -97,26 +97,26 @@ test.serial("actions on keys in status", async t => {
     "   125qwe - commmit msg3",
   ]
 
-  gitStatus.onCall(0).returns({on: (_, f) => f([
+  gitStatus.onCall(0).resolves([
     "M filename",
     "?? filename2",
     "",
-  ].join("\n"))})
-  gitStatus.onCall(1).returns({on: (_, f) => f([
+  ].join("\n"))
+  gitStatus.onCall(1).resolves([
     "M filename",
     "?? filename2",
     "",
-  ].join("\n"))})
-  gitStatus.onCall(2).returns({on: (_, f) => f([
+  ].join("\n"))
+  gitStatus.onCall(2).resolves([
     "M filename",
     "A filename2",
     "",
-  ].join("\n"))})
-  gitStatus.onCall(3).returns({on: (_, f) => f([
+  ].join("\n"))
+  gitStatus.onCall(3).resolves([
     "M filename",
     "?? filename2",
     "",
-  ].join("\n"))})
+  ].join("\n"))
   gitDiff.resolves("+ 1")
   gitLog.resolves([
     "123qwe - commmit msg1",

@@ -23,7 +23,7 @@ test.beforeEach(_ => {
   cpSpawnSpy = sinon.stub(cp, "spawn")
   cpExecSpy = sinon.stub(cp, "exec")
 
-  spawnSpy.returns(0)
+  spawnSpy.returns({on: _ => _})
   cpSpawnSpy.returns(0)
   cpExecSpy.returns(0)
 })

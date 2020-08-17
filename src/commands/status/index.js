@@ -36,19 +36,17 @@ const run = async () => {
   try {
     await isGitRepo()
 
-    gitStatus().on("data", async data => {
-      const initialLines = statusStrToList(data)
-      preRender(initialLines)
+    const data = await gitStatus()
+    const initialLines = statusStrToList(data)
+    preRender(initialLines)
+    readline.moveCursor(process.stdout, -initialLines[0].length, -initialLines.length - 1)
 
-      readline.moveCursor(process.stdout, -initialLines[0].length, -initialLines.length - 1)
+    const [{render}, Status] = await Promise.all([
+      import("ink"),
+      import("./View.js").then(x => x.default),
+    ])
 
-      const [{render}, Status] = await Promise.all([
-        import("ink"),
-        import("./View.js").then(x => x.default),
-      ])
-
-      render(<Status initialLines={initialLines} />)
-    })
+    render(<Status initialLines={initialLines} />)
   } catch (e) {
     console.error(e.message)
   }

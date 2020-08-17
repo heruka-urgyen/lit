@@ -10,13 +10,11 @@ import {
   gitLog,
 } from "git-utils"
 
-export const runCommand = (cmd, f, update) => {
+export const runCommand = async (cmd, f, update) => {
   const file = f.split(" ").slice(-1)[0].replace("\r", "")
-  runCmd({params: [cmd, file]}).on("close", () => {
-    gitStatus().on("data", data => {
-      update(statusStrToList(data))
-    })
-  })
+  await runCmd({params: [cmd, file]})
+  const data = await gitStatus()
+  update(statusStrToList(data))
 }
 
 export const commit = async exit => {

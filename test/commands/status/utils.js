@@ -8,12 +8,12 @@ import {runCommand, commit, commitFixup, commitAmend, updateLog} from "commands/
 const gs = sinon.stub(g)
 const pauseSpy = sinon.spy(p.stdin, "pause")
 
-test("runCommand", t => {
-  gs.runCmd.returns({on: (_, f) => f()})
-  gs.gitStatus.returns({on: (_, f) => f("A 1.js\n")})
+test("runCommand", async t => {
+  gs.runCmd.resolves(1)
+  gs.gitStatus.resolves("A 1.js\n")
   const update = sinon.spy()
 
-  runCommand("git add", "A 1.js\r", update)
+  await runCommand("git add", "A 1.js\r", update)
 
   t.truthy(gs.runCmd.calledWith({params: ["git add", "1.js"]}))
   t.truthy(gs.gitStatus.called)

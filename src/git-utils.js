@@ -1,7 +1,13 @@
 import cp from "child_process"
 import {spawn} from "node-pty"
 
-export const runCmd = ({params = [], options}) => spawn("git", params, options)
+export const runCmd = ({params = [], options}) => new Promise(res => {
+  const buf = []
+  const p = spawn("git", params, options)
+
+  p.on("data", d => buf.push(d))
+  p.on("exit", () => res(buf.reduce((x, y) => x + y, "")))
+})
 
 export const gitStatus = () => runCmd({
   params: ["-c", "color.ui=always", "status", "-s", "-u"],
