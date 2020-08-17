@@ -20,7 +20,7 @@ export const preRender = lines => {
     `${underline(bold(red("r")))}eset | `,
     `check${underline(bold(red("o")))}ut | `,
     `${underline(bold(blue("c")))}ommit | `,
-    `${underline(bold(blue("a")))}mend | `,
+    `a${underline(bold(blue("m")))}end | `,
     `${underline(bold(blue("f")))}ixup | `,
     `${underline(bold(yellow("q")))}uit`,
   ].join("")

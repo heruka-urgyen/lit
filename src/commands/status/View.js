@@ -57,7 +57,7 @@ const getInputConfig = props => async (input, key) => {
       commit(exit)
     }
 
-    if (input === "a") {
+    if (input === "m") {
       commitAmend(exit)
     }
 
