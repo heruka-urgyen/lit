@@ -6,9 +6,17 @@ import * as g from "git-utils"
 import {runCommand, commit, commitFixup, commitAmend, updateLog} from "commands/status/utils"
 
 const gs = sinon.stub(g)
-const pauseSpy = sinon.spy(p.stdin, "pause")
+let pauseSpy
 
-test("runCommand", async t => {
+test.beforeEach(_ => {
+  pauseSpy = sinon.spy(p.stdin, "pause")
+})
+
+test.afterEach(_ => {
+  pauseSpy.restore()
+})
+
+test.serial("runCommand", async t => {
   gs.runCmd.resolves(1)
   gs.gitStatus.resolves("A 1.js\n")
   const update = sinon.spy()
@@ -20,7 +28,18 @@ test("runCommand", async t => {
   t.truthy(update.calledWith(["A 1.js"]))
 })
 
-test("commit", async t => {
+test.serial("try to commit w/o staging", async t => {
+  gs.gitDiff.returns("")
+  const exit = sinon.spy()
+
+  commit(exit)
+  await t.truthy(gs.gitDiff.called)
+  t.falsy(pauseSpy.called)
+  await t.falsy(gs.gitCommit.called)
+  t.falsy(exit.called)
+})
+
+test.serial("commit", async t => {
   gs.gitDiff.returns("+ 1")
   const exit = sinon.spy()
 
@@ -31,7 +50,7 @@ test("commit", async t => {
   t.truthy(exit.called)
 })
 
-test("commit fixup", async t => {
+test.serial("commit fixup", async t => {
   const exit = sinon.spy()
 
   commitFixup("123zxc", exit)
@@ -40,7 +59,18 @@ test("commit fixup", async t => {
   t.truthy(exit.called)
 })
 
-test("commit amend", async t => {
+test.serial("try to commit amend w/o staging", async t => {
+  gs.gitDiff.returns("")
+  const exit = sinon.spy()
+
+  commitAmend(exit)
+  await t.truthy(gs.gitDiff.called)
+  t.falsy(pauseSpy.called)
+  await t.falsy(gs.gitCommitAmend.called)
+  t.falsy(exit.called)
+})
+
+test.serial("commit amend", async t => {
   gs.gitDiff.returns("+ 1")
   const exit = sinon.spy()
 
@@ -51,7 +81,7 @@ test("commit amend", async t => {
   t.truthy(exit.called)
 })
 
-test("updateLog", async t => {
+test.serial("updateLog", async t => {
   gs.gitLog.returns("123zxc commit msg\n")
   const update = sinon.spy()
 
