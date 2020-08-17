@@ -3,7 +3,7 @@ Lit
 
 > Interactive git tools
 
-Lit is a set of interactive git tools aim to automate tedious git tasks.
+Lit is a set of interactive git tools that aims to automate tedious git tasks.
 
 ## Installation
 `npm i -g @heruka_urgyen/lit`
