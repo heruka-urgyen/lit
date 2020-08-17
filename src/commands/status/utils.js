@@ -12,9 +12,13 @@ import {
 
 export const runCommand = async (cmd, fs, update) => {
   const files = fs.map(f => f.split(" ").slice(-1)[0].replace("\r", ""))
+
   await runCmd({params: [cmd, ...files]})
   const data = await gitStatus()
-  update(statusStrToList(data))
+  const preparedData = statusStrToList(data)
+  update(preparedData)
+
+  return preparedData
 }
 
 export const commit = async exit => {
