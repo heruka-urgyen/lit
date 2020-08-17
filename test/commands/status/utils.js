@@ -13,7 +13,7 @@ test("runCommand", async t => {
   gs.gitStatus.resolves("A 1.js\n")
   const update = sinon.spy()
 
-  await runCommand("git add", "A 1.js\r", update)
+  await runCommand("git add", ["A 1.js\r"], update)
 
   t.truthy(gs.runCmd.calledWith({params: ["git add", "1.js"]}))
   t.truthy(gs.gitStatus.called)
