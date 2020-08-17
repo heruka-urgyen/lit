@@ -18,7 +18,8 @@
     "lint-src": "eslint src .eslintrc.js",
     "lint-test": "eslint test .eslintrc.js",
     "test": "nyc ava --verbose",
-    "coverage": "nyc --reporter=lcov --reporter=text ava"
+    "coverage": "nyc --reporter=lcov --reporter=text ava",
+    "prepublish": "npm run build"
   },
   "keywords": [
     "interactive",
