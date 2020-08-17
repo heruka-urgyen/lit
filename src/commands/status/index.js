@@ -15,16 +15,21 @@ cliCursor.hide()
 
 export const preRender = lines => {
   const {underline: u, bold: b, green, red, blue, yellow} = chalk
-  const hint = [
-    ` ${u(b(green("s")))}tage | `,
-    `${u(b(red("r")))}eset | `,
-    `check${u(b(red("o")))}ut | `,
-    `${u(b(blue("c")))}ommit | `,
-    `a${u(b(blue("m")))}end | `,
-    `${u(b(blue("f")))}ixup | `,
-    `${u(b(yellow("q")))}uit`,
-  ].join("")
+  const hint1 = [
+    ` ${u(b(yellow("q")))} quit `,
+    `${u(b(yellow("a")))} toggle all`,
+  ].join(" | ")
 
+  const hint2 = [
+    ` ${u(b(green("s")))} stage`,
+    `${u(b(red("r")))} reset`,
+    `${u(b(red("o")))} checkout`,
+    `${u(b(blue("c")))} commit`,
+    `${u(b(blue("m")))} amend`,
+    `${u(b(blue("f")))} fixup`,
+  ].join(" | ")
+
+  const hint = [hint1, hint2].join("\n")
   const linesToRender = lines.map((el, i) => Selector({isSelected: i === 0, el}))
 
   process.stdout.write(
@@ -40,7 +45,7 @@ const run = async () => {
 
     if (data.length > 0) {
       const initialLines = statusStrToList(data)
-      const {items} = calculateListView(initialLines, process.stdout.rows - 5, 0)
+      const {items} = calculateListView(initialLines, process.stdout.rows - 8, 0)
       preRender(items)
       readline.moveCursor(process.stdout, -items[0].length, -items.length - 1)
 

@@ -129,12 +129,12 @@ export default function Status({initialLines}) {
   }))
 
   if (mode === "log") {
-    const maxHeight = rows ? rows - 5 : log.length
+    const maxHeight = rows ? rows - 8 : log.length
     return <Selectable maxHeight={maxHeight} data={log} selected={selected} />
   }
 
   if (mode === "add") {
-    const maxHeight = rows ? rows - 5 : lines.length
+    const maxHeight = rows ? rows - 8 : lines.length
     return (
       <Box>
         <Selectable

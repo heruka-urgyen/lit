@@ -38,7 +38,8 @@ test.serial("pre-render view", t => {
 
   const res = [
     "",
-    " stage | reset | checkout | commit | amend | fixup | quit",
+    " q quit  | a toggle all",
+    " s stage | r reset | o checkout | c commit | m amend | f fixup",
     "",
     " ❯ M filename",
     "",
