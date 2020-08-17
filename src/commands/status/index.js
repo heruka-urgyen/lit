@@ -37,17 +37,20 @@ const run = async () => {
     await isGitRepo()
 
     const data = await gitStatus()
-    const initialLines = statusStrToList(data)
-    const {items} = calculateListView(initialLines, process.stdout.rows - 5, 0)
-    preRender(items)
-    readline.moveCursor(process.stdout, -items[0].length, -items.length - 1)
 
-    const [{render}, Status] = await Promise.all([
-      import("ink"),
-      import("./View.js").then(x => x.default),
-    ])
+    if (data.length > 0) {
+      const initialLines = statusStrToList(data)
+      const {items} = calculateListView(initialLines, process.stdout.rows - 5, 0)
+      preRender(items)
+      readline.moveCursor(process.stdout, -items[0].length, -items.length - 1)
 
-    render(<Status initialLines={initialLines} />)
+      const [{render}, Status] = await Promise.all([
+        import("ink"),
+        import("./View.js").then(x => x.default),
+      ])
+
+      render(<Status initialLines={initialLines} />)
+    }
   } catch (e) {
     /* eslint-disable no-console */
     console.error(e.message)
