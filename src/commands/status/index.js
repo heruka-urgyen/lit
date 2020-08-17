@@ -9,7 +9,7 @@ import chalk from "chalk"
 
 import Selector from "components/Selector"
 import {isGitRepo, gitStatus} from "git-utils"
-import {statusStrToList} from "utils"
+import {statusStrToList, calculateListView} from "utils"
 
 cliCursor.hide()
 
@@ -38,8 +38,9 @@ const run = async () => {
 
     const data = await gitStatus()
     const initialLines = statusStrToList(data)
-    preRender(initialLines)
-    readline.moveCursor(process.stdout, -initialLines[0].length, -initialLines.length - 1)
+    const {items} = calculateListView(initialLines, process.stdout.rows - 5, 0)
+    preRender(items)
+    readline.moveCursor(process.stdout, -items[0].length, -items.length - 1)
 
     const [{render}, Status] = await Promise.all([
       import("ink"),
