@@ -22,3 +22,12 @@ export const calculateListView = (items, viewSize, selectedItem) => {
     selected: nextWindow,
   }
 }
+
+export const createReducer = handlers => (state, action) => {
+  // eslint-disable-next-line
+  if (handlers.hasOwnProperty(action.type)) {
+    return handlers[action.type](state, action)
+  }
+
+  return state
+}

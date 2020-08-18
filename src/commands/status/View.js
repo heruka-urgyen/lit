@@ -1,9 +1,9 @@
-import React, {useState} from "react"
+import React from "react"
 import {Box, useApp, useInput} from "ink"
-import useStdoutDimensions from "ink-use-stdout-dimensions"
 
 import Selectable from "components/Selectable"
 import {gitHasStagedFiles} from "git-utils"
+
 import {runCommand, commit, commitAmend, commitFixup, updateLog} from "./utils"
 
 const selectDown = items => i => (i + 1) % items.length
@@ -91,7 +91,7 @@ const getInputConfig = props => async (input, key) => {
       if (hasStagedFiles) {
         updateLog(setLog)
         setMode("log")
-        selectItem(0)
+        selectItem(() => 0)
       }
     }
   }
@@ -111,14 +111,17 @@ const getInputConfig = props => async (input, key) => {
   }
 }
 
-export default function Status({initialLines}) {
+export default function Status({state, actions, minHeight, maxHeight}) {
   const {exit} = useApp()
-  const [mode, setMode] = useState("add")
-  const [selected, selectItem] = useState(0)
-  const [allSelected, toggleSelectAll] = useState(false)
-  const [log, setLog] = useState([])
-  const [lines, setLines] = useState(initialLines)
-  const [_, rows] = useStdoutDimensions()
+
+  const {mode, selected, allSelected, log, lines} = state
+  const {
+    setMode,
+    selectItem,
+    toggleSelectAll,
+    setLog,
+    setLines,
+  } = actions
 
   useInput(getInputConfig({
     exit,
@@ -135,16 +138,23 @@ export default function Status({initialLines}) {
   }))
 
   if (mode === "log") {
-    const maxHeight = rows ? rows - 8 : log.length
-    return <Selectable maxHeight={maxHeight} data={log} selected={selected} />
+    return (
+      <Box paddingTop={1}>
+        <Selectable
+          minHeight={minHeight}
+          maxHeight={maxHeight}
+          data={log}
+          selected={selected}
+        />
+      </Box>
+    )
   }
 
-  if (mode === "add") {
-    const maxHeight = rows ? rows - 8 : lines.length
+  if (mode === "add" || mode === "preview") {
     return (
-      <Box>
+      <Box paddingTop={1}>
         <Selectable
-          maxHeight={maxHeight}
+          maxHeight={viewHeight}
           data={lines}
           selected={selected}
           allSelected={allSelected}

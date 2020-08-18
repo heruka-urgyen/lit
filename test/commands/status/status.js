@@ -1,12 +1,13 @@
-import React from "react"
+import React, {useReducer} from "react"
 import test from "ava"
 import {stdout} from "test-console"
 import stripAnsi from "strip-ansi"
 import {render} from "ink-testing-library"
 import sinon from "sinon"
+import chalk from "chalk"
 
-import {preRender} from "commands/status/index"
 import Status from "commands/status/View"
+import reducer, {getActions} from "commands/status/reducer"
 import * as s from "commands/status/utils"
 import * as g from "git-utils"
 
@@ -31,9 +32,10 @@ test.afterEach(_ => {
   gitLog.restore()
 })
 
-test.serial("pre-render view", t => {
+test("pre-render view", async t => {
+  const {preRender, getHint} = await import("commands/status/prepare")
   const output = stdout.inspectSync(() => {
-    preRender(["M filename"])
+    preRender(getHint(chalk))(["M filename"])(20)
   })
 
   const res = [
@@ -55,9 +57,23 @@ test.serial("render view", t => {
     "A filename2",
     "?? filename3",
   ]
-  const output = render(<Status initialLines={initialLines} />)
+  const output = render(
+    <Status
+      minHeight={0}
+      maxHeight={20}
+      actions={{}}
+      state={{
+        mode: "add",
+        selected: 0,
+        allSelected: false,
+        log: [],
+        lines: initialLines,
+      }}
+    />,
+  )
 
   const res = [
+    "",
     " ❯ M filename",
     "   A filename2",
     "   ?? filename3",
@@ -77,22 +93,27 @@ test.serial("actions on keys in status", async t => {
   const ARROW_DOWN = "\u001B[B"
 
   const res1 = [
-    " ❯ M filename",
-    "   ?? filename2",
+    "",
+    " ❯ ?? filename2",
+    "   M filename",
   ]
   const res2 = [
-    "   M filename",
-    " ❯ ?? filename2",
+    "",
+    "   ?? filename2",
+    " ❯ M filename",
   ]
   const res3 = [
-    "   M filename",
-    " ❯ A filename2",
+    "",
+    "   A filename2",
+    " ❯ M filename",
   ]
   const res4 = [
-    "   M filename",
-    " ❯ ?? filename2",
+    "",
+    "   ?? filename2",
+    " ❯ M filename",
   ]
   const res5 = [
+    "",
     " ❯ 123qwe - commmit msg1",
     "   124qwe - commmit msg2",
     "   125qwe - commmit msg3",
@@ -126,7 +147,29 @@ test.serial("actions on keys in status", async t => {
     "",
   ].join("\n"))
 
-  const output = render(<Status initialLines={initialLines} />)
+  const App = () => {
+    const initialState = {
+      mode: "add",
+      selected: 0,
+      allSelected: false,
+      log: [],
+      lines: initialLines,
+    }
+
+    const [state, dispatch] = useReducer(reducer, initialState)
+    const actions = getActions(dispatch)
+
+    return (
+      <Status
+        minHeight={0}
+        maxHeight={20}
+        state={state}
+        actions={actions}
+      />
+    )
+  }
+
+  const output = render(<App />)
 
   await delay()
   output.stdin.write("k")
@@ -150,11 +193,11 @@ test.serial("actions on keys in status", async t => {
     res2,
   ].map(x => x.join("\n")))
 
-  output.stdin.write("s")
   await delay()
+  output.stdin.write("s")
+  output.stdin.write("s")
   t.truthy(runCommand.called)
   await delay()
-
   t.deepEqual(output.lastFrame(), res3.join("\n"))
 
   output.stdin.write("r")
