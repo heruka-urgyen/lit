@@ -3,7 +3,7 @@ import {Box, useApp, useInput} from "ink"
 import useStdoutDimensions from "ink-use-stdout-dimensions"
 
 import Selectable from "components/Selectable"
-import {gitDiff} from "git-utils"
+import {gitHasStagedFiles} from "git-utils"
 import {runCommand, commit, commitAmend, commitFixup, updateLog} from "./utils"
 
 const selectDown = items => i => (i + 1) % items.length
@@ -86,9 +86,9 @@ const getInputConfig = props => async (input, key) => {
     }
 
     if (input === "f") {
-      const output = await gitDiff()
+      const hasStagedFiles = await gitHasStagedFiles()
 
-      if (output.length > 0) {
+      if (hasStagedFiles) {
         updateLog(setLog)
         setMode("log")
         selectItem(0)

@@ -9,7 +9,7 @@ import {
   gitCommit,
   gitCommitFixup,
   gitCommitAmend,
-  gitDiff,
+  gitHasStagedFiles,
   gitLog,
   isGitRepo,
 } from "git-utils"
@@ -69,8 +69,8 @@ test.serial("gitCommitAmend", t => {
   t.truthy(cpSpawnSpy.calledWith("git", ["commit", "--amend"], {stdio: "inherit"}))
 })
 
-test.serial("gitDiff", async t => {
-  gitDiff()
+test.serial("gitHasStagedFiles", async t => {
+  gitHasStagedFiles()
 
   t.deepEqual(cpExecSpy.lastCall.args[0], "git diff --cached --name-only")
   t.deepEqual(cpExecSpy.lastCall.args[1], {encoding: "utf8"})

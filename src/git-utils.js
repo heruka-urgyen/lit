@@ -20,11 +20,11 @@ export const gitCommitFixup = hash => gitCommit(["--fixup", hash])
 
 export const gitCommitAmend = () => gitCommit(["--amend"])
 
-export const gitDiff = () => new Promise(
+export const gitHasStagedFiles = () => new Promise(
   (res, rej) => cp.exec(
     "git diff --cached --name-only",
     {encoding: "utf8"},
-    (e, stdout) => e ? rej(e) : res(stdout),
+    (e, stdout) => e ? rej(e) : res(stdout.length > 0),
   ),
 )
 

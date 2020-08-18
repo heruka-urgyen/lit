@@ -14,20 +14,20 @@ const delay = (n = 100) => new Promise(r => setTimeout(r, n))
 
 let runCommand
 let gitStatus
-let gitDiff
+let gitHasStagedFiles
 let gitLog
 
 test.beforeEach(_ => {
   runCommand = sinon.spy(s, "runCommand")
   gitStatus = sinon.stub(g, "gitStatus")
-  gitDiff = sinon.stub(g, "gitDiff")
+  gitHasStagedFiles = sinon.stub(g, "gitHasStagedFiles")
   gitLog = sinon.stub(g, "gitLog")
 })
 
 test.afterEach(_ => {
   s.runCommand.restore()
   gitStatus.restore()
-  gitDiff.restore()
+  gitHasStagedFiles.restore()
   gitLog.restore()
 })
 
@@ -118,7 +118,7 @@ test.serial("actions on keys in status", async t => {
     "?? filename2",
     "",
   ].join("\n"))
-  gitDiff.resolves("+ 1")
+  gitHasStagedFiles.resolves(true)
   gitLog.resolves([
     "123qwe - commmit msg1",
     "124qwe - commmit msg2",

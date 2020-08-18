@@ -29,22 +29,22 @@ test.serial("runCommand", async t => {
 })
 
 test.serial("try to commit w/o staging", async t => {
-  gs.gitDiff.returns("")
+  gs.gitHasStagedFiles.resolves(false)
   const exit = sinon.spy()
 
   commit(exit)
-  await t.truthy(gs.gitDiff.called)
+  await t.truthy(gs.gitHasStagedFiles.called)
   t.falsy(pauseSpy.called)
   await t.falsy(gs.gitCommit.called)
   t.falsy(exit.called)
 })
 
 test.serial("commit", async t => {
-  gs.gitDiff.returns("+ 1")
+  gs.gitHasStagedFiles.resolves(true)
   const exit = sinon.spy()
 
   commit(exit)
-  await t.truthy(gs.gitDiff.called)
+  await t.truthy(gs.gitHasStagedFiles.called)
   t.truthy(pauseSpy.called)
   await t.truthy(gs.gitCommit.called)
   t.truthy(exit.called)
@@ -60,22 +60,22 @@ test.serial("commit fixup", async t => {
 })
 
 test.serial("try to commit amend w/o staging", async t => {
-  gs.gitDiff.returns("")
+  gs.gitHasStagedFiles.resolves(false)
   const exit = sinon.spy()
 
   commitAmend(exit)
-  await t.truthy(gs.gitDiff.called)
+  await t.truthy(gs.gitHasStagedFiles.called)
   t.falsy(pauseSpy.called)
   await t.falsy(gs.gitCommitAmend.called)
   t.falsy(exit.called)
 })
 
 test.serial("commit amend", async t => {
-  gs.gitDiff.returns("+ 1")
+  gs.gitHasStagedFiles.resolves(true)
   const exit = sinon.spy()
 
   commitAmend(exit)
-  await t.truthy(gs.gitDiff.called)
+  await t.truthy(gs.gitHasStagedFiles.called)
   t.truthy(pauseSpy.called)
   await t.truthy(gs.gitCommitAmend.called)
   t.truthy(exit.called)

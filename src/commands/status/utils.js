@@ -3,7 +3,7 @@ import {statusStrToList} from "utils"
 import {
   runCmd,
   gitStatus,
-  gitDiff,
+  gitHasStagedFiles,
   gitCommit,
   gitCommitAmend,
   gitCommitFixup,
@@ -22,9 +22,9 @@ export const runCommand = async (cmd, fs, update) => {
 }
 
 export const commit = async exit => {
-  const output = await gitDiff()
+  const hasStagedFiles = await gitHasStagedFiles()
 
-  if (output.length > 0) {
+  if (hasStagedFiles) {
     process.stdin.pause()
     await gitCommit()
     exit()
@@ -40,9 +40,9 @@ export const commitFixup = async (commit, exit) => {
 }
 
 export const commitAmend = async exit => {
-  const output = await gitDiff()
+  const hasStagedFiles = await gitHasStagedFiles()
 
-  if (output.length > 0) {
+  if (hasStagedFiles) {
     process.stdin.pause()
     await gitCommitAmend()
     exit()
