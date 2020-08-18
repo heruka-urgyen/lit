@@ -20,27 +20,22 @@ export const gitCommitFixup = hash => gitCommit(["--fixup", hash])
 
 export const gitCommitAmend = () => gitCommit(["--amend"])
 
-export const gitHasStagedFiles = () => new Promise(
+const identity = _ => _
+const exec = (cmd, resolver = identity) => new Promise(
   (res, rej) => cp.exec(
-    "git diff --cached --name-only",
+    cmd,
     {encoding: "utf8"},
-    (e, stdout) => e ? rej(e) : res(stdout.length > 0),
+    (e, stdout) => e ? rej(e) : res(resolver(stdout)),
   ),
 )
 
-export const gitLog = () => new Promise(
-  (res, rej) => cp.exec(
+export const gitHasStagedFiles =
+  () => exec("git diff --cached --name-only", x => x.length > 0)
+
+export const gitLog =
+  () => exec(
     "git log --color=always --format=" +
     "'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'",
-    {encoding: "utf8"},
-    (e, stdout) => e ? rej(e) : res(stdout),
-  ),
-)
+  )
 
-export const isGitRepo = () => new Promise(
-  (res, rej) => cp.exec(
-    "git rev-parse --is-inside-work-tree",
-    {encoding: "utf8"},
-    (e, stdout) => e ? rej(e) : res(stdout),
-  ),
-)
+export const isGitRepo = () => exec("git rev-parse --is-inside-work-tree")
