@@ -29,6 +29,10 @@ const runCli = command => {
     return require("./dist/status")
   }
 
+  if (command === "diff") {
+    return require("./dist/diff")
+  }
+
   return printUsage()
 }
 
