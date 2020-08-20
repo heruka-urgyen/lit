@@ -4,7 +4,6 @@ import {stdout} from "test-console"
 import stripAnsi from "strip-ansi"
 import {render} from "ink-testing-library"
 import sinon from "sinon"
-import chalk from "chalk"
 
 import Status from "commands/status/View"
 import reducer, {getActions} from "commands/status/reducer"
@@ -35,7 +34,7 @@ test.afterEach(_ => {
 test("pre-render view", async t => {
   const {preRender, getHint} = await import("commands/status/prepare")
   const output = stdout.inspectSync(() => {
-    preRender(getHint(chalk))(["M filename"])(20)
+    preRender(getHint())(["M filename"])(20)(0)
   })
 
   const res = [
@@ -48,7 +47,7 @@ test("pre-render view", async t => {
     "",
   ].join("\n")
 
-  t.deepEqual(output.map(stripAnsi), [res])
+  t.deepEqual(stripAnsi(output[0]), res)
 })
 
 test.serial("render view", t => {
@@ -57,6 +56,7 @@ test.serial("render view", t => {
     "A filename2",
     "?? filename3",
   ]
+
   const output = render(
     <Status
       minHeight={0}
