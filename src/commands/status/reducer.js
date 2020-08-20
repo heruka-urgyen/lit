@@ -1,6 +1,6 @@
 /* eslint-disable arrow-body-style */
 
-import {createReducer} from "utils"
+import {createReducer, dispatchAction} from "utils"
 
 export const actionHandlers = {
   setMode: (s, {payload}) => {
@@ -36,8 +36,6 @@ export const actionHandlers = {
 }
 
 export const getActions = dispatch => {
-  const dispatchAction = type => payload => dispatch({type, payload})
-
   const [
     setMode,
     selectItem,
@@ -50,7 +48,7 @@ export const getActions = dispatch => {
     "toggleSelectAll",
     "setLog",
     "setLines",
-  ].map(dispatchAction)
+  ].map(dispatchAction(dispatch))
 
   return {
     setMode,

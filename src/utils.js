@@ -34,3 +34,5 @@ export const createReducer = handlers => (state, action) => {
 
   return state
 }
+
+export const dispatchAction = dispatch => type => payload => dispatch({type, payload})
