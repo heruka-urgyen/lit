@@ -1,5 +1,6 @@
 import React from "react"
 import {Box, useApp, useInput} from "ink"
+import chalk from "chalk"
 
 import Selectable from "components/Selectable"
 import {gitHasStagedFiles} from "git-utils"
@@ -156,7 +157,7 @@ export default function Status({state, actions, minHeight, maxHeight}) {
         <Selectable
           minHeight={minHeight}
           maxHeight={maxHeight}
-          data={lines}
+          data={lines.map(x => chalk.reset(x))}
           selected={selected}
           allSelected={allSelected}
         />
