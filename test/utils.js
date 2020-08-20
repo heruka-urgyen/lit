@@ -2,7 +2,7 @@ import test from "ava"
 import {statusStrToList, calculateListView} from "utils"
 
 test.serial("statusStrToList", t => {
-  t.deepEqual(statusStrToList("123\n"), ["123"])
+  t.deepEqual(statusStrToList("123\r\n"), ["123"])
 })
 
 test.serial("calculateListView all items fit in view", t => {
