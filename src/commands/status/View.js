@@ -139,6 +139,7 @@ export default function Status({state, actions, minHeight, maxHeight}) {
 
   if (mode === "log") {
     return (
+<<<<<<< HEAD
       <Box paddingTop={1}>
         <Selectable
           minHeight={minHeight}
@@ -147,6 +148,14 @@ export default function Status({state, actions, minHeight, maxHeight}) {
           selected={selected}
         />
       </Box>
+=======
+      <Selectable
+        minHeight={minHeight}
+        maxHeight={maxHeight}
+        data={log}
+        selected={selected}
+      />
+>>>>>>> daa6a92... feat: support minHeight in status component
     )
   }
 
@@ -154,7 +163,8 @@ export default function Status({state, actions, minHeight, maxHeight}) {
     return (
       <Box paddingTop={1}>
         <Selectable
-          maxHeight={viewHeight}
+          minHeight={minHeight}
+          maxHeight={maxHeight}
           data={lines}
           selected={selected}
           allSelected={allSelected}

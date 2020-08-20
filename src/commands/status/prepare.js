@@ -27,12 +27,14 @@ export const getHint = () => {
   return [hint1, hint2].join("\n")
 }
 
-export const preRender = hint => lines => viewHeight => {
-  const {items} = calculateListView(lines, viewHeight, 0)
+export const preRender = hint => lines => maxHeight => minHeight => {
+  const {items} = calculateListView(lines, maxHeight, 0)
   const linesToRender = items.map((el, i) => Selector({isSelected: i === 0, el}))
+  const view = ["", hint, "", ...linesToRender, ""]
+  const spaces = "\n".repeat(Math.max(0, 3 + minHeight - view.length))
 
   process.stdout.write(
-    ["", hint, "", ...linesToRender, "", ""].join("\n"),
+    [...view, spaces].join("\n"),
   )
 
   readline.moveCursor(process.stdout, -items[0].length, -(items.length + spaces.length + 2))
