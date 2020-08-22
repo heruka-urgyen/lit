@@ -10,6 +10,11 @@ import {getData, preRender, getHint, getComponent, render} from "./prepare"
   try {
     cliCursor.hide()
     const data = await getData()
+
+    if (data.length === 0) {
+      process.exit()
+    }
+
     const minHeight = 0
     const maxHeight = process.stdout.rows - 8
     preRender(getHint())(data)(maxHeight)(minHeight)

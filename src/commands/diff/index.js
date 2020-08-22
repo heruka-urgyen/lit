@@ -12,6 +12,11 @@ import {getData, preRender, getHint, render} from "commands/status/prepare"
     cliCursor.hide()
 
     const data = await getData()
+
+    if (data.length === 0) {
+      process.exit()
+    }
+
     const minHeight = process.stdout.rows - 7
     const maxHeight = process.stdout.rows - 7
     const [h1, h2] = getHint().split("\n")
