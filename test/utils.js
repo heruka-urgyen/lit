@@ -5,6 +5,20 @@ test.serial("statusStrToList", t => {
   t.deepEqual(statusStrToList("123\r\n"), ["123"])
 })
 
+test.serial("statusStrToList 2", t => {
+  t.deepEqual(
+    statusStrToList("M filename\n?? filename2\nM filename3\n"),
+    ["M filename3", "?? filename2", "M filename"],
+  )
+})
+
+test.serial("statusStrToList 3", t => {
+  t.deepEqual(
+    statusStrToList("M filename\n?? filename2\n"),
+    ["?? filename2", "M filename"],
+  )
+})
+
 test.serial("calculateListView all items fit in view", t => {
   const items = [1, 2, 3, 4, 5]
   const r = calculateListView(items, 7, 0)

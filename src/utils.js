@@ -1,6 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 
-export const statusStrToList = str => str.split(/[\r\n]+/).slice(0, -1)
+const last = xs => xs[xs.length - 1]
+export const statusStrToList = str => str
+  .split(/[\r\n]+/).slice(0, -1)
+  .sort((x, y) => last(x.split(" ")) < last(y.split(" ")) ? 1 : -1)
 
 export const calculateListView = (items, viewSize, selectedItem) => {
   if (items.length <= viewSize) {
