@@ -29,6 +29,8 @@ const exec = (cmd, resolver = identity) => new Promise(
   ),
 )
 
+export const gitStatusPorcelain = file => exec(`git status --porcelain=2 ${file}`)
+
 export const gitHasStagedFiles =
   () => exec("git diff --cached --name-only", x => x.length > 0)
 
