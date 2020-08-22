@@ -29,6 +29,21 @@ const exec = (cmd, resolver = identity) => new Promise(
   ),
 )
 
+const sp = (cmd, params) => new Promise(
+  (res, rej) => {
+    const c = cp.spawn(cmd, params)
+
+    c.stderr.on("data", e => {
+      rej(e.toString("utf8"))
+    })
+
+    c.stdout.on("data", data => {
+      res(data.toString("utf8"))
+    })
+  },
+)
+
+export const gitDiff = params => sp("git", ["diff", "--color=always", ...params])
 export const gitStatusPorcelain = file => exec(`git status --porcelain=2 ${file}`)
 
 export const gitHasStagedFiles =
