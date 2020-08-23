@@ -36,3 +36,12 @@ export const createReducer = handlers => (state, action) => {
 }
 
 export const dispatchAction = dispatch => type => payload => dispatch({type, payload})
+
+// from https://stackoverflow.com/a/57298115
+export const combineReducers = slices => (prevState, action) => Object.keys(slices).reduce(
+  (nextState, nextProp) => ({
+    ...nextState,
+    [nextProp]: slices[nextProp](prevState[nextProp], action),
+  }),
+  prevState,
+)

@@ -9,7 +9,7 @@ test("exports reducer", t => {
 test("setWidth", t => {
   const s = {width: 50}
 
-  t.deepEqual(handlers.setWidth(s, {payload: w => w + 10}), {width: 60})
+  t.deepEqual(handlers.setWidth(s, {payload: w => w + 10}), {width: 60, previousWidth: 50})
 })
 
 test("setPreview", t => {
@@ -25,52 +25,6 @@ test("scrollPreview", t => {
   const s = {previewPosition: 0}
 
   t.deepEqual(handlers.scrollPreview(s, {payload: p => p + 1}), {previewPosition: 1})
-})
-
-test("toggleMode preview -> normal", t => {
-  const s = {
-    width: 95,
-    mode: {
-      type: "preview",
-      previousWidth: 50,
-      currentWidth: 95,
-    },
-  }
-
-  t.deepEqual(
-    handlers.toggleMode(s),
-    {
-      width: 95,
-      mode: {
-        type: "normal",
-        previousWidth: 95,
-        currentWidth: 50,
-      },
-    },
-  )
-})
-
-test("toggleMode normal -> preview", t => {
-  const s = {
-    width: 50,
-    mode: {
-      type: "normal",
-      previousWidth: 95,
-      currentWidth: 50,
-    },
-  }
-
-  t.deepEqual(
-    handlers.toggleMode(s),
-    {
-      width: 50,
-      mode: {
-        type: "preview",
-        previousWidth: 50,
-        currentWidth: 95,
-      },
-    },
-  )
 })
 
 test("reducer actions", t => {

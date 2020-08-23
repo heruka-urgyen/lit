@@ -63,7 +63,7 @@ test.serial("render view", t => {
       maxHeight={20}
       actions={{}}
       state={{
-        mode: "add",
+        mode: "status",
         selected: 0,
         allSelected: false,
         log: [],
@@ -149,7 +149,7 @@ test.serial("actions on keys in status", async t => {
 
   const App = () => {
     const initialState = {
-      mode: "add",
+      mode: "status",
       selected: 0,
       allSelected: false,
       log: [],

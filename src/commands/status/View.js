@@ -29,7 +29,7 @@ const getInputConfig = props => async (input, key) => {
     exit()
   }
 
-  if (mode === "add") {
+  if (mode === "status") {
     if (input === "j" || key.downArrow) {
       selectItem(selectDown(lines))
     }
@@ -151,7 +151,7 @@ export default function Status({state, actions, minHeight, maxHeight}) {
     )
   }
 
-  if (mode === "add" || mode === "preview") {
+  if (mode === "status" || mode === "preview") {
     return (
       <Box paddingTop={1}>
         <Selectable

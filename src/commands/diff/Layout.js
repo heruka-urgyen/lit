@@ -3,20 +3,16 @@ import PropTypes from "prop-types"
 import {Box, useInput, useStdout} from "ink"
 import stripAnsi from "strip-ansi"
 
-import {getActions as getStatusActions} from "commands/status/reducer"
+import {combineReducers} from "utils"
+
+import statusReducer, {getActions as getStatusActions} from "commands/status/reducer"
 import Status from "commands/status/View"
 
 import Preview from "./Preview"
 import reducer, {getActions} from "./reducer"
 import {showPreview} from "./utils"
 
-export default function Layout(props) {
-  const {
-    initialLines,
-    minHeight,
-    maxHeight,
-  } = props
-
+export default function Layout({initialLines, minHeight, maxHeight}) {
   const {stdout} = useStdout()
   const screenWidth = stdout.columns
   const longestName = Math.max(...initialLines.map(x => stripAnsi(x).length))
@@ -26,7 +22,7 @@ export default function Layout(props) {
 
   const initialState = {
     status: {
-      mode: "add",
+      mode: "status",
       selected: 0,
       allSelected: false,
       log: [],
@@ -34,39 +30,39 @@ export default function Layout(props) {
     },
     diff: {
       width: initialWidth,
+      previousWidth: initialWidth,
+      previewWidth: 95,
       preview: "",
       previewPosition: 0,
-      mode: {
-        type: "normal",
-        previousWidth: 95,
-        currentWidth: initialWidth,
-      },
     },
   }
   const [timesPressed, press] = useState(0)
-  const [previewHidden, togglePreview] = useState(false)
-  const [state1, dispatch] = useReducer(reducer, initialState.status)
+  const [previewVisible, togglePreview] = useState(true)
+  const [state, dispatch] = useReducer(
+    combineReducers({status: statusReducer, diff: reducer}),
+    initialState,
+  )
   const statusActions = getStatusActions(dispatch)
-  const [state2, dispatch2] = useReducer(reducer, initialState.diff)
-  const {selected, lines} = state1
-  const {width, preview, mode, previewPosition} = state2
+  const {setWidth, setPreview, scrollPreview} = getActions(dispatch)
 
-  const {
-    setWidth,
-    setPreview,
-    toggleMode,
-    scrollPreview,
-  } = getActions(dispatch2)
+  const {selected, lines, mode} = state.status
+  const {width, preview, previewPosition, previousWidth, previewWidth} = state.diff
 
   useEffect(() => {
-    if (state1.mode === "add") {
+    if (mode === "status") {
       showPreview(setPreview, lines[selected].split(" ").slice(-1)[0])
     }
   }, [selected])
 
   useEffect(() => {
-    setWidth(() => mode.currentWidth)
-  }, [mode.type])
+    if (mode === "status") {
+      setWidth(() => previousWidth)
+    }
+
+    if (mode === "preview") {
+      setWidth(() => previewWidth)
+    }
+  }, [mode])
 
   useEffect(() => {
     const t = setTimeout(() => press(0), 500)
@@ -76,11 +72,10 @@ export default function Layout(props) {
 
   useInput((input, key) => {
     if (input === "v") {
-      toggleMode()
-      statusActions.setMode(state1.mode === "preview" ? "add" : "preview")
+      statusActions.setMode(mode === "preview" ? "status" : "preview")
     }
 
-    if (mode.type === "preview") {
+    if (mode === "preview") {
       if (input === "j" || key.downArrow) {
         scrollPreview(pos => {
           const lines = preview.split("\n").length
@@ -131,7 +126,7 @@ export default function Layout(props) {
       }
     }
 
-    if (mode.type === "normal") {
+    if (mode === "status") {
       if (input === "l" || key.rightArrow) {
         setWidth(w => Math.max(5, w - 10))
       }
@@ -141,27 +136,31 @@ export default function Layout(props) {
       }
 
       if (input === "f") {
-        togglePreview(p => !p)
+        togglePreview(false)
         setWidth(() => 0)
       }
     }
   })
 
   return (
-    <Box height={maxHeight} flexDirection="row" paddingTop={1}>
+    <Box
+      height={previewVisible ? maxHeight : maxHeight + 1}
+      flexDirection="row"
+      paddingTop={1}
+    >
       <Box width={`${100 - width}%`} marginTop={-1}>
         <Status
-          state={state1}
+          state={state.status}
           actions={statusActions}
           minHeight={minHeight}
           maxHeight={maxHeight}
         />
       </Box>
       <Box
-        display={previewHidden ? "none" : "flex"}
+        display={previewVisible ? "flex" : "none"}
         width={`${width}%`}
         borderStyle="round"
-        borderColor={mode.type === "normal" ? "grey" : "green"}
+        borderColor={mode === "status" ? "grey" : "green"}
         marginTop={-1}
       >
         <Preview

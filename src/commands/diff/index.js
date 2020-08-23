@@ -17,8 +17,8 @@ import {getData, preRender, getHint, render} from "commands/status/prepare"
       process.exit()
     }
 
-    const minHeight = process.stdout.rows - 7
-    const maxHeight = process.stdout.rows - 7
+    const minHeight = process.stdout.rows - 6
+    const maxHeight = process.stdout.rows - 6
     const [h1, h2] = getHint().split("\n")
     const hint = [
       h1.split(" | ").concat([

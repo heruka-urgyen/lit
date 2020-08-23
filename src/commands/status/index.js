@@ -23,7 +23,7 @@ import {getData, preRender, getHint, getComponent, render} from "./prepare"
 
     const App = () => {
       const initialState = {
-        mode: "add",
+        mode: "status",
         selected: 0,
         allSelected: false,
         log: [],

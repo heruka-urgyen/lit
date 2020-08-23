@@ -1,14 +1,13 @@
 /* eslint-disable arrow-body-style */
 
 import {createReducer, dispatchAction} from "utils"
-import {actionHandlers} from "commands/status/reducer"
 
 export const handlers = {
-  ...actionHandlers,
   setWidth: (s, {payload}) => {
     return {
       ...s,
       width: payload(s.width),
+      previousWidth: s.width,
     }
   },
   setPreview: (s, {payload}) => {
@@ -25,17 +24,6 @@ export const handlers = {
     return {
       ...s,
       previewPosition: payload(s.previewPosition),
-    }
-  },
-  toggleMode: s => {
-    const model = {
-      previousWidth: s.width,
-      currentWidth: s.mode.previousWidth,
-    }
-
-    return {
-      ...s,
-      mode: {...model, type: s.mode.type === "normal" ? "preview" : "normal"},
     }
   },
 }
