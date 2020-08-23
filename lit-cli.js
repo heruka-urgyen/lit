@@ -17,6 +17,7 @@ const printHelp = () => {
 
   Commands
     status - interactive git status that allows to stage, reset, checkout, commit, amend, and fixup
+    diff - interactive git diff that combines git status with diff for each file
   `)
 }
 
