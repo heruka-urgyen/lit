@@ -5,7 +5,7 @@ import stripAnsi from "strip-ansi"
 
 export const calculatePreviewWindow = (preview, width, height, position) => {
   const items = preview.slice(position, position + height - 2)
-  const wrappedLength = items.filter(x => stripAnsi(x).length > width).length
+  const wrappedLength = items.filter(x => stripAnsi(x).length > (width - 2)).length
 
   if (wrappedLength > 0) {
     return items.slice(0, -wrappedLength)
