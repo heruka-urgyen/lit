@@ -10,7 +10,7 @@ export const calculateListView = (items, viewSize, selectedItem) => {
     return {items, selected: selectedItem}
   }
 
-  const nextWindow = (viewSize / 2) - ((viewSize / 2) % 1)
+  const nextWindow = Math.round(viewSize / 2)
 
   if (selectedItem + nextWindow >= items.length) {
     return {items: items.slice(-viewSize), selected: viewSize - items.length + selectedItem}
@@ -21,8 +21,8 @@ export const calculateListView = (items, viewSize, selectedItem) => {
   }
 
   return {
-    items: items.slice(selectedItem - nextWindow, selectedItem + nextWindow),
-    selected: nextWindow,
+    items: items.slice(1 + selectedItem - nextWindow, selectedItem + nextWindow),
+    selected: nextWindow - 1,
   }
 }
 
