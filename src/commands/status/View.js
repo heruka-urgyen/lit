@@ -39,7 +39,7 @@ const getInputConfig = props => async (input, key) => {
     }
 
     if (input === "a") {
-      toggleSelectAll(a => !a)
+      toggleSelectAll()
     }
 
     if (input === "s") {
