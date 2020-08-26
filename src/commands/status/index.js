@@ -4,7 +4,7 @@ import React, {useReducer} from "react"
 import cliCursor from "cli-cursor"
 
 import reducer, {getActions} from "./reducer"
-import {getData, preRender, getHint, getComponent, render} from "./prepare"
+import {getData, preRender, getHint, getComponent} from "./prepare"
 
 (async () => {
   try {
@@ -42,6 +42,8 @@ import {getData, preRender, getHint, getComponent, render} from "./prepare"
         />
       )
     }
+
+    const {render} = await import("ink")
 
     render(<App />)
   } catch (e) {

@@ -4,7 +4,7 @@ import React from "react"
 import cliCursor from "cli-cursor"
 import chalk from "chalk"
 
-import {getData, preRender, getHint, render} from "commands/status/prepare"
+import {getData, preRender, getHint} from "commands/status/prepare"
 
 (async () => {
   try {
@@ -31,6 +31,7 @@ import {getData, preRender, getHint, render} from "commands/status/prepare"
     preRender(hint)(data)(maxHeight)(minHeight)
 
     const Layout = await import("./Layout.js").then(x => x.default)
+    const {render} = await import("ink")
 
     render(
       <Layout

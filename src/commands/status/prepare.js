@@ -48,9 +48,3 @@ export const getData = async () => {
 }
 
 export const getComponent = () => import("./View.js").then(x => x.default)
-
-export const render = async component => {
-  const {render} = await import("ink")
-
-  render(component)
-}
