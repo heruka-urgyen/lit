@@ -45,3 +45,5 @@ export const combineReducers = slices => (prevState, action) => Object.keys(slic
   }),
   prevState,
 )
+
+export const delay = (n = 100) => new Promise(r => setTimeout(r, n))

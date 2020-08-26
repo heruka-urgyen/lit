@@ -96,9 +96,9 @@ test.serial("should update log", async t => {
   t.truthy(update.calledWith(["123zxc commit msg"]))
 })
 
-test.serial("should quit app on q", t => {
+test.serial("should quit app on q", async t => {
   const exit = sinon.spy()
-  handleInput({exit})("q", {})
+  await handleInput({exit})("q", {})
 
   t.truthy(exit.called)
 })

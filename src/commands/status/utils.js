@@ -1,5 +1,5 @@
 import stripAnsi from "strip-ansi"
-import {statusStrToList} from "utils"
+import {statusStrToList, delay} from "utils"
 import {
   runCmd,
   gitStatus,
@@ -78,6 +78,7 @@ export const handleInput = props => async (input, key) => {
   } = props
 
   if (input === "q") {
+    await delay(0)
     exit()
   }
 
