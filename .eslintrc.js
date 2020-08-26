@@ -26,6 +26,7 @@ module.exports = {
     "no-confusing-arrow": 0,
     "react/jsx-filename-extension": 0,
     "operator-linebreak": ["error", "after"],
+    "operator-assignment": 0,
     "import/no-extraneous-dependencies": ["error", {devDependencies: true}],
     "no-unused-vars": ["error", {
       vars: "all",
