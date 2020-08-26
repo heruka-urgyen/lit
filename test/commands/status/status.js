@@ -5,25 +5,21 @@ import sinon from "sinon"
 
 import Status from "commands/status/View"
 import reducer, {getActions} from "commands/status/reducer"
-import * as s from "commands/status/utils"
 import * as g from "git-utils"
 
 const delay = (n = 100) => new Promise(r => setTimeout(r, n))
 
-let runCommand
 let gitStatus
 let gitHasStagedFiles
 let gitLog
 
 test.beforeEach(_ => {
-  runCommand = sinon.spy(s, "runCommand")
   gitStatus = sinon.stub(g, "gitStatus")
   gitHasStagedFiles = sinon.stub(g, "gitHasStagedFiles")
   gitLog = sinon.stub(g, "gitLog")
 })
 
 test.afterEach(_ => {
-  s.runCommand.restore()
   gitStatus.restore()
   gitHasStagedFiles.restore()
   gitLog.restore()
@@ -201,7 +197,7 @@ test.serial("should react on key presses", async t => {
   output.stdin.write("k")
   output.stdin.write("o")
   await delay()
-  t.deepEqual(output.lastFrame(), res1.join("\n"))
+  t.deepEqual(output.lastFrame(), res2.join("\n"))
 
   await delay()
   output.stdin.write("j")
@@ -211,12 +207,12 @@ test.serial("should react on key presses", async t => {
   output.stdin.write(ARROW_UP)
 
   t.deepEqual(output.frames.slice(3), [
-    res1,
     res2,
     res1,
     res2,
     res1,
     res2,
+    res1,
   ].map(x => x.join("\n")))
 
   await delay()
@@ -226,10 +222,8 @@ test.serial("should react on key presses", async t => {
 
   output.stdin.write("a")
   await delay()
-  output.stdin.write("k")
   output.stdin.write("s")
   output.stdin.write("s")
-  t.truthy(runCommand.called)
   await delay()
   t.deepEqual(output.lastFrame(), res3.join("\n"))
 

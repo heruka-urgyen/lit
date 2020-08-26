@@ -38,6 +38,7 @@ export default function Layout({initialLines, minHeight, maxHeight}) {
       previewPosition: 0,
     },
   }
+
   const [state, dispatch] = useReducer(
     combineReducers({status: statusReducer, diff: reducer}),
     initialState,
