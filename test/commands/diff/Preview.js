@@ -4,7 +4,7 @@ import {render} from "ink-testing-library"
 
 import Preview, {calculatePreviewWindow} from "commands/diff/Preview"
 
-test("render Preview", t => {
+test("should render Preview", t => {
   const output = render(
     <Preview
       preview={"abc\nasdf\n123"}
@@ -23,7 +23,7 @@ test("render Preview", t => {
   t.deepEqual(output.lastFrame(), res)
 })
 
-test("calculate preview size", t => {
+test("should calculate preview size", t => {
   const preview = ["qwertyuiop", "asdf", "zxc"]
 
   const output1 = calculatePreviewWindow(preview, 6, 4, 0)

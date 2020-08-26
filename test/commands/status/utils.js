@@ -16,7 +16,7 @@ test.afterEach(_ => {
   pauseSpy.restore()
 })
 
-test.serial("runCommand", async t => {
+test.serial("should run command", async t => {
   gs.runCmd.resolves(1)
   gs.gitStatus.resolves("A 1.js\n")
   const update = sinon.spy()
@@ -28,7 +28,7 @@ test.serial("runCommand", async t => {
   t.truthy(update.calledWith(["A 1.js"]))
 })
 
-test.serial("try to commit w/o staging", async t => {
+test.serial("should try to commit w/o staging", async t => {
   gs.gitHasStagedFiles.resolves(false)
   const exit = sinon.spy()
 
@@ -39,7 +39,7 @@ test.serial("try to commit w/o staging", async t => {
   t.falsy(exit.called)
 })
 
-test.serial("commit", async t => {
+test.serial("should commit", async t => {
   gs.gitHasStagedFiles.resolves(true)
   const exit = sinon.spy()
 
@@ -50,7 +50,7 @@ test.serial("commit", async t => {
   t.truthy(exit.called)
 })
 
-test.serial("commit fixup", async t => {
+test.serial("should commit fixup", async t => {
   const exit = sinon.spy()
 
   commitFixup("123zxc", exit)
@@ -59,7 +59,7 @@ test.serial("commit fixup", async t => {
   t.truthy(exit.called)
 })
 
-test.serial("try to commit amend w/o staging", async t => {
+test.serial("should try to commit amend w/o staging", async t => {
   gs.gitHasStagedFiles.resolves(false)
   const exit = sinon.spy()
 
@@ -70,7 +70,7 @@ test.serial("try to commit amend w/o staging", async t => {
   t.falsy(exit.called)
 })
 
-test.serial("commit amend", async t => {
+test.serial("should commit amend", async t => {
   gs.gitHasStagedFiles.resolves(true)
   const exit = sinon.spy()
 
@@ -81,7 +81,7 @@ test.serial("commit amend", async t => {
   t.truthy(exit.called)
 })
 
-test.serial("updateLog", async t => {
+test.serial("should update log", async t => {
   gs.gitLog.returns("123zxc commit msg\n")
   const update = sinon.spy()
 

@@ -1,43 +1,44 @@
-import test from "ava"
+import {testProp, fc} from "ava-fast-check"
 
-import reducer, {handlers, getActions} from "commands/diff/reducer"
+import {handlers} from "commands/diff/reducer"
 
-test("exports reducer", t => {
-  t.truthy(typeof reducer === "function")
+testProp("should set width", [fc.integer(), fc.integer()], (t, w1, w2) => {
+  const res1 = handlers.setWidth({width: w1}, {payload: w => w + w2})
+  const res2 = handlers.setWidth({width: w1}, {payload: w => w - w2})
+  const res3 = handlers.setWidth({width: w1}, {payload: _ => w2})
+
+  t.is(res1.width, w1 + w2)
+  t.is(res2.width, w1 - w2)
+  t.is(res3.width, w2)
 })
 
-test("setWidth", t => {
-  const s = {width: 50}
+testProp("should set preview", [fc.string(), fc.string()], (t, p1, p2) => {
+  const res = handlers.setPreview({preview: p1}, {payload: p2})
 
-  t.deepEqual(handlers.setWidth(s, {payload: w => w + 10}), {width: 60, previousWidth: 50})
+  t.is(res.preview, p2)
 })
 
-test("setPreview", t => {
-  const s = {preview: ""}
+testProp(
+  "should scroll preview",
+  [fc.integer(), fc.integer(), fc.string()],
+  (t, p1, p2, pr) => {
+    const res1 = handlers.scrollPreview(
+      {previewPosition: p1, preview: pr},
+      {payload: ({previewPosition}) => previewPosition + p2},
+    )
 
-  t.deepEqual(
-    handlers.setPreview(s, {payload: "abc\n@@ 123 @@\nabc\n"}),
-    {preview: "@@ 123 @@\nabc\n", previewPosition: 0},
-  )
-})
+    const res2 = handlers.scrollPreview(
+      {previewPosition: p1, preview: pr},
+      {payload: ({previewPosition}) => previewPosition - p2},
+    )
 
-test("scrollPreview", t => {
-  const s = {previewPosition: 0}
+    const res3 = handlers.scrollPreview(
+      {previewPosition: p1, preview: pr},
+      {payload: _ => p2},
+    )
 
-  t.deepEqual(handlers.scrollPreview(s, {payload: p => p + 1}), {previewPosition: 1})
-})
-
-test("reducer actions", t => {
-  const actions = getActions(_ => _)
-  const {
-    setWidth,
-    setPreview,
-    toggleMode,
-    scrollPreview,
-  } = actions
-
-  t.truthy(typeof setWidth === "function")
-  t.truthy(typeof setPreview === "function")
-  t.truthy(typeof toggleMode === "function")
-  t.truthy(typeof scrollPreview === "function")
-})
+    t.is(res1.previewPosition, p1 + p2)
+    t.is(res2.previewPosition, p1 - p2)
+    t.is(res3.previewPosition, p2)
+  },
+)

@@ -34,42 +34,42 @@ test.afterEach(_ => {
   cpExecSpy.restore()
 })
 
-test.serial("runCmd no args", t => {
+test.serial("should runCmd w/ no args", t => {
   runCmd({})
   t.truthy(spawnSpy.calledWith("git"))
 })
 
-test.serial("runCmd", t => {
+test.serial("should runCmd w/ args", t => {
   runCmd({params: ["status"]})
   t.truthy(spawnSpy.calledWith("git", ["status"]))
 })
 
-test.serial("gitStatus", t => {
+test.serial("should show gitStatus", t => {
   gitStatus()
   t.truthy(spawnSpy.calledWith("git", ["-c", "color.ui=always", "status", "-s", "-u"]))
 })
 
-test.serial("gitCommit no args", t => {
+test.serial("should gitCommit w/ no args", t => {
   gitCommit()
   t.truthy(cpSpawnSpy.calledWith("git", ["commit"], {stdio: "inherit"}))
 })
 
-test.serial("gitCommit", t => {
+test.serial("should gitCommit", t => {
   gitCommit(["1.js", "2.js"])
   t.truthy(cpSpawnSpy.calledWith("git", ["commit", "1.js", "2.js"], {stdio: "inherit"}))
 })
 
-test.serial("gitCommitFixup", t => {
+test.serial("should gitCommitFixup", t => {
   gitCommitFixup("123zxc")
   t.truthy(cpSpawnSpy.calledWith("git", ["commit", "--fixup", "123zxc"], {stdio: "inherit"}))
 })
 
-test.serial("gitCommitAmend", t => {
+test.serial("should gitCommitAmend", t => {
   gitCommitAmend(["1.js"])
   t.truthy(cpSpawnSpy.calledWith("git", ["commit", "--amend"], {stdio: "inherit"}))
 })
 
-test.serial("gitHasStagedFiles", async t => {
+test.serial("should gitHasStagedFiles", async t => {
   gitHasStagedFiles()
 
   t.deepEqual(cpExecSpy.lastCall.args[0], "git diff --cached --name-only")
@@ -77,7 +77,7 @@ test.serial("gitHasStagedFiles", async t => {
   t.deepEqual(typeof cpExecSpy.lastCall.args[2], "function")
 })
 
-test.serial("gitLog", async t => {
+test.serial("should gitLog", async t => {
   gitLog()
 
   t.deepEqual(
@@ -89,7 +89,7 @@ test.serial("gitLog", async t => {
   t.deepEqual(typeof cpExecSpy.lastCall.args[2], "function")
 })
 
-test.serial("isGitRepo", async t => {
+test.serial("should isGitRepo", async t => {
   isGitRepo()
 
   t.deepEqual(cpExecSpy.lastCall.args[0], "git rev-parse --is-inside-work-tree")

@@ -1,7 +1,5 @@
 import React, {useReducer} from "react"
 import test from "ava"
-import {stdout} from "test-console"
-import stripAnsi from "strip-ansi"
 import {render} from "ink-testing-library"
 import sinon from "sinon"
 
@@ -31,26 +29,7 @@ test.afterEach(_ => {
   gitLog.restore()
 })
 
-test("pre-render view", async t => {
-  const {preRender, getHint} = await import("commands/status/prepare")
-  const output = stdout.inspectSync(() => {
-    preRender(getHint())(["M filename"])(20)(0)
-  })
-
-  const res = [
-    "",
-    " q quit  | a toggle all",
-    " s stage | r reset | o checkout | c commit | m amend | f fixup",
-    "",
-    " ❯ M filename",
-    "",
-    "",
-  ].join("\n")
-
-  t.deepEqual(stripAnsi(output[0]), res)
-})
-
-test.serial("render view", t => {
+test.serial("should render view", t => {
   const initialLines = [
     "M filename",
     "A filename2",
@@ -82,7 +61,7 @@ test.serial("render view", t => {
   t.deepEqual(output.lastFrame(), res)
 })
 
-test.serial("actions on keys in status", async t => {
+test.serial("should react on key presses", async t => {
   const initialLines = [
     "M filename",
     "?? filename2",
@@ -104,19 +83,37 @@ test.serial("actions on keys in status", async t => {
   ]
   const res3 = [
     "",
-    "   A filename2",
-    " ❯ M filename",
-  ]
-  const res4 = [
-    "",
-    "   ?? filename2",
-    " ❯ M filename",
+    " ❯ A filename2",
+    "   M filename",
   ]
   const res5 = [
     "",
     " ❯ 123qwe - commmit msg1",
     "   124qwe - commmit msg2",
     "   125qwe - commmit msg3",
+  ]
+  const res4 = [
+    "",
+    "   123qwe - commmit msg1",
+    " ❯ 124qwe - commmit msg2",
+    "   125qwe - commmit msg3",
+  ]
+  const res6 = [
+    "",
+    " ❯ ?? filename2",
+    " ❯ M filename",
+  ]
+  const res7 = [
+    "",
+    " ❯ M filename3",
+    " ❯ A filename2",
+    " ❯ M filename",
+  ]
+  const res8 = [
+    "",
+    " ❯ M filename3",
+    " ❯ ?? filename2",
+    " ❯ M filename",
   ]
 
   gitStatus.onCall(0).resolves([
@@ -139,6 +136,35 @@ test.serial("actions on keys in status", async t => {
     "?? filename2",
     "",
   ].join("\n"))
+  gitStatus.onCall(4).resolves([
+    "M filename",
+    "A filename2",
+    "M filename3",
+    "",
+  ].join("\n"))
+  gitStatus.onCall(5).resolves([
+    "M filename",
+    "?? filename2",
+    "M filename3",
+    "",
+  ].join("\n"))
+  gitStatus.onCall(6).resolves([
+    "?? filename2",
+    "M filename",
+    "",
+  ].join("\n"))
+  gitStatus.onCall(7).resolves([
+    "?? filename2",
+    "M filename",
+    "",
+  ].join("\n"))
+  gitStatus.onCall(8).resolves([
+    "?? filename2",
+    "M filename",
+    "",
+  ].join("\n"))
+  gitStatus.onCall(9).resolves("")
+
   gitHasStagedFiles.resolves(true)
   gitLog.resolves([
     "123qwe - commmit msg1",
@@ -194,18 +220,55 @@ test.serial("actions on keys in status", async t => {
   ].map(x => x.join("\n")))
 
   await delay()
+  output.stdin.write("a")
+  await delay()
+  t.deepEqual(output.lastFrame(), res6.join("\n"))
+
+  output.stdin.write("a")
+  await delay()
+  output.stdin.write("k")
   output.stdin.write("s")
   output.stdin.write("s")
   t.truthy(runCommand.called)
   await delay()
   t.deepEqual(output.lastFrame(), res3.join("\n"))
 
+  output.stdin.write("a")
   output.stdin.write("r")
   await delay()
-  t.deepEqual(output.lastFrame(), res4.join("\n"))
+  t.deepEqual(output.lastFrame(), res6.join("\n"))
 
   output.stdin.write("k")
   output.stdin.write("f")
   await delay()
   t.deepEqual(output.lastFrame(), res5.join("\n"))
+
+  output.stdin.write("j")
+  await delay()
+  t.deepEqual(output.lastFrame(), res4.join("\n"))
+
+  output.stdin.write("k")
+  await delay()
+  t.deepEqual(output.lastFrame(), res5.join("\n"))
+
+  output.stdin.write("q")
+
+  const output2 = render(<App />)
+
+  await delay()
+  output2.stdin.write("a")
+  await delay()
+  output2.stdin.write("s")
+  await delay()
+  t.deepEqual(output2.lastFrame(), res7.join("\n"))
+
+  await delay()
+  output2.stdin.write("r")
+  await delay()
+  t.deepEqual(output2.lastFrame(), res8.join("\n"))
+
+  output2.stdin.write("a")
+  output2.stdin.write("o")
+  await delay()
+  t.deepEqual(output2.lastFrame(), res1.join("\n"))
 })
