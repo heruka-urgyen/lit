@@ -1,4 +1,4 @@
-import React, {useReducer, useState, useEffect} from "react"
+import React, {useReducer, useEffect} from "react"
 import PropTypes from "prop-types"
 import {Box, useInput, useStdout} from "ink"
 import stripAnsi from "strip-ansi"
@@ -10,7 +10,7 @@ import Status from "commands/status/View"
 
 import Preview from "./Preview"
 import reducer, {getActions} from "./reducer"
-import {showPreview} from "./utils"
+import {showPreview, calcuateScrollPosition, resizePreview} from "./utils"
 
 export default function Layout({initialLines, minHeight, maxHeight}) {
   const {stdout} = useStdout()
@@ -29,6 +29,8 @@ export default function Layout({initialLines, minHeight, maxHeight}) {
       lines: initialLines,
     },
     diff: {
+      minHeight,
+      maxHeight,
       width: initialWidth,
       previousWidth: initialWidth,
       previewWidth: 95,
@@ -36,8 +38,6 @@ export default function Layout({initialLines, minHeight, maxHeight}) {
       previewPosition: 0,
     },
   }
-  const [timesPressed, press] = useState(0)
-  const [previewVisible, togglePreview] = useState(true)
   const [state, dispatch] = useReducer(
     combineReducers({status: statusReducer, diff: reducer}),
     initialState,
@@ -56,19 +56,13 @@ export default function Layout({initialLines, minHeight, maxHeight}) {
 
   useEffect(() => {
     if (mode === "status") {
-      setWidth(() => previousWidth)
+      setWidth(_ => previousWidth)
     }
 
     if (mode === "preview") {
-      setWidth(() => previewWidth)
+      setWidth(_ => previewWidth)
     }
   }, [mode])
-
-  useEffect(() => {
-    const t = setTimeout(() => press(0), 500)
-
-    return () => clearTimeout(t)
-  }, [timesPressed])
 
   useInput((input, key) => {
     if (input === "v") {
@@ -76,75 +70,17 @@ export default function Layout({initialLines, minHeight, maxHeight}) {
     }
 
     if (mode === "preview") {
-      if (input === "j" || key.downArrow) {
-        scrollPreview(pos => {
-          const lines = preview.split("\n").length
-
-          if (lines > maxHeight) {
-            return Math.min(pos + 1, lines - maxHeight + 1)
-          }
-
-          return pos
-        })
-      }
-
-      if (input === "k" || key.upArrow) {
-        scrollPreview(pos => Math.max(0, pos - 1))
-      }
-
-      if (input === "d") {
-        scrollPreview(pos => {
-          const lines = preview.split("\n").length
-
-          if (lines > maxHeight) {
-            return Math.min(pos + maxHeight / 2, lines - maxHeight + 1)
-          }
-
-          return pos
-        })
-      }
-
-      if (input === "u") {
-        scrollPreview(pos => Math.max(0, pos - maxHeight / 2))
-      }
-
-      if (input === "G" && key.shift) {
-        const lines = preview.split("\n").length
-
-        if (lines > maxHeight) {
-          scrollPreview(_ => lines - maxHeight + 1)
-        }
-      }
-
-      if (input === "g") {
-        const p = timesPressed + 1
-        press(p)
-
-        if (p > 1) {
-          scrollPreview(_ => 0)
-        }
-      }
+      scrollPreview(calcuateScrollPosition(input, key))
     }
 
     if (mode === "status") {
-      if (input === "l" || key.rightArrow) {
-        setWidth(w => Math.max(5, w - 10))
-      }
-
-      if (input === "h" || key.leftArrow) {
-        setWidth(w => Math.min(95, w + 10))
-      }
-
-      if (input === "f") {
-        togglePreview(false)
-        setWidth(() => 0)
-      }
+      setWidth(resizePreview(input, key))
     }
   })
 
   return (
     <Box
-      height={previewVisible ? maxHeight : maxHeight + 1}
+      height={width > 0 ? maxHeight : maxHeight + 1}
       flexDirection="row"
       paddingTop={1}
     >
@@ -157,7 +93,7 @@ export default function Layout({initialLines, minHeight, maxHeight}) {
         />
       </Box>
       <Box
-        display={previewVisible ? "flex" : "none"}
+        display={width > 0 ? "flex" : "none"}
         width={`${width}%`}
         borderStyle="round"
         borderColor={mode === "status" ? "grey" : "green"}

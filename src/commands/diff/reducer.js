@@ -21,9 +21,11 @@ export const handlers = {
     }
   },
   scrollPreview: (s, {payload}) => {
+    const lines = s.preview.split("\n").length
+
     return {
       ...s,
-      previewPosition: payload(s.previewPosition),
+      previewPosition: payload({...s, previewLength: lines}),
     }
   },
 }
@@ -32,19 +34,16 @@ export const getActions = dispatch => {
   const [
     setWidth,
     setPreview,
-    toggleMode,
     scrollPreview,
   ] = [
     "setWidth",
     "setPreview",
-    "toggleMode",
     "scrollPreview",
   ].map(dispatchAction(dispatch))
 
   return {
     setWidth,
     setPreview,
-    toggleMode,
     scrollPreview,
   }
 }
