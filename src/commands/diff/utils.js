@@ -1,19 +1,24 @@
 /* eslint-disable import/prefer-default-export */
-import {gitDiff, gitStatusPorcelain} from "git-utils"
+import sliceAnsi from "slice-ansi"
+import ansiToJson from "ansi-to-json"
+
+import {getPager, gitDiff, gitStatusPorcelain} from "git-utils"
+import {pipe} from "utils"
 
 export const showPreview = async (update, file) => {
   const status = await gitStatusPorcelain(file)
 
-  status.split("\n").forEach(f => {
+  status.split("\n").forEach(async f => {
     if (f.length > 0) {
       const [x, y] = f.split(" ")
+      const pager = await getPager()
 
       if (x === "?") {
-        gitDiff(["--no-index", "/dev/null", file]).then(update)
+        pipe(gitDiff(["--no-index", "/dev/null", file]), pager).then(update)
       } else if (y === "M." || y === "A.") {
-        gitDiff(["--staged", file]).then(update)
+        pipe(gitDiff(["--staged", file]), pager).then(update)
       } else {
-        gitDiff([file]).then(update)
+        pipe(gitDiff([file]), pager).then(update)
       }
     }
   })
@@ -80,3 +85,46 @@ export const resizePreview = (input, key) => w => {
 
   return w
 }
+
+const splitToWidth = (limit, str, arr) => {
+  const res = sliceAnsi(str, 0, limit)
+  const next = sliceAnsi(str, limit)
+
+  if (next.length > 0) {
+    return splitToWidth(limit, next, arr.concat([res, "\n"]))
+  }
+
+  return arr.concat(res)
+}
+
+export const calculatePreviewWindow = (preview, width, height, position) => (
+  preview.split("\n")
+    .slice(position, position + height - 2)
+    .reduce((acc, x) => {
+      if (acc.flat().length === height - 2) {
+        return acc
+      }
+
+      return acc.concat([splitToWidth(width - 2, x, [])])
+    }, [])
+    .map((xs, i) => (
+      xs.flatMap(x => ansiToJson(x)).reduce((acc, x, j) => {
+        const id = `${i}${j}`
+
+        if (acc.length === 0) {
+          return [{...x, id}]
+        }
+
+        const prevEl = [...acc].reverse().find(x => x.content !== "\n")
+        const prevChunkHeader = /@@.+@@/.test(prevEl.content)
+
+        return acc.concat([
+          {
+            ...x,
+            id,
+            fg: (x.fg || prevChunkHeader) ? x.fg : prevEl.fg,
+            bg: (x.bg || x.fg === prevEl.bg) ? x.bg : prevEl.bg,
+          }])
+      }, [])
+    ))
+)

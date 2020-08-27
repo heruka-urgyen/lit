@@ -1,28 +1,31 @@
 import React from "react"
 import PropTypes from "prop-types"
 import {Box, Text} from "ink"
-import stripAnsi from "strip-ansi"
 
-export const calculatePreviewWindow = (preview, width, height, position) => {
-  const items = preview.slice(position, position + height - 2)
-  const wrappedLength = items.filter(x => stripAnsi(x).length > (width - 2)).length
-
-  if (wrappedLength > 0) {
-    return items.slice(0, -wrappedLength)
-  }
-
-  return items
-}
+import {calculatePreviewWindow} from "./utils"
 
 export default function Preview({preview, width, height, previewPosition}) {
-  const data = preview.split("\n")
-  const items = calculatePreviewWindow(data, width, height, previewPosition)
+  const lines = calculatePreviewWindow(preview, width, height, previewPosition)
+
+  if (preview.length === 0) {
+    return <Box />
+  }
 
   return (
-    <Box>
-      <Text>
-        {items.join("\n")}
-      </Text>
+    <Box flexDirection="column">
+      {lines.map(line => (
+        <Text key={Math.random().toString()}>
+          {line.map(y => (
+            <Text
+              key={y.id}
+              color={y.fg ? `rgb(${y.fg})` : null}
+              backgroundColor={y.bg ? `rgb(${y.bg})` : null}
+            >
+              {y.content}
+            </Text>
+          ))}
+        </Text>
+      ))}
     </Box>
   )
 }

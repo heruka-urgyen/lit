@@ -47,3 +47,18 @@ export const combineReducers = slices => (prevState, action) => Object.keys(slic
 )
 
 export const delay = (n = 100) => new Promise(r => setTimeout(r, n))
+
+export const pipe = (x, y) => new Promise((res, rej) => {
+  if (!y) { res(x) }
+
+  let result = ""
+
+  y.stderr.on("data", rej)
+  y.stdout.on("data", data => { result = result + data.toString() })
+  y.stdout.on("close", () => { res(result) })
+
+  x.then(data => {
+    y.stdin.write(data)
+    y.stdin.end()
+  }).catch(rej)
+})

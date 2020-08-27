@@ -20,6 +20,20 @@ export const gitCommitFixup = hash => gitCommit(["--fixup", hash])
 
 export const gitCommitAmend = () => gitCommit(["--amend"])
 
+export const getPager = async () => {
+  const pager = await runCmd({params: ["config", "--get", "core.pager"]})
+
+  if (!pager) {
+    return null
+  }
+
+  if (pager.match(/.+/)[0] === "delta") {
+    return cp.spawn("delta", ["--color-only"])
+  }
+
+  return null
+}
+
 const identity = _ => _
 const exec = (cmd, resolver = identity) => new Promise(
   (res, rej) => cp.exec(
