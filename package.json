@@ -1,6 +1,6 @@
 {
   "name": "@heruka_urgyen/lit",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "interactive git tools",
   "main": "src/index.js",
   "publishConfig": {
