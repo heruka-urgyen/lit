@@ -1,6 +1,7 @@
 import test from "ava"
 import {testProp, fc} from "ava-fast-check"
-import {statusStrToList, calculateListView} from "utils"
+import sinon from "sinon"
+import {statusStrToList, calculateListView, pipe} from "utils"
 
 test("should map status str to list", t => {
   const s1 = "123\r\n"
@@ -35,3 +36,40 @@ testProp(
     t.deepEqual(r.items[r.selected], items[selected])
   },
 )
+
+testProp("should pipe commands", [fc.base64String()], async (t, string) => {
+  const inWriteSpy = sinon.spy()
+  const inEndSpy = sinon.spy()
+  const errSpy = sinon.spy()
+
+  const cmd1 = new Promise(r => r(string))
+  const cmd2 = {
+    stdin: {
+      write: inWriteSpy,
+      end: inEndSpy,
+    },
+    stderr: {
+      on: errSpy,
+    },
+    stdout: {
+      on: (x, f) => {
+        if (x === "data") {
+          f(string)
+        }
+
+        if (x === "close") {
+          f()
+        }
+      },
+    },
+  }
+
+  const res1 = await pipe(cmd1)
+  const res2 = await pipe(cmd1, cmd2)
+
+  t.deepEqual(res1, await cmd1)
+  t.truthy(inWriteSpy.calledWith(string))
+  t.truthy(inEndSpy.called)
+  t.truthy(errSpy.called)
+  t.deepEqual(res2, string)
+})

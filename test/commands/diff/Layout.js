@@ -3,6 +3,7 @@ import React from "react"
 import {render} from "ink-testing-library"
 import sinon from "sinon"
 
+import * as us from "utils"
 import * as g from "git-utils"
 import Layout from "commands/diff/Layout"
 import * as u from "commands/diff/utils"
@@ -11,33 +12,41 @@ import * as r from "commands/diff/reducer"
 const delay = (n = 0) => new Promise(r => setTimeout(r, n))
 
 let gitStatusPorcelain
+let pipe
+let getPager
 let gitDiff
 
 test.beforeEach(() => {
   gitStatusPorcelain = sinon.stub(g, "gitStatusPorcelain")
+  getPager = sinon.stub(g, "getPager")
   gitDiff = sinon.stub(g, "gitDiff")
+  pipe = sinon.stub(us, "pipe")
 })
 
 test.afterEach(() => {
   gitStatusPorcelain.restore()
+  pipe.restore()
+  getPager.restore()
   gitDiff.restore()
 })
 
 test.serial("should update preview on selecting next file", async t => {
   gitStatusPorcelain.onCall(0).resolves("1 .M zbc\n")
-  gitDiff.onCall(0).resolves("@@ +0,7 -0,0 @@\n+ preview")
+  getPager.resolves(null)
+  gitDiff.resolves("")
+  pipe.onCall(0).resolves("@@ +0,7 -0,0 @@\n+ preview\n")
 
   gitStatusPorcelain.onCall(1).resolves("1 A. xcv\n")
-  gitDiff.onCall(1).resolves("@@ +0,8 -0,0 @@\n+ preview2")
+  pipe.onCall(1).resolves("@@ +0,8 -0,0 @@\n+ preview2\n")
 
   gitStatusPorcelain.onCall(2).resolves("? rty\n")
-  gitDiff.onCall(2).resolves("@@ +0,9 -0,0 @@\n+ preview3\n")
+  pipe.onCall(2).resolves("@@ +0,9 -0,0 @@\n+ preview3\n")
 
   const output = render(
     <Layout
       initialLines={["M zbc", "A xcv", "?? rty"]}
-      minHeight={5}
-      maxHeight={5}
+      minHeight={10}
+      maxHeight={10}
     />,
   )
 

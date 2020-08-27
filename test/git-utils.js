@@ -12,6 +12,7 @@ import {
   gitHasStagedFiles,
   gitLog,
   isGitRepo,
+  getPager,
 } from "git-utils"
 
 let spawnSpy
@@ -95,4 +96,22 @@ test.serial("should isGitRepo", async t => {
   t.deepEqual(cpExecSpy.lastCall.args[0], "git rev-parse --is-inside-work-tree")
   t.deepEqual(cpExecSpy.lastCall.args[1], {encoding: "utf8"})
   t.deepEqual(typeof cpExecSpy.lastCall.args[2], "function")
+})
+
+test.serial("should call getPager", async t => {
+  spawnSpy.onCall(0).returns({on: (_, f) => f()})
+  spawnSpy.onCall(1).returns({on: (_, f) => f("some-pager")})
+  spawnSpy.onCall(2).returns({on: (_, f) => f("delta")})
+  const pagerSpy = {on: sinon.spy()}
+  cpSpawnSpy.returns(pagerSpy)
+
+  const pager1 = await getPager()
+  const pager2 = await getPager()
+  const pager3 = await getPager()
+
+  t.truthy(spawnSpy.calledWith("git", ["config", "--get", "core.pager"]))
+  t.is(pager1, null)
+  t.is(pager2, null)
+  t.truthy(cpSpawnSpy.calledWith("delta", ["--color-only"]))
+  t.is(pager3, pagerSpy)
 })
