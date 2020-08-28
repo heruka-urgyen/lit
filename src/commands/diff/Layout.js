@@ -50,10 +50,10 @@ export default function Layout({initialLines, minHeight, maxHeight}) {
   const {width, preview, previewPosition, previousWidth, previewWidth} = state.diff
 
   useEffect(() => {
-    if (mode === "status") {
+    if (mode === "status" && lines[selected] != null) {
       showPreview(setPreview, lines[selected].split(" ").slice(-1)[0])
     }
-  }, [selected])
+  }, [selected, lines.length])
 
   useEffect(() => {
     if (mode === "status") {
