@@ -103,22 +103,6 @@ test.serial("should quit app on q", async t => {
   t.truthy(exit.called)
 })
 
-test.serial("should select items in status on j, k, arrows", t => {
-  const selectItem = sinon.spy()
-
-  handleInput({mode: "status", selectItem})("j", {})
-  t.is(selectItem.callCount, 1)
-
-  handleInput({mode: "status", selectItem})("k", {})
-  t.is(selectItem.callCount, 2)
-
-  handleInput({mode: "status", selectItem})("", {downArrow: true})
-  t.is(selectItem.callCount, 3)
-
-  handleInput({mode: "status", selectItem})("k", {upArrow: true})
-  t.is(selectItem.callCount, 4)
-})
-
 test.serial("should select all on a", t => {
   const toggleSelectAll = sinon.spy()
 
@@ -264,22 +248,6 @@ test.serial("should open git log on f", async t => {
   t.truthy(updateLog.calledWith(setLog))
   t.truthy(setMode.calledWith("log"))
   t.is(selectItem.callCount, 1)
-})
-
-test.serial("should select commints in log on j, k, arrows", t => {
-  const selectItem = sinon.spy()
-
-  handleInput({mode: "log", selectItem})("j", {})
-  t.is(selectItem.callCount, 1)
-
-  handleInput({mode: "log", selectItem})("k", {})
-  t.is(selectItem.callCount, 2)
-
-  handleInput({mode: "log", selectItem})("", {downArrow: true})
-  t.is(selectItem.callCount, 3)
-
-  handleInput({mode: "log", selectItem})("k", {upArrow: true})
-  t.is(selectItem.callCount, 4)
 })
 
 test.serial("should commit --fixup on enter in log", async t => {

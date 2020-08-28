@@ -54,9 +54,6 @@ export const updateLog = async update => {
   update(output.split("\n").slice(0, -1))
 }
 
-const selectDown = items => i => (i + 1) % items.length
-const selectUp = items => i => i > 0 ? i - 1 : items.length - 1
-
 export const handleInput = props => async (input, key) => {
   const {
     exit,
@@ -83,14 +80,6 @@ export const handleInput = props => async (input, key) => {
   }
 
   if (mode === "status") {
-    if (input === "j" || key.downArrow) {
-      selectItem(selectDown(lines))
-    }
-
-    if (input === "k" || key.upArrow) {
-      selectItem(selectUp(lines))
-    }
-
     if (input === "a") {
       toggleSelectAll()
     }
@@ -153,14 +142,6 @@ export const handleInput = props => async (input, key) => {
   if (mode === "log") {
     if (key.return) {
       commitFixup(log[selected], exit)
-    }
-
-    if (input === "j" || key.downArrow) {
-      selectItem(selectDown(log))
-    }
-
-    if (input === "k" || key.upArrow) {
-      selectItem(selectUp(log))
     }
   }
 }
