@@ -21,4 +21,6 @@ fs.promises.readdir("src/commands")
     }
 
     process.exit()
+  }).catch(_ => {
+    process.exit()
   })
