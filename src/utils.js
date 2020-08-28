@@ -75,3 +75,5 @@ export const setBgColor = color => str => {
     c => setFg(setBg(chalk.bold(c.content), color), `rgb(${c.fg})`),
   ).join("")
 }
+
+export const identity = _ => _

@@ -1,5 +1,6 @@
 import cp from "child_process"
 import {spawn} from "node-pty"
+import {identity} from "utils"
 
 export const runCmd = ({params = [], options}) => new Promise(res => {
   const buf = []
@@ -34,7 +35,6 @@ export const getPager = async () => {
   return null
 }
 
-const identity = _ => _
 const exec = (cmd, resolver = identity) => new Promise(
   (res, rej) => cp.exec(
     cmd,
