@@ -1,3 +1,7 @@
+import chalk from "chalk"
+import ansiToJson from "ansi-to-json"
+import colorize from "ink/build/colorize"
+
 const last = xs => xs[xs.length - 1]
 export const statusStrToList = str => str
   .split(/[\r\n]+/).slice(0, -1)
@@ -60,3 +64,14 @@ export const pipe = (x, y) => new Promise((res, rej) => {
     y.stdin.end()
   }).catch(rej)
 })
+
+export const setBgColor = color => str => {
+  const chunks = ansiToJson(str)
+  const set = x => (str, color) => colorize(str, color, x)
+  const setFg = set("foreground")
+  const setBg = set("background")
+
+  return chunks.map(
+    c => setFg(setBg(chalk.bold(c.content), color), `rgb(${c.fg})`),
+  ).join("")
+}
