@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 import process from "process"
 import readline from "readline"
 import chalk from "chalk"
@@ -7,6 +5,7 @@ import chalk from "chalk"
 import Selector from "components/Selector"
 import {isGitRepo, gitStatus} from "git-utils"
 import {statusStrToList, calculateListView} from "utils"
+import {selectedBackground} from "colors"
 
 export const getHint = () => {
   const {underline: u, bold: b, green, red, blue, yellow} = chalk
@@ -29,7 +28,9 @@ export const getHint = () => {
 
 export const preRender = hint => lines => maxHeight => minHeight => {
   const {items} = calculateListView(lines, maxHeight, 0)
-  const linesToRender = items.map((el, i) => Selector({isSelected: i === 0, el}))
+  const linesToRender = items.map(
+    (el, i) => Selector({isSelected: i === 0, backgroundColor: selectedBackground, el}),
+  )
   const view = ["", hint, "", ...linesToRender, ""]
   const spaces = "\n".repeat(Math.max(0, 3 + minHeight - view.length))
 

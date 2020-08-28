@@ -28,6 +28,7 @@ module.exports = {
     "operator-linebreak": ["error", "after"],
     "operator-assignment": 0,
     "import/no-extraneous-dependencies": ["error", {devDependencies: true}],
+    "import/prefer-default-export": 0,
     "no-unused-vars": ["error", {
       vars: "all",
       args: "after-used",

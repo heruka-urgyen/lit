@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import sliceAnsi from "slice-ansi"
 import ansiToJson from "ansi-to-json"
 

@@ -1,5 +1,3 @@
-/* eslint-disable import/prefer-default-export */
-
 const last = xs => xs[xs.length - 1]
 export const statusStrToList = str => str
   .split(/[\r\n]+/).slice(0, -1)
