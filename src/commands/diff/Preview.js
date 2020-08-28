@@ -5,11 +5,11 @@ import {Box, Text} from "ink"
 import {calculatePreviewWindow} from "./utils"
 
 export default function Preview({preview, width, height, previewPosition}) {
-  const lines = calculatePreviewWindow(preview, width, height, previewPosition)
-
-  if (preview.length === 0) {
+  if (preview.length === 0 || width === 0) {
     return <Box />
   }
+
+  const lines = calculatePreviewWindow(preview, width, height, previewPosition)
 
   return (
     <Box flexDirection="column">
