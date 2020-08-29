@@ -13,6 +13,7 @@
     "blt": "npm run build && npm run test && npm run lint-src",
     "lt": "npm run test && npm run lint-test",
     "status": "node lit-cli.js status",
+    "log": "node lit-cli.js log",
     "diff": "node lit-cli.js diff",
     "build": "node build.js",
     "dev": "concurrently --raw 'nodemon --watch src --exec npm run blt' 'nodemon --watch test --exec npm run lt'",
