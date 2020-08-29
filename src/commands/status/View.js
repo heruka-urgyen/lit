@@ -3,6 +3,7 @@ import {Box, useApp, useInput} from "ink"
 import chalk from "chalk"
 
 import Selectable from "components/Selectable"
+import Log from "commands/log/View"
 
 import {identity} from "utils"
 import {runCommand, commit, commitAmend, commitFixup, updateLog, handleInput} from "./utils"
@@ -41,12 +42,11 @@ export default function Status({state, actions, minHeight, maxHeight}) {
   if (mode === "log") {
     return (
       <Box paddingTop={1}>
-        <Selectable
+        <Log
+          actions={{selectItem}}
+          state={{data: log, selected}}
           minHeight={minHeight}
           maxHeight={maxHeight}
-          data={log}
-          selected={selected}
-          selectItem={selectItem}
         />
       </Box>
     )
