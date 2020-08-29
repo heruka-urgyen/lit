@@ -1,6 +1,7 @@
 import process from "process"
 import readline from "readline"
 import chalk from "chalk"
+import sliceAnsi from "slice-ansi"
 
 import Selector from "components/Selector"
 import {isGitRepo, gitStatus} from "git-utils"
@@ -28,9 +29,10 @@ export const getHint = () => {
 
 export const preRender = hint => lines => maxHeight => minHeight => {
   const {items} = calculateListView(lines, maxHeight, 0)
-  const linesToRender = items.map(
-    (el, i) => Selector({isSelected: i === 0, backgroundColor: selectedBackground, el}),
-  )
+  const linesToRender = items
+    .map((el, i) => Selector({isSelected: i === 0, backgroundColor: selectedBackground, el}))
+    .map(el => sliceAnsi(el, 0, process.stdout.columns - 1))
+
   const view = ["", hint, "", ...linesToRender, ""]
   const spaces = "\n".repeat(Math.max(0, 3 + minHeight - view.length))
 

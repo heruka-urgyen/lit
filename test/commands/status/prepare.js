@@ -1,6 +1,4 @@
 import test from "ava"
-import {stdout} from "test-console"
-import stripAnsi from "strip-ansi"
 import sinon from "sinon"
 
 import {getHint, preRender, getData} from "commands/status/prepare"
@@ -19,9 +17,12 @@ test("should return hint", async t => {
 })
 
 test("should pre-render view", async t => {
-  const output = stdout.inspectSync(() => {
-    preRender(getHint())(["M filename"])(20)(0)
-  })
+  const stdout = sinon.stub(process.stdout)
+  const write = sinon.spy()
+  stdout.columns = 30
+  stdout.write = write
+
+  preRender(getHint())(["M filename"])(20)(0)
 
   const res = [
     "",
@@ -33,7 +34,7 @@ test("should pre-render view", async t => {
     "",
   ].join("\n")
 
-  t.deepEqual(stripAnsi(output[0]), res)
+  t.truthy(write.calledWith(res))
 })
 
 test("should get data", async t => {
