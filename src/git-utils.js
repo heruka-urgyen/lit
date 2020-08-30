@@ -14,6 +14,9 @@ export const gitStatus = () => runCmd({
   params: ["-c", "color.ui=always", "status", "-s", "-u"],
 })
 
+export const gitCheckout =
+  (params = []) => cp.spawn("git", ["checkout", ...params], {stdio: "inherit"})
+
 export const gitCommit =
   (params = []) => cp.spawn("git", ["commit", ...params], {stdio: "inherit"})
 

@@ -13,6 +13,7 @@ import {
   gitLog,
   isGitRepo,
   getPager,
+  gitCheckout,
 } from "git-utils"
 
 let spawnSpy
@@ -114,4 +115,10 @@ test.serial("should call getPager", async t => {
   t.is(pager2, null)
   t.truthy(cpSpawnSpy.calledWith("delta", ["--color-only"]))
   t.is(pager3, pagerSpy)
+})
+
+test.serial("should gitCheckout", async t => {
+  await gitCheckout(["123bc50"])
+
+  t.truthy(cpSpawnSpy.calledWith("git", ["checkout", "123bc50"], {stdio: "inherit"}))
 })
