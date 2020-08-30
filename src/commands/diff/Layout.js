@@ -10,9 +10,9 @@ import Status from "commands/status/View"
 
 import Preview from "./Preview"
 import reducer, {getActions} from "./reducer"
-import {showPreview, calcuateScrollPosition, resizePreview} from "./utils"
+import {calcuateScrollPosition, resizePreview} from "./utils"
 
-export default function Layout({initialLines, minHeight, maxHeight}) {
+export default function Layout({initialLines, minHeight, maxHeight, showPreview}) {
   const {stdout} = useStdout()
   const screenWidth = stdout.columns
   const longestName = Math.max(...initialLines.map(x => stripAnsi(x).length))
@@ -115,4 +115,5 @@ Layout.propTypes = {
   initialLines: PropTypes.arrayOf(PropTypes.string).isRequired,
   minHeight: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
+  showPreview: PropTypes.func.isRequired,
 }

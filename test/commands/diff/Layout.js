@@ -47,6 +47,7 @@ test.serial("should update preview on selecting next file", async t => {
       initialLines={["M zbc", "A xcv", "?? rty"]}
       minHeight={10}
       maxHeight={10}
+      showPreview={u.showPreview}
     />,
   )
 
@@ -87,6 +88,7 @@ test.serial("should show preview and resize preview window", async t => {
       initialLines={["M zbc", "A xcv", "?? rty"]}
       minHeight={5}
       maxHeight={5}
+      showPreview={showPreviewStub}
     />,
   )
   await delay()
@@ -131,6 +133,7 @@ test.serial("should scroll preview", async t => {
       initialLines={["M zbc", "A xcv", "?? rty"]}
       minHeight={0}
       maxHeight={0}
+      showPreview={showPreviewStub}
     />,
   )
 

@@ -5,6 +5,7 @@ import cliCursor from "cli-cursor"
 import chalk from "chalk"
 
 import {getData, preRender, getHint} from "commands/status/prepare"
+import {showPreview} from "./utils"
 
 (async () => {
   try {
@@ -38,6 +39,7 @@ import {getData, preRender, getHint} from "commands/status/prepare"
         initialLines={data}
         minHeight={minHeight}
         maxHeight={maxHeight}
+        showPreview={showPreview}
       />,
     )
   } catch (e) {
