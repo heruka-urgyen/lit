@@ -14,6 +14,7 @@ import {
   isGitRepo,
   getPager,
   gitCheckout,
+  gitRebase,
 } from "git-utils"
 
 let spawnSpy
@@ -121,4 +122,14 @@ test.serial("should gitCheckout", async t => {
   await gitCheckout(["123bc50"])
 
   t.truthy(cpSpawnSpy.calledWith("git", ["checkout", "123bc50"], {stdio: "inherit"}))
+})
+
+test.serial("should gitRebase", async t => {
+  await gitRebase(["--interactive", "123bc50"])
+
+  t.truthy(cpSpawnSpy.calledWith(
+    "git",
+    ["rebase", "--interactive", "123bc50"],
+    {stdio: "inherit"},
+  ))
 })

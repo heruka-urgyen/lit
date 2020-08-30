@@ -9,7 +9,7 @@ test("should return hint", async t => {
 
   const res = [
     " q quit",
-    " o checkout",
+    " o checkout | r rebase",
   ].join("\n")
 
   t.deepEqual(hint, res)
@@ -26,7 +26,7 @@ test("should pre-render view", async t => {
   const res = [
     "",
     " q quit",
-    " o checkout",
+    " o checkout | r rebase",
     "",
     " ❯ 123fab0 - commit msg (2 hours ago) <author>",
     "",
