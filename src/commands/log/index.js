@@ -15,8 +15,8 @@ import {getData, preRender, getHint, getComponent} from "./prepare"
       process.exit()
     }
 
-    const minHeight = process.stdout.rows - 6
-    const maxHeight = process.stdout.rows - 6
+    const minHeight = process.stdout.rows - 7
+    const maxHeight = process.stdout.rows - 7
     preRender(getHint())(data)(maxHeight)(minHeight)
 
     const Log = await getComponent()

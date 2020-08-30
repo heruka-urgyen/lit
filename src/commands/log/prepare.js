@@ -16,12 +16,14 @@ export const getData = async () => {
 }
 
 export const getHint = () => {
-  const {underline: u, bold: b, yellow} = chalk
+  const {underline: u, bold: b, yellow, red} = chalk
   const hint1 = [
-    ` ${u(b(yellow("q")))} quit `,
+    ` ${u(b(yellow("q")))} quit`,
   ].join(" | ")
 
-  const hint2 = ""
+  const hint2 = [
+    ` ${u(b(red("o")))} checkout`,
+  ].join(" | ")
 
   return [hint1, hint2].join("\n")
 }
@@ -32,7 +34,7 @@ export const preRender = hint => lines => maxHeight => minHeight => {
     .map((el, i) => Selector({isSelected: i === 0, backgroundColor: selectedBackground, el}))
     .map(el => sliceAnsi(el, 0, process.stdout.columns - 1))
 
-  const view = ["", hint, ...linesToRender, ""]
+  const view = ["", hint, "", ...linesToRender, ""]
   const spaces = "\n".repeat(Math.max(0, 3 + minHeight - view.length))
 
   process.stdout.write(

@@ -3,14 +3,21 @@ import PropTypes from "prop-types"
 import {Box, useApp, useInput} from "ink"
 
 import Selectable from "components/Selectable"
+import {gitCheckout} from "git-utils"
+import {parseCommitHash} from "./utils"
 
 export default function Log({state, actions, minHeight, maxHeight}) {
   const {data, selected} = state
   const {selectItem} = actions
   const {exit} = useApp()
 
-  useInput((input) => {
+  useInput(async (input) => {
     if (input === "q") {
+      exit()
+    }
+
+    if (input === "o") {
+      await gitCheckout([parseCommitHash(data[selected])])
       exit()
     }
   })
