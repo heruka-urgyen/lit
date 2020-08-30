@@ -23,6 +23,7 @@ export const getHint = () => {
 
   const hint2 = [
     ` ${u(b(red("o")))} checkout`,
+    `${u(b(red("r")))} rebase`,
   ].join(" | ")
 
   return [hint1, hint2].join("\n")

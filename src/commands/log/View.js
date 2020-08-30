@@ -3,7 +3,7 @@ import PropTypes from "prop-types"
 import {Box, useApp, useInput} from "ink"
 
 import Selectable from "components/Selectable"
-import {gitCheckout} from "git-utils"
+import {gitCheckout, gitRebase} from "git-utils"
 import {parseCommitHash} from "./utils"
 
 export default function Log({state, actions, minHeight, maxHeight}) {
@@ -18,6 +18,11 @@ export default function Log({state, actions, minHeight, maxHeight}) {
 
     if (input === "o") {
       await gitCheckout([parseCommitHash(data[selected])])
+      exit()
+    }
+
+    if (input === "r") {
+      await gitRebase(["--interactive", parseCommitHash(data[selected])])
       exit()
     }
   })
