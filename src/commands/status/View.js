@@ -3,7 +3,7 @@ import {Box, useApp, useInput} from "ink"
 import chalk from "chalk"
 
 import Selectable from "components/Selectable"
-import Log from "commands/log/View"
+import Log from "commands/log/Log"
 
 import {identity} from "utils"
 import {runCommand, commit, commitAmend, commitFixup, updateLog, handleInput} from "./utils"

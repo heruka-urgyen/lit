@@ -1,52 +1,65 @@
-import React from "react"
+import React, {useEffect} from "react"
 import PropTypes from "prop-types"
-import {Box, useApp, useInput} from "ink"
+import {useApp, useInput} from "ink"
 
-import Selectable from "components/Selectable"
 import {gitCheckout, gitRebase} from "git-utils"
-import {parseCommitHash} from "./utils"
+import Layout from "commands/diff/Layout"
 
-export default function Log({state, actions, minHeight, maxHeight}) {
-  const {data, selected} = state
-  const {selectItem} = actions
+import {getCommitFiles, showPreview, handleInput} from "./log-utils"
+import Log from "./Log"
+
+export default function LogWrapper({state, actions, minHeight, maxHeight}) {
+  const {data, selected, mode, files} = state
+  const {setMode, setFiles} = actions
   const {exit} = useApp()
 
-  useInput(async (input) => {
-    if (input === "q") {
-      exit()
+  useEffect(() => {
+    if (mode === "diff") {
+      getCommitFiles(data[selected]).then(setFiles)
     }
+  }, [mode])
 
-    if (input === "o") {
-      await gitCheckout([parseCommitHash(data[selected])])
-      exit()
-    }
+  useInput(handleInput({
+    exit,
+    gitCheckout,
+    gitRebase,
+    commit: data[selected],
+    mode,
+    setMode,
+    setFiles,
+  }))
 
-    if (input === "r") {
-      await gitRebase(["--interactive", parseCommitHash(data[selected])])
-      exit()
-    }
-  })
-
-  return (
-    <Box>
-      <Selectable
+  if (mode === "diff" && files.length > 0) {
+    return (
+      <Layout
+        initialLines={files}
         minHeight={minHeight}
         maxHeight={maxHeight}
-        data={data}
-        selected={selected}
-        selectItem={selectItem}
+        showPreview={showPreview(data[selected])}
       />
-    </Box>
+    )
+  }
+
+  return (
+    <Log
+      minHeight={minHeight}
+      maxHeight={maxHeight}
+      state={state}
+      actions={actions}
+    />
   )
 }
 
-Log.propTypes = {
+LogWrapper.propTypes = {
   state: PropTypes.shape({
     selected: PropTypes.number.isRequired,
     data: PropTypes.arrayOf(PropTypes.string).isRequired,
+    mode: PropTypes.string.isRequired,
+    files: PropTypes.arrayOf(PropTypes.string).isRequired,
   }).isRequired,
   actions: PropTypes.shape({
-    selectItem: PropTypes.func.isRequired,
+    setMode: PropTypes.func.isRequired,
+    setFiles: PropTypes.func.isRequired,
   }).isRequired,
   minHeight: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,

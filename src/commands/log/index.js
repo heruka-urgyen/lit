@@ -25,6 +25,8 @@ import {getData, preRender, getHint, getComponent} from "./prepare"
       const initialState = {
         selected: 0,
         data,
+        mode: "log",
+        files: [],
       }
 
       const [state, dispatch] = useReducer(reducer, initialState)

@@ -63,6 +63,12 @@ const sp = (cmd, params) => new Promise(
   },
 )
 
+export const gitShow =
+  params => sp("git", ["show", "--color=always", ...params])
+export const gitCommittedFiles = params => sp(
+  "git",
+  ["diff-tree", "--no-commit-id", "--name-only", "-r", "--root", ...params],
+)
 export const gitDiff = params => sp("git", ["diff", "--color=always", ...params])
 export const gitStatusPorcelain = file => exec(`git status --porcelain=2 ${file}`)
 

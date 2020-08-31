@@ -9,17 +9,35 @@ export const handlers = {
       selected: payload(s.selected),
     }
   },
+  setMode: (s, {payload}) => {
+    return {
+      ...s,
+      mode: payload,
+    }
+  },
+  setFiles: (s, {payload}) => {
+    return {
+      ...s,
+      files: payload,
+    }
+  },
 }
 
 export const getActions = dispatch => {
   const [
     selectItem,
+    setMode,
+    setFiles,
   ] = [
     "selectItem",
+    "setMode",
+    "setFiles",
   ].map(dispatchAction(dispatch))
 
   return {
     selectItem,
+    setMode,
+    setFiles,
   }
 }
 

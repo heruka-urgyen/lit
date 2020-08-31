@@ -19,6 +19,8 @@ export const getHint = () => {
   const {underline: u, bold: b, yellow, red} = chalk
   const hint1 = [
     ` ${u(b(yellow("q")))} quit`,
+    `${u(b(yellow("l")))} commit diff`,
+    `${u(b(yellow("b")))} back to log`,
   ].join(" | ")
 
   const hint2 = [
