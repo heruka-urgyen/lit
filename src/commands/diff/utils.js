@@ -16,6 +16,8 @@ export const showPreview = async (update, file) => {
         pipe(gitDiff(["--no-index", "/dev/null", file]), pager).then(update)
       } else if (y === "M." || y === "A.") {
         pipe(gitDiff(["--staged", file]), pager).then(update)
+      } else if (y === ".D") {
+        pipe(gitDiff(["HEAD", "--", file]), pager).then(update)
       } else {
         pipe(gitDiff([file]), pager).then(update)
       }

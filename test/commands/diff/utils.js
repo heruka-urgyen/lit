@@ -87,6 +87,17 @@ test.serial("should show preview for unstaged files", async t => {
   t.truthy(update.calledWith(diff))
 })
 
+test.serial("should show preview for deleted files", async t => {
+  gitStatusPorcelain.resolves(`1 .D ${file}\n`)
+  gitDiff.resolves(diff)
+  getPager.resolves(null)
+  pipe.resolves(diff)
+
+  showPreview(update, file)
+  await delay()
+  t.truthy(update.calledWith(diff))
+})
+
 testProp.serial(
   "should scroll preview up and down and stay in preview boundaries",
   [
