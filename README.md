@@ -32,5 +32,16 @@ When focused, navigation keys scroll the diff.
 
 ![diff-image](images/diff.png)
 
+### Log
+Usage: `lit log`
+
+Interactive git log that allows inspecting diffs for each file in commit and simplifies checkout and interactive rebase.
+Open diff view for committed files with `l` or `return`.
+Go back to log with `b` or `backspace`.
+Checkout commit with `o`.
+Begin interactive rebase of commit with `r`.
+
+![log-image](images/log.png)
+
 ## License
 GPL-3.0
