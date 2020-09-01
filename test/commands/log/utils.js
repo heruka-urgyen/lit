@@ -85,8 +85,7 @@ testProp.serial(
     pipeStub.resolves(diff)
 
     await showPreview(commit)(updateSpy, file)
-
-    t.truthy(gitShowStub.calledWith([hash, file]))
+    t.truthy(gitShowStub.calledWith([hash, "--", file]))
     t.truthy(updateSpy.calledWith(diff))
   },
 )

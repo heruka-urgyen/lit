@@ -9,7 +9,7 @@ export const getCommitFiles =
 
 export const showPreview = commit => async (update, file) => {
   const pager = await getPager()
-  pipe(gitShow([parseCommitHash(commit), file]), pager).then(update)
+  pipe(gitShow([parseCommitHash(commit), "--", file]), pager).then(update)
 }
 
 export const handleInput = props => async (input, key) => {
