@@ -48,19 +48,20 @@ testProp.serial(
     fc.base64String(1),
     fc.base64String(1),
     fc.base64String(1),
+    fc.base64String(1),
   ],
-  async (t, hash, msg, timestamp, author, file1, file2) => {
+  async (t, hash, msg, timestamp, author, file1, file2, file3) => {
     const statusStrToListStub = sinon.stub(u, "statusStrToList")
     const gitCommittedFilesStub = sinon.stub(gu, "gitCommittedFiles")
     const commit = `${hash} - ${msg} (${timestamp} time ago) <${author}>`
-    const filesStr = [file1, file2].join("\n")
+    const filesStr = `M\t${file1}\nD\t${file2}\nA\t${file3}`
 
     gitCommittedFilesStub.resolves(filesStr)
 
     await getCommitFiles(commit)
 
     t.truthy(gitCommittedFilesStub.calledWith([hash]))
-    t.truthy(statusStrToListStub.calledWith(filesStr))
+    t.truthy(statusStrToListStub.calledWith(`M ${file1}\nD ${file2}\nA ${file3}`))
 
     statusStrToListStub.restore()
     gitCommittedFilesStub.restore()
