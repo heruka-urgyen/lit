@@ -1,12 +1,12 @@
 import process from "process"
-import chalk from "chalk"
 import readline from "readline"
 import sliceAnsi from "slice-ansi"
 
 import Selector from "components/Selector"
 import {isGitRepo, gitLog} from "git-utils"
-import {calculateListView} from "utils"
+import {renderHint, calculateListView} from "utils"
 import {selectedBackground} from "colors"
+import {logHint as lh} from "hints"
 
 export const getData = async () => {
   await isGitRepo()
@@ -16,19 +16,13 @@ export const getData = async () => {
 }
 
 export const getHint = () => {
-  const {underline: u, bold: b, yellow, red} = chalk
-  const hint1 = [
-    ` ${u(b(yellow("q")))} quit`,
-    `${u(b(yellow("l")))} commit diff`,
-    `${u(b(yellow("b")))} back to log`,
-  ].join(" | ")
+  const style = {marginLeft: 1, marginTop: 1, marginBottom: 1}
+  const {quit, commitDiff, backToLog, checkout, rebase} = lh
 
-  const hint2 = [
-    ` ${u(b(red("o")))} checkout`,
-    `${u(b(red("r")))} rebase`,
-  ].join(" | ")
-
-  return [hint1, hint2].join("\n")
+  return renderHint(style)([
+    [quit, commitDiff, backToLog],
+    [checkout, rebase],
+  ])
 }
 
 export const preRender = hint => lines => maxHeight => minHeight => {
@@ -37,8 +31,8 @@ export const preRender = hint => lines => maxHeight => minHeight => {
     .map((el, i) => Selector({isSelected: i === 0, backgroundColor: selectedBackground, el}))
     .map(el => sliceAnsi(el, 0, process.stdout.columns - 1))
 
-  const view = ["", hint, "", ...linesToRender, ""]
-  const spaces = "\n".repeat(Math.max(0, 3 + minHeight - view.length))
+  const view = [hint, ...linesToRender, ""]
+  const spaces = "\n".repeat(Math.max(0, 1 + minHeight - view.length))
 
   process.stdout.write(
     [...view, spaces].join("\n"),

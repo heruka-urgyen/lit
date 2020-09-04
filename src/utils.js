@@ -77,3 +77,17 @@ export const setBgColor = color => str => {
 }
 
 export const identity = _ => _
+
+const applyHorizonralMargin = m => "\n".repeat(m)
+const applyVerticalMargin = m => " ".repeat(m)
+const renderHintItem = o => `${o.keys.map(k => o.style(k)).join(" ")} ${o.hint}`
+const renderHintLine = l => l.map(renderHintItem).join(" | ")
+const box = style => lines => {
+  const {marginLeft = 0, marginTop = 0, marginRight = 0, marginBottom = 0} = style
+  const [ml, mr] = [marginLeft, marginRight].map(applyVerticalMargin)
+  const [mt, mb] = [marginTop, marginBottom].map(applyHorizonralMargin)
+
+  return (mt + lines.map(l => ml + renderHintLine(l) + mr).join("\n") + mb)
+}
+
+export const renderHint = box

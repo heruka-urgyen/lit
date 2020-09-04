@@ -2,14 +2,15 @@ import process from "process"
 
 import React from "react"
 import cliCursor from "cli-cursor"
-import chalk from "chalk"
 
-import {getData, preRender, getHint} from "commands/status/prepare"
+import {renderHint} from "utils"
+import {diffHint as df} from "hints"
+import {getData, preRender} from "commands/status/prepare"
+
 import {showPreview} from "./utils"
 
 (async () => {
   try {
-    const {underline: u, bold: b, yellow} = chalk
     cliCursor.hide()
 
     const data = await getData()
@@ -20,14 +21,17 @@ import {showPreview} from "./utils"
 
     const minHeight = process.stdout.rows - 6
     const maxHeight = process.stdout.rows - 6
-    const [h1, h2] = getHint().split("\n")
-    const hint = [
-      h1.split(" | ").concat([
-        `${b(u(yellow("v")))} toggle preview`,
-        `${b(u(yellow("h")))} ${b(u(yellow("l")))} resize`,
-      ]).join(" | "),
-      h2,
-    ].join("\n")
+
+    const style = {marginLeft: 1, marginTop: 1, marginBottom: 1}
+    const {
+      quit, toggleAll, togglePreview, resize,
+      stage, reset, checkout, commit, amend, fixup,
+    } = df
+
+    const hint = renderHint(style)([
+      [quit, toggleAll, togglePreview, resize],
+      [stage, reset, checkout, commit, amend, fixup],
+    ])
 
     preRender(hint)(data)(maxHeight)(minHeight)
 

@@ -1,30 +1,21 @@
 import process from "process"
 import readline from "readline"
-import chalk from "chalk"
 import sliceAnsi from "slice-ansi"
 
 import Selector from "components/Selector"
 import {isGitRepo, gitStatus} from "git-utils"
-import {statusStrToList, calculateListView} from "utils"
+import {renderHint, statusStrToList, calculateListView} from "utils"
 import {selectedBackground} from "colors"
+import {statusHint as sh} from "hints"
 
 export const getHint = () => {
-  const {underline: u, bold: b, green, red, blue, yellow} = chalk
-  const hint1 = [
-    ` ${u(b(yellow("q")))} quit `,
-    `${u(b(yellow("a")))} toggle all`,
-  ].join(" | ")
+  const style = {marginLeft: 1, marginTop: 1, marginBottom: 1}
+  const {quit, toggleAll, stage, reset, checkout, commit, amend, fixup} = sh
 
-  const hint2 = [
-    ` ${u(b(green("s")))} stage`,
-    `${u(b(red("r")))} reset`,
-    `${u(b(red("o")))} checkout`,
-    `${u(b(blue("c")))} commit`,
-    `${u(b(blue("m")))} amend`,
-    `${u(b(blue("f")))} fixup`,
-  ].join(" | ")
-
-  return [hint1, hint2].join("\n")
+  return renderHint(style)([
+    [quit, toggleAll],
+    [stage, reset, checkout, commit, amend, fixup],
+  ])
 }
 
 export const preRender = hint => lines => maxHeight => minHeight => {
@@ -33,13 +24,10 @@ export const preRender = hint => lines => maxHeight => minHeight => {
     .map((el, i) => Selector({isSelected: i === 0, backgroundColor: selectedBackground, el}))
     .map(el => sliceAnsi(el, 0, process.stdout.columns - 1))
 
-  const view = ["", hint, "", ...linesToRender, ""]
-  const spaces = "\n".repeat(Math.max(0, 3 + minHeight - view.length))
+  const view = [hint, ...linesToRender, ""]
+  const spaces = "\n".repeat(Math.max(0, 1 + minHeight - view.length))
 
-  process.stdout.write(
-    [...view, spaces].join("\n"),
-  )
-
+  process.stdout.write([...view, spaces].join("\n"))
   readline.moveCursor(process.stdout, -items[0].length, -(items.length + spaces.length + 2))
 }
 

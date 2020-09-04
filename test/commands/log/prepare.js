@@ -8,8 +8,10 @@ test("should return hint", async t => {
   const hint = getHint()
 
   const res = [
+    "",
     " q quit | l commit diff | b back to log",
     " o checkout | r rebase",
+    "",
   ].join("\n")
 
   t.deepEqual(hint, res)
