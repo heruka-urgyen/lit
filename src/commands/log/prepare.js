@@ -38,7 +38,7 @@ export const preRender = hint => lines => maxHeight => minHeight => {
     [...view, spaces].join("\n"),
   )
 
-  readline.moveCursor(process.stdout, -items[0].length, -(items.length + spaces.length + 1))
+  readline.moveCursor(process.stdout, -items[0].length, -(view.length + spaces.length + 3))
 }
 
 export const getComponent = () => import("./View.js").then(x => x.default)

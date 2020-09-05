@@ -28,7 +28,7 @@ export const preRender = hint => lines => maxHeight => minHeight => {
   const spaces = "\n".repeat(Math.max(0, 1 + minHeight - view.length))
 
   process.stdout.write([...view, spaces].join("\n"))
-  readline.moveCursor(process.stdout, -items[0].length, -(items.length + spaces.length + 2))
+  readline.moveCursor(process.stdout, -items[0].length, -(view.length + spaces.length + 3))
 }
 
 export const getData = async () => {

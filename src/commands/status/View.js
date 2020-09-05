@@ -41,7 +41,7 @@ export default function Status({state, actions, minHeight, maxHeight}) {
 
   if (mode === "log") {
     return (
-      <Box paddingTop={1}>
+      <Box>
         <Log
           actions={{selectItem}}
           state={{data: log, selected}}
@@ -54,7 +54,7 @@ export default function Status({state, actions, minHeight, maxHeight}) {
 
   if (mode === "status" || mode === "preview") {
     return (
-      <Box paddingTop={1}>
+      <Box>
         <Selectable
           minHeight={minHeight}
           maxHeight={maxHeight}

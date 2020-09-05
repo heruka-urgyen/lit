@@ -80,12 +80,8 @@ export default function Layout({initialLines, minHeight, maxHeight, showPreview}
   })
 
   return (
-    <Box
-      height={width > 0 ? maxHeight : maxHeight + 1}
-      flexDirection="row"
-      paddingTop={1}
-    >
-      <Box width={`${100 - width}%`} marginTop={-1}>
+    <Box height={maxHeight} flexDirection="row">
+      <Box width={`${100 - width}%`}>
         <Status
           state={state.status}
           actions={statusActions}

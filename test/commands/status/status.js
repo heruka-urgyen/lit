@@ -48,7 +48,6 @@ test.serial("should render view", t => {
   )
 
   const res = [
-    "",
     " ❯ M filename",
     "   A filename2",
     "   ?? filename3",
@@ -68,45 +67,37 @@ test.serial("should react on key presses", async t => {
   const ARROW_DOWN = "\u001B[B"
 
   const res1 = [
-    "",
     " ❯ ?? filename2",
     "   M filename",
   ]
   const res2 = [
-    "",
     "   ?? filename2",
     " ❯ M filename",
   ]
   const res3 = [
-    "",
     " ❯ A filename2",
     "   M filename",
   ]
   const res5 = [
-    "",
     " ❯ 123qwe - commmit msg1",
     "   124qwe - commmit msg2",
     "   125qwe - commmit msg3",
   ]
   const res4 = [
-    "",
     "   123qwe - commmit msg1",
     " ❯ 124qwe - commmit msg2",
     "   125qwe - commmit msg3",
   ]
   const res6 = [
-    "",
     " ❯ ?? filename2",
     " ❯ M filename",
   ]
   const res7 = [
-    "",
     " ❯ M filename3",
     " ❯ A filename2",
     " ❯ M filename",
   ]
   const res8 = [
-    "",
     " ❯ M filename3",
     " ❯ ?? filename2",
     " ❯ M filename",

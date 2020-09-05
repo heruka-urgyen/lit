@@ -36,15 +36,18 @@ import {showPreview} from "./utils"
     preRender(hint)(data)(maxHeight)(minHeight)
 
     const Layout = await import("./Layout.js").then(x => x.default)
-    const {render} = await import("ink")
+    const {render, Box, Text} = await import("ink")
 
     render(
-      <Layout
-        initialLines={data}
-        minHeight={minHeight}
-        maxHeight={maxHeight}
-        showPreview={showPreview}
-      />,
+      <Box flexDirection="column">
+        <Text>{hint}</Text>
+        <Layout
+          initialLines={data}
+          minHeight={minHeight}
+          maxHeight={maxHeight}
+          showPreview={showPreview}
+        />
+      </Box>,
     )
   } catch (e) {
     /* eslint-disable no-console */

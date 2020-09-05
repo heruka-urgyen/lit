@@ -20,6 +20,7 @@ import {getData, preRender, getHint, getComponent} from "./prepare"
     preRender(getHint())(data)(maxHeight)(minHeight)
 
     const Log = await getComponent()
+    const {render, Box, Text} = await import("ink")
 
     const App = () => {
       const initialState = {
@@ -33,16 +34,17 @@ import {getData, preRender, getHint, getComponent} from "./prepare"
       const actions = getActions(dispatch)
 
       return (
-        <Log
-          state={state}
-          actions={actions}
-          minHeight={minHeight}
-          maxHeight={maxHeight}
-        />
+        <Box flexDirection="column">
+          <Text>{getHint()}</Text>
+          <Log
+            state={state}
+            actions={actions}
+            minHeight={minHeight}
+            maxHeight={maxHeight}
+          />
+        </Box>
       )
     }
-
-    const {render} = await import("ink")
 
     render(<App />)
   } catch (e) {

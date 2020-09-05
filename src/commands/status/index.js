@@ -16,10 +16,11 @@ import {getData, preRender, getHint, getComponent} from "./prepare"
     }
 
     const minHeight = 0
-    const maxHeight = process.stdout.rows - 8
+    const maxHeight = process.stdout.rows - 6
     preRender(getHint())(data)(maxHeight)(minHeight)
 
     const Status = await getComponent()
+    const {render, Box, Text} = await import("ink")
 
     const App = () => {
       const initialState = {
@@ -34,16 +35,17 @@ import {getData, preRender, getHint, getComponent} from "./prepare"
       const actions = getActions(dispatch)
 
       return (
-        <Status
-          state={state}
-          actions={actions}
-          minHeight={minHeight}
-          maxHeight={maxHeight}
-        />
+        <Box flexDirection="column">
+          <Text>{getHint()}</Text>
+          <Status
+            state={state}
+            actions={actions}
+            minHeight={minHeight}
+            maxHeight={maxHeight}
+          />
+        </Box>
       )
     }
-
-    const {render} = await import("ink")
 
     render(<App />)
   } catch (e) {
