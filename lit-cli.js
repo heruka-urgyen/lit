@@ -3,9 +3,10 @@
 /* eslint-disable global-require */
 /* eslint-disable no-console */
 
+const fs = require("fs")
 const process = require("process")
 
-const getUsageMessage = () => "Usage: lit [--help] <command>"
+const getUsageMessage = () => "Usage: lit [--version] [--help] <command>"
 
 const printUsage = () => {
   console.log(getUsageMessage())
@@ -22,9 +23,24 @@ const printHelp = () => {
   `)
 }
 
+const showVersion = () => {
+  try {
+    const p = fs.readFileSync("./package.json", {encoding: "utf8"})
+    const version = p.match(/"version":\s"(.+)",/)[1]
+
+    console.log(version)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 const runCli = command => {
   if (!command || command === "--help") {
     return printHelp()
+  }
+
+  if (command === "--version") {
+    return showVersion()
   }
 
   if (command === "status") {
