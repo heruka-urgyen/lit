@@ -8,6 +8,11 @@ export const statusHint = {
     style: ub.yellow,
     hint: "quit ",
   },
+  back: {
+    keys: ["b"],
+    style: ub.yellow,
+    hint: "back to status",
+  },
   toggleAll: {
     keys: ["a"],
     style: ub.yellow,
@@ -47,15 +52,25 @@ export const statusHint = {
 
 export const diffHint = {
   ...statusHint,
-  togglePreview: {
+  showPreview: {
     keys: ["v"],
     style: ub.yellow,
-    hint: "toggle preview",
+    hint: "show preview",
+  },
+  hidePreview: {
+    keys: ["v"],
+    style: ub.yellow,
+    hint: "hide preview",
   },
   resize: {
     keys: ["h", "l"],
     style: ub.yellow,
     hint: "resize",
+  },
+  scrollPreview: {
+    keys: ["j", "k"],
+    style: ub.yellow,
+    hint: "scroll preview",
   },
 }
 
@@ -68,7 +83,7 @@ export const logHint = {
   commitDiff: {
     keys: ["l"],
     style: ub.yellow,
-    hint: "commit diff",
+    hint: "view commit diff",
   },
   backToLog: {
     keys: ["b"],

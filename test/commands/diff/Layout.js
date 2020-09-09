@@ -48,6 +48,7 @@ test.serial("should update preview on selecting next file", async t => {
       minHeight={10}
       maxHeight={10}
       showPreview={u.showPreview}
+      getHint={sinon.spy()}
     />,
   )
 
@@ -89,6 +90,7 @@ test.serial("should show preview and resize preview window", async t => {
       minHeight={5}
       maxHeight={5}
       showPreview={showPreviewStub}
+      getHint={sinon.spy()}
     />,
   )
   await delay()
@@ -134,6 +136,7 @@ test.serial("should scroll preview", async t => {
       minHeight={0}
       maxHeight={0}
       showPreview={showPreviewStub}
+      getHint={sinon.spy()}
     />,
   )
 

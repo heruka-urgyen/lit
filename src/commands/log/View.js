@@ -5,6 +5,7 @@ import {useApp, useInput} from "ink"
 import {gitCheckout, gitRebase} from "git-utils"
 import Layout from "commands/diff/Layout"
 
+import {getHint} from "./prepare"
 import {getCommitFiles, showPreview, handleInput} from "./log-utils"
 import Log from "./Log"
 
@@ -36,6 +37,7 @@ export default function LogWrapper({state, actions, minHeight, maxHeight}) {
         minHeight={minHeight}
         maxHeight={maxHeight}
         showPreview={showPreview(data[selected])}
+        getHint={getHint}
       />
     )
   }

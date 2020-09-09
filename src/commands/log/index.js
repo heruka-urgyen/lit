@@ -32,17 +32,29 @@ import {getData, preRender, getHint, getComponent} from "./prepare"
 
       const [state, dispatch] = useReducer(reducer, initialState)
       const actions = getActions(dispatch)
+      const hint = getHint()
+
+      if (state.mode === "log") {
+        return (
+          <Box flexDirection="column">
+            <Text>{hint}</Text>
+            <Log
+              state={state}
+              actions={actions}
+              minHeight={minHeight}
+              maxHeight={maxHeight}
+            />
+          </Box>
+        )
+      }
 
       return (
-        <Box flexDirection="column">
-          <Text>{getHint()}</Text>
-          <Log
-            state={state}
-            actions={actions}
-            minHeight={minHeight}
-            maxHeight={maxHeight}
-          />
-        </Box>
+        <Log
+          state={state}
+          actions={actions}
+          minHeight={minHeight}
+          maxHeight={maxHeight}
+        />
       )
     }
 

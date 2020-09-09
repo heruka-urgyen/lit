@@ -6,7 +6,7 @@ import Selector from "components/Selector"
 import {isGitRepo, gitLog} from "git-utils"
 import {renderHint, calculateListView} from "utils"
 import {selectedBackground} from "colors"
-import {logHint as lh} from "hints"
+import {logHint as lh, diffHint as dh} from "hints"
 
 export const getData = async () => {
   await isGitRepo()
@@ -15,12 +15,26 @@ export const getData = async () => {
   return data.split("\n").slice(0, -1)
 }
 
-export const getHint = () => {
+export const getHint = (mode) => {
   const style = {marginLeft: 1, marginTop: 1, marginBottom: 1}
   const {quit, commitDiff, backToLog, checkout, rebase} = lh
+  const {showPreview, hidePreview, scrollPreview, resize} = dh
+
+  if (mode === "status") {
+    return renderHint(style)([
+      [quit, backToLog],
+      [showPreview, resize],
+    ])
+  }
+
+  if (mode === "preview") {
+    return renderHint(style)([
+      [quit, hidePreview, scrollPreview],
+    ])
+  }
 
   return renderHint(style)([
-    [quit, commitDiff, backToLog],
+    [quit, commitDiff],
     [checkout, rebase],
   ])
 }

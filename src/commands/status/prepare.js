@@ -8,9 +8,15 @@ import {renderHint, statusStrToList, calculateListView} from "utils"
 import {selectedBackground} from "colors"
 import {statusHint as sh} from "hints"
 
-export const getHint = () => {
+export const getHint = (mode = "status") => {
   const style = {marginLeft: 1, marginTop: 1, marginBottom: 1}
-  const {quit, toggleAll, stage, reset, checkout, commit, amend, fixup} = sh
+  const {quit, back, toggleAll, stage, reset, checkout, commit, amend, fixup} = sh
+
+  if (mode === "log") {
+    return renderHint(style)([
+      [quit, back],
+    ])
+  }
 
   return renderHint(style)([
     [quit, toggleAll],

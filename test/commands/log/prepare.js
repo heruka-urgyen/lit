@@ -9,7 +9,7 @@ test("should return hint", async t => {
 
   const res = [
     "",
-    " q quit | l commit diff | b back to log",
+    " q quit | l view commit diff",
     " o checkout | r rebase",
     "",
   ].join("\n")
@@ -27,7 +27,7 @@ test("should pre-render view", async t => {
 
   const res = [
     "",
-    " q quit | l commit diff | b back to log",
+    " q quit | l view commit diff",
     " o checkout | r rebase",
     "",
     " ❯ 123fab0 - commit msg (2 hours ago) <author>",

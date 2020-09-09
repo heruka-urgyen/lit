@@ -143,5 +143,9 @@ export const handleInput = props => async (input, key) => {
     if (key.return) {
       commitFixup(log[selected], exit)
     }
+
+    if (input === "b") {
+      setMode("status")
+    }
   }
 }

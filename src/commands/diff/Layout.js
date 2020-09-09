@@ -1,6 +1,6 @@
 import React, {useReducer, useEffect} from "react"
 import PropTypes from "prop-types"
-import {Box, useInput, useStdout} from "ink"
+import {Box, Text, useInput, useStdout} from "ink"
 import stripAnsi from "strip-ansi"
 
 import {combineReducers} from "utils"
@@ -12,7 +12,7 @@ import Preview from "./Preview"
 import reducer, {getActions} from "./reducer"
 import {calcuateScrollPosition, resizePreview} from "./utils"
 
-export default function Layout({initialLines, minHeight, maxHeight, showPreview}) {
+export default function Layout({getHint, initialLines, minHeight, maxHeight, showPreview}) {
   const {stdout} = useStdout()
   const screenWidth = stdout.columns
   const longestName = Math.max(...initialLines.map(x => stripAnsi(x).length))
@@ -48,6 +48,7 @@ export default function Layout({initialLines, minHeight, maxHeight, showPreview}
 
   const {selected, lines, mode} = state.status
   const {width, preview, previewPosition, previousWidth, previewWidth} = state.diff
+  const hint = getHint(mode)
 
   useEffect(() => {
     if (mode === "status" && lines[selected] != null) {
@@ -80,28 +81,31 @@ export default function Layout({initialLines, minHeight, maxHeight, showPreview}
   })
 
   return (
-    <Box height={maxHeight} flexDirection="row">
-      <Box width={`${100 - width}%`}>
-        <Status
-          state={state.status}
-          actions={statusActions}
-          minHeight={minHeight}
-          maxHeight={maxHeight}
-        />
-      </Box>
-      <Box
-        display={width > 0 ? "flex" : "none"}
-        width={`${width}%`}
-        borderStyle="round"
-        borderColor={mode === "status" ? "grey" : "green"}
-        marginTop={-1}
-      >
-        <Preview
-          width={screenWidth * width * 0.01}
-          height={maxHeight}
-          previewPosition={previewPosition}
-          preview={preview}
-        />
+    <Box flexDirection="column">
+      <Text>{hint}</Text>
+      <Box height={maxHeight} flexDirection="row">
+        <Box width={`${100 - width}%`}>
+          <Status
+            state={state.status}
+            actions={statusActions}
+            minHeight={minHeight}
+            maxHeight={maxHeight}
+          />
+        </Box>
+        <Box
+          display={width > 0 ? "flex" : "none"}
+          width={`${width}%`}
+          borderStyle="round"
+          borderColor={mode === "status" ? "grey" : "green"}
+          marginTop={-1}
+        >
+          <Preview
+            width={screenWidth * width * 0.01}
+            height={maxHeight}
+            previewPosition={previewPosition}
+            preview={preview}
+          />
+        </Box>
       </Box>
     </Box>
   )
@@ -112,4 +116,5 @@ Layout.propTypes = {
   minHeight: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
   showPreview: PropTypes.func.isRequired,
+  getHint: PropTypes.func.isRequired,
 }

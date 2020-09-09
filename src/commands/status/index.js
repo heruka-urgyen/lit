@@ -36,12 +36,12 @@ import {getData, preRender, getHint, getComponent} from "./prepare"
 
       return (
         <Box flexDirection="column">
-          <Text>{getHint()}</Text>
+          <Text>{getHint(state.mode)}</Text>
           <Status
             state={state}
             actions={actions}
             minHeight={minHeight}
-            maxHeight={maxHeight}
+            maxHeight={state.mode === "status" ? maxHeight : maxHeight + 1}
           />
         </Box>
       )

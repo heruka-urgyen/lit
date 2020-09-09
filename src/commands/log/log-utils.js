@@ -45,12 +45,13 @@ export const handleInput = props => async (input, key) => {
   }
 
   if ((input === "l" || key.return) && mode === "log") {
+    await delay(0)
+    setFiles([])
     setMode("diff")
   }
 
   if ((input === "b" || key.backspace) && mode === "diff") {
     await delay(0)
-    setFiles([])
     setMode("log")
   }
 }
