@@ -91,3 +91,6 @@ const box = style => lines => {
 }
 
 export const renderHint = box
+export const getActions = handlers => dispatch => Object.keys(handlers).reduce(
+  (acc, x) => ({...acc, [x]: dispatchAction(dispatch)(x)}), {},
+)

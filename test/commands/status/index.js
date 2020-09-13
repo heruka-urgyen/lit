@@ -3,14 +3,18 @@ import sinon from "sinon"
 
 import p from "process"
 import * as g from "git-utils"
+import * as u from "utils"
 import {
+  preRender,
+  getData,
+  getHint,
   runCommand,
   commit,
   commitFixup,
   commitAmend,
   updateLog,
   handleInput,
-} from "commands/status/utils"
+} from "commands/status"
 
 const gs = sinon.stub(g)
 let pauseSpy
@@ -115,64 +119,64 @@ test.serial("should select all on a", t => {
 
 test.serial("should stage items on s", t => {
   const runCommand = sinon.spy()
-  const setLines = sinon.spy()
-  const lines = ["1", "2", "3"]
+  const setFiles = sinon.spy()
+  const files = ["1", "2", "3"]
 
   handleInput({
     mode: "status",
     allSelected: false,
     selected: 0,
-    lines,
-    setLines,
+    files,
+    setFiles,
     runCommand,
   })("s", {})
 
-  t.truthy(runCommand.calledWith("add", ["1"], setLines))
+  t.truthy(runCommand.calledWith("add", ["1"], setFiles))
 
   handleInput({
     mode: "status",
     allSelected: true,
-    lines,
-    setLines,
+    files,
+    setFiles,
     runCommand,
   })("s", {})
 
-  t.truthy(runCommand.calledWith("add", ["1", "2", "3"], setLines))
+  t.truthy(runCommand.calledWith("add", ["1", "2", "3"], setFiles))
 })
 
 test.serial("should unstage items on r", t => {
   const runCommand = sinon.spy()
-  const setLines = sinon.spy()
-  const lines = ["1", "2", "3"]
+  const setFiles = sinon.spy()
+  const files = ["1", "2", "3"]
 
   handleInput({
     mode: "status",
     allSelected: false,
     selected: 0,
-    lines,
-    setLines,
+    files,
+    setFiles,
     runCommand,
   })("r", {})
 
-  t.truthy(runCommand.calledWith("reset", ["1"], setLines))
+  t.truthy(runCommand.calledWith("reset", ["1"], setFiles))
 
   handleInput({
     mode: "status",
     allSelected: true,
-    lines,
-    setLines,
+    files,
+    setFiles,
     runCommand,
   })("r", {})
 
-  t.truthy(runCommand.calledWith("reset", ["1", "2", "3"], setLines))
+  t.truthy(runCommand.calledWith("reset", ["1", "2", "3"], setFiles))
 })
 
 test.serial("should checkout items on o", async t => {
   const runCommand = sinon.stub()
   const selectItem = sinon.spy()
-  const setLines = sinon.spy()
+  const setFiles = sinon.spy()
   const exit = sinon.spy()
-  const lines = ["1", "2", "3"]
+  const files = ["1", "2", "3"]
 
   runCommand.onCall(0).resolves(["2", "3"])
   runCommand.onCall(1).resolves([])
@@ -182,40 +186,40 @@ test.serial("should checkout items on o", async t => {
     mode: "status",
     allSelected: false,
     selected: 0,
-    lines,
-    setLines,
+    files,
+    setFiles,
     runCommand,
     selectItem,
   })("o", {})
 
-  t.truthy(runCommand.calledWith("checkout", ["1"], setLines))
+  t.truthy(runCommand.calledWith("checkout", ["1"], setFiles))
   t.truthy(selectItem.called)
 
   await handleInput({
     mode: "status",
     allSelected: false,
     selected: 0,
-    lines: [lines[0]],
-    setLines,
+    files: [files[0]],
+    setFiles,
     runCommand,
     selectItem,
     exit,
   })("o", {})
 
-  t.truthy(runCommand.calledWith("checkout", ["1"], setLines))
+  t.truthy(runCommand.calledWith("checkout", ["1"], setFiles))
   t.truthy(exit.called)
 
   await handleInput({
     mode: "status",
     allSelected: true,
-    lines,
-    setLines,
+    files,
+    setFiles,
     runCommand,
     selectItem,
     exit,
   })("o", {})
 
-  t.truthy(runCommand.calledWith("checkout", ["1", "2", "3"], setLines))
+  t.truthy(runCommand.calledWith("checkout", ["1", "2", "3"], setFiles))
   t.truthy(exit.called)
 })
 
@@ -259,4 +263,51 @@ test.serial("should commit --fixup on enter in log", async t => {
   await handleInput({mode: "log", commitFixup, exit, log, selected})("", {return: true})
 
   t.truthy(commitFixup.calledWith("1", exit))
+})
+
+test.serial("should return hint", async t => {
+  const hint = getHint()
+
+  const res = [
+    "",
+    " q quit  | a toggle all",
+    " s stage | r reset | o checkout | c commit | m amend | f fixup",
+    "",
+  ].join("\n")
+
+  t.deepEqual(hint, res)
+})
+
+test.serial("should pre-render view", async t => {
+  const stdout = sinon.stub(process.stdout)
+  const write = sinon.spy()
+  stdout.columns = 30
+  stdout.write = write
+
+  preRender(getHint())(["M filename"])(20)(0)
+
+  const res = [
+    "",
+    " q quit  | a toggle all",
+    " s stage | r reset | o checkout | c commit | m amend | f fixup",
+    "",
+    " ❯ M filename",
+    "",
+    "",
+  ].join("\n")
+
+  t.truthy(write.calledWith(res))
+})
+
+test.serial("should get data", async t => {
+  const statusStrToList = sinon.stub(u, "statusStrToList")
+  gs.gitStatus.resolves("status")
+
+  await getData()
+
+  t.truthy(gs.isGitRepo.called)
+  t.truthy(gs.gitStatus.called)
+  t.truthy(statusStrToList.calledWith("status"))
+
+  statusStrToList.restore()
 })

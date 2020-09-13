@@ -1,12 +1,6 @@
 import {testProp, fc} from "ava-fast-check"
 
-import {actionHandlers as handlers} from "commands/status/reducer"
-
-testProp("should set mode", [fc.string()], (t, mode) => {
-  const res = handlers.setMode({mode: "status"}, {payload: mode})
-
-  t.is(res.mode, mode)
-})
+import {handlers} from "reducers/status"
 
 testProp("should select item", [fc.nat(), fc.nat()], (t, item1, item2) => {
   const res1 = handlers.selectItem({selected: item1}, {payload: i => i + item2})
@@ -30,10 +24,10 @@ testProp("should set log", [fc.base64String(), fc.base64String()], (t, l1, l2) =
   t.is(res.log, l2)
 })
 
-testProp("should set lines", [fc.base64String(), fc.base64String()], (t, s1, s2) => {
-  const lines1 = s1.split(/./)
-  const lines2 = s2.split(/./)
-  const res = handlers.setLines({lines: lines1}, {payload: lines2})
+testProp("should set files", [fc.base64String(), fc.base64String()], (t, s1, s2) => {
+  const files1 = s1.split(/./)
+  const files2 = s2.split(/./)
+  const res = handlers.setFiles({files: files1}, {payload: files2})
 
-  t.deepEqual(res.lines, lines2)
+  t.deepEqual(res.files, files2)
 })

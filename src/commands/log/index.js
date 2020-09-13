@@ -1,67 +1,120 @@
 import process from "process"
+import readline from "readline"
+import sliceAnsi from "slice-ansi"
+import stripAnsi from "strip-ansi"
 
-import React, {useReducer} from "react"
-import cliCursor from "cli-cursor"
+import chalk from "chalk"
+import {renderHint, calculateListView, delay, pipe, statusStrToList} from "utils"
+import {isGitRepo, gitLog, gitCommittedFiles, getPager, gitShow} from "git-utils"
 
-import reducer, {getActions} from "./reducer"
-import {getData, preRender, getHint, getComponent} from "./prepare"
+import {selectedBackground} from "colors"
+import {logHint as lh, diffHint as dh} from "hints"
 
-(async () => {
-  try {
-    cliCursor.hide()
-    const data = await getData()
+import Selector from "components/Selector"
 
-    if (data.length === 0) {
-      process.exit()
-    }
+export const getDimensions = () => ({
+  minHeight: process.stdout.rows - 7,
+  maxHeight: process.stdout.rows - 7,
+})
 
-    const minHeight = process.stdout.rows - 7
-    const maxHeight = process.stdout.rows - 7
-    preRender(getHint())(data)(maxHeight)(minHeight)
+export const getData = async () => {
+  await isGitRepo()
+  const data = await gitLog()
 
-    const Log = await getComponent()
-    const {render, Box, Text} = await import("ink")
+  return data.split("\n").slice(0, -1)
+}
 
-    const App = () => {
-      const initialState = {
-        selected: 0,
-        data,
-        mode: "log",
-        files: [],
-      }
+export const getHint = (mode) => {
+  const style = {marginLeft: 1, marginTop: 1, marginBottom: 1}
+  const {quit, commitDiff, backToLog, checkout, rebase} = lh
+  const {showPreview, hidePreview, scrollPreview, resize} = dh
 
-      const [state, dispatch] = useReducer(reducer, initialState)
-      const actions = getActions(dispatch)
-      const hint = getHint()
-
-      if (state.mode === "log") {
-        return (
-          <Box flexDirection="column">
-            <Text>{hint}</Text>
-            <Log
-              state={state}
-              actions={actions}
-              minHeight={minHeight}
-              maxHeight={maxHeight}
-            />
-          </Box>
-        )
-      }
-
-      return (
-        <Log
-          state={state}
-          actions={actions}
-          minHeight={minHeight}
-          maxHeight={maxHeight}
-        />
-      )
-    }
-
-    render(<App />)
-  } catch (e) {
-    /* eslint-disable no-console */
-    console.error(e.message)
-    process.exit()
+  if (mode === "diff") {
+    return renderHint(style)([
+      [quit, backToLog],
+      [showPreview, resize],
+    ])
   }
-})()
+
+  if (mode === "preview") {
+    return renderHint(style)([
+      [quit, hidePreview, scrollPreview],
+    ])
+  }
+
+  return renderHint(style)([
+    [quit, commitDiff],
+    [checkout, rebase],
+  ])
+}
+
+export const preRender = hint => lines => maxHeight => minHeight => {
+  const {items} = calculateListView(lines, maxHeight, 0)
+  const linesToRender = items
+    .map((el, i) => Selector({isSelected: i === 0, backgroundColor: selectedBackground, el}))
+    .map(el => sliceAnsi(el, 0, process.stdout.columns - 1))
+
+  const view = [hint, ...linesToRender, ""]
+  const spaces = "\n".repeat(Math.max(0, 1 + minHeight - view.length))
+
+  process.stdout.write(
+    [...view, spaces].join("\n"),
+  )
+
+  readline.moveCursor(process.stdout, -items[0].length, -(view.length + spaces.length + 3))
+}
+
+export const getComponent = () => import("./View.js").then(x => x.default)
+
+export const parseCommitHash = str => stripAnsi(str.split(" ")[0])
+
+export const getCommitFiles =
+  commit => gitCommittedFiles([parseCommitHash(commit)])
+    .then(x => x
+      .replace(/M\t/g, `${chalk.red("M")} `)
+      .replace(/D\t/g, `${chalk.grey("D")} `)
+      .replace(/A\t/g, `${chalk.green("A")} `))
+    .then(statusStrToList)
+
+export const showPreview = commit => async (update, file) => {
+  const pager = await getPager()
+  pipe(gitShow([parseCommitHash(commit), "--", file]), pager).then(update)
+}
+
+export const handleInput = props => async (input, key) => {
+  const {
+    exit,
+    gitCheckout,
+    gitRebase,
+    commit,
+    mode,
+    setMode,
+    setFiles,
+  } = props
+
+  if (input === "q") {
+    await delay(0)
+    exit()
+  }
+
+  if (input === "o") {
+    await gitCheckout([parseCommitHash(commit)])
+    exit()
+  }
+
+  if (input === "r") {
+    await gitRebase(["--interactive", parseCommitHash(commit)])
+    exit()
+  }
+
+  if ((input === "l" || key.return) && mode === "log") {
+    await delay(0)
+    setFiles([])
+    setMode("diff")
+  }
+
+  if ((input === "b" || key.backspace) && mode === "diff") {
+    await delay(0)
+    setMode("log")
+  }
+}

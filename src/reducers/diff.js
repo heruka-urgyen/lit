@@ -1,13 +1,12 @@
 /* eslint-disable arrow-body-style */
 
-import {createReducer, dispatchAction} from "utils"
+import {getActions, createReducer} from "utils"
 
 export const handlers = {
   setWidth: (s, {payload}) => {
     return {
       ...s,
       width: payload(s.width),
-      previousWidth: s.width,
     }
   },
   setPreview: (s, {payload}) => {
@@ -30,22 +29,5 @@ export const handlers = {
   },
 }
 
-export const getActions = dispatch => {
-  const [
-    setWidth,
-    setPreview,
-    scrollPreview,
-  ] = [
-    "setWidth",
-    "setPreview",
-    "scrollPreview",
-  ].map(dispatchAction(dispatch))
-
-  return {
-    setWidth,
-    setPreview,
-    scrollPreview,
-  }
-}
-
+export const actions = getActions(handlers)
 export default createReducer(handlers)

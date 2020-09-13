@@ -35,6 +35,8 @@ const showVersion = () => {
 }
 
 const runCli = command => {
+  const app = require("./dist/index").default
+
   if (!command || command === "--help") {
     return printHelp()
   }
@@ -44,15 +46,15 @@ const runCli = command => {
   }
 
   if (command === "status") {
-    return require("./dist/status")
+    return app("status")
   }
 
   if (command === "diff") {
-    return require("./dist/diff")
+    return app("diff")
   }
 
   if (command === "log") {
-    return require("./dist/log")
+    return app("log")
   }
 
   return printUsage()

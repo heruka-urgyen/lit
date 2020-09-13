@@ -11,8 +11,8 @@ export default function Log(props) {
     state,
   } = props
 
-  const {data, selected} = state
-  const {selectItem} = actions
+  const {data, selected} = state.log
+  const {selectLogItem} = actions
 
   return (
     <Box>
@@ -21,20 +21,24 @@ export default function Log(props) {
         maxHeight={maxHeight}
         data={data}
         selected={selected}
-        selectItem={selectItem}
+        selectItem={selectLogItem}
       />
     </Box>
   )
 }
 
+const {shape, arrayOf, number, string, func} = PropTypes
+
 Log.propTypes = {
-  state: PropTypes.shape({
-    selected: PropTypes.number.isRequired,
-    data: PropTypes.arrayOf(PropTypes.string).isRequired,
+  state: shape({
+    log: shape({
+      data: arrayOf(string).isRequired,
+      selected: number.isRequired,
+    }).isRequired,
   }).isRequired,
-  actions: PropTypes.shape({
-    selectItem: PropTypes.func.isRequired,
+  actions: shape({
+    selectLogItem: func.isRequired,
   }).isRequired,
-  minHeight: PropTypes.number.isRequired,
-  maxHeight: PropTypes.number.isRequired,
+  minHeight: number.isRequired,
+  maxHeight: number.isRequired,
 }

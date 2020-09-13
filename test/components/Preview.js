@@ -2,7 +2,7 @@ import test from "ava"
 import React from "react"
 import {render} from "ink-testing-library"
 
-import Preview from "commands/diff/Preview"
+import Preview from "components/Preview"
 
 test("should render Preview", t => {
   const output = render(

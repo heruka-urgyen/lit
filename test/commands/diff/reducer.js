@@ -1,6 +1,6 @@
 import {testProp, fc} from "ava-fast-check"
 
-import {handlers} from "commands/diff/reducer"
+import {handlers} from "reducers/diff"
 
 testProp("should set width", [fc.integer(), fc.integer()], (t, w1, w2) => {
   const res1 = handlers.setWidth({width: w1}, {payload: w => w + w2})

@@ -3,11 +3,14 @@ import {testProp, fc} from "ava-fast-check"
 import sinon from "sinon"
 
 import {
+  getHint,
+  preRender,
+  getData,
   parseCommitHash,
   getCommitFiles,
   showPreview,
   handleInput,
-} from "commands/log/log-utils"
+} from "commands/log"
 import * as u from "utils"
 import * as gu from "git-utils"
 
@@ -130,4 +133,53 @@ test.serial("should handle input", async t => {
   await hi2("", {backspace: true})
   t.truthy(props.setFiles.calledWith([]))
   t.truthy(props.setMode.calledWith("log"))
+})
+
+test.serial("should return hint", async t => {
+  const hint = getHint()
+
+  const res = [
+    "",
+    " q quit | l view commit diff",
+    " o checkout | r rebase",
+    "",
+  ].join("\n")
+
+  t.deepEqual(hint, res)
+})
+
+test.serial("should pre-render view", async t => {
+  const stdout = sinon.stub(process.stdout)
+  const write = sinon.spy()
+  stdout.columns = 50
+  stdout.write = write
+
+  preRender(getHint())(["123fab0 - commit msg (2 hours ago) <author>"])(20)(0)
+
+  const res = [
+    "",
+    " q quit | l view commit diff",
+    " o checkout | r rebase",
+    "",
+    " ❯ 123fab0 - commit msg (2 hours ago) <author>",
+    "",
+    "",
+  ].join("\n")
+
+  t.truthy(write.calledWith(res))
+})
+
+test.serial("should get data", async t => {
+  const gitLog = sinon.stub(gu, "gitLog")
+  const isGitRepo = sinon.stub(gu, "isGitRepo")
+
+  gitLog.resolves("123fab0 - commit msg (2 hours ago) <author>\n")
+
+  await getData()
+
+  t.truthy(isGitRepo.called)
+  t.truthy(gitLog.called)
+
+  gitLog.restore()
+  isGitRepo.restore()
 })

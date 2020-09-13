@@ -11,7 +11,7 @@ import {
   calcuateScrollPosition,
   resizePreview,
   calculatePreviewWindow,
-} from "commands/diff/utils"
+} from "commands/diff"
 
 let getPager
 let gitDiff
