@@ -15,12 +15,6 @@ export const handlers = {
       allSelected: !s.allSelected,
     }
   },
-  setLog: (s, {payload}) => {
-    return {
-      ...s,
-      log: payload,
-    }
-  },
   setFiles: (s, {payload}) => {
     return {
       ...s,

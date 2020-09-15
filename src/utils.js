@@ -1,8 +1,9 @@
 import chalk from "chalk"
 import ansiToJson from "ansi-to-json"
 import colorize from "ink/build/colorize"
+import stripAnsi from "strip-ansi"
 
-const last = xs => xs[xs.length - 1]
+export const last = xs => xs.length > 0 ? xs[xs.length - 1] : null
 export const statusStrToList = str => str
   .split(/[\r\n]+/).slice(0, -1)
   .sort((x, y) => last(x.split(" ")) < last(y.split(" ")) ? 1 : -1)
@@ -94,3 +95,5 @@ export const renderHint = box
 export const getActions = handlers => dispatch => Object.keys(handlers).reduce(
   (acc, x) => ({...acc, [x]: dispatchAction(dispatch)(x)}), {},
 )
+
+export const parseCommitHash = str => stripAnsi(str.split(" ")[0])

@@ -6,10 +6,8 @@ import {
   getHint,
   preRender,
   getData,
-  parseCommitHash,
   getCommitFiles,
   showPreview,
-  handleInput,
 } from "commands/log"
 import * as u from "utils"
 import * as gu from "git-utils"
@@ -36,7 +34,7 @@ testProp.serial(
   async (t, hash, msg, timestamp, author) => {
     const commit = `${hash} - ${msg} (${timestamp} time ago) <${author}>`
 
-    const res = parseCommitHash(commit)
+    const res = u.parseCommitHash(commit)
 
     t.deepEqual(res, hash)
   },
@@ -93,47 +91,6 @@ testProp.serial(
     t.truthy(updateSpy.calledWith(diff))
   },
 )
-
-test.serial("should handle input", async t => {
-  const props = {
-    exit: sinon.spy(),
-    gitCheckout: sinon.spy(),
-    gitRebase: sinon.spy(),
-    commit: "",
-    mode: "log",
-    setMode: sinon.spy(),
-    setFiles: sinon.spy(),
-  }
-
-  const hi = handleInput(props)
-
-  await hi("q", {})
-  t.is(props.exit.callCount, 1)
-
-  await hi("o", {})
-  t.is(props.gitCheckout.callCount, 1)
-  t.is(props.exit.callCount, 2)
-
-  await hi("r", {})
-  t.is(props.gitRebase.callCount, 1)
-  t.is(props.exit.callCount, 3)
-
-  await hi("l", {})
-  t.truthy(props.setMode.calledWith("diff"))
-
-  await hi("", {return: true})
-  t.truthy(props.setMode.calledWith("diff"))
-
-  const hi2 = handleInput({...props, mode: "diff"})
-
-  await hi2("b", {})
-  t.truthy(props.setFiles.calledWith([]))
-  t.truthy(props.setMode.calledWith("log"))
-
-  await hi2("", {backspace: true})
-  t.truthy(props.setFiles.calledWith([]))
-  t.truthy(props.setMode.calledWith("log"))
-})
 
 test.serial("should return hint", async t => {
   const hint = getHint()

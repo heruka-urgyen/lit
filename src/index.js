@@ -9,14 +9,15 @@ import {actions as getAppActions} from "reducers/app"
 import {actions as getStatusActions} from "reducers/status"
 import {actions as getDiffActions} from "reducers/diff"
 import {actions as getLogActions} from "reducers/log"
+import inputHandlers from "./inputHandlers"
 
 const prepare = mode => import(`./commands/${mode}/index.js`)
 
-export default async function App(mode) {
+export default async function App(initialMode) {
   try {
     cliCursor.hide()
     const {getData, getDimensions, preRender, getHint, getComponent, showPreview} =
-      await prepare(mode)
+      await prepare(initialMode)
 
     const data = await getData()
 
@@ -25,20 +26,20 @@ export default async function App(mode) {
     }
 
     const {minHeight, maxHeight} = getDimensions()
-    preRender(getHint(mode))(data)(maxHeight)(minHeight)
+    preRender(getHint(initialMode))(data)(maxHeight)(minHeight)
 
-    const Component = await getComponent(mode)
-    const {render, Box, Text} = await import("ink")
+    const Component = await getComponent(initialMode)
+    const {render, useInput, useApp, Box, Text} = await import("ink")
 
     const Container = () => {
       const initialState = {
         app: {
-          mode,
+          mode: initialMode,
+          modes: [],
         },
         status: {
           selected: 0,
           allSelected: false,
-          log: [],
           files: data,
         },
         diff: {
@@ -58,6 +59,13 @@ export default async function App(mode) {
       const [state, dispatch] = useReducer(reducer, initialState)
       const actions = [getAppActions, getStatusActions, getDiffActions, getLogActions]
         .reduce((actions, f) => ({...actions, ...f(dispatch)}), {})
+
+      const {exit} = useApp()
+
+      useInput(inputHandlers({
+        actions: {...actions, exit},
+        state,
+      }))
 
       return (
         <Box flexDirection="column">

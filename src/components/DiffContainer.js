@@ -1,17 +1,15 @@
 import React, {useEffect} from "react"
 import PropTypes from "prop-types"
-import {Box, useInput, useStdout} from "ink"
+import {Box, useStdout} from "ink"
 import stripAnsi from "strip-ansi"
 
 import Preview from "components/Preview"
 import Status from "components/Status"
 
-import {calcuateScrollPosition, resizePreview} from "commands/diff"
-
 export default function DiffContainer({state, actions, minHeight, maxHeight, showPreview}) {
   const {stdout} = useStdout()
   const screenWidth = stdout.columns
-  const {setMode, setWidth, setPreview, scrollPreview} = actions
+  const {setWidth, setPreview} = actions
   const {mode} = state.app
   const {selected, files} = state.status
   const {width, preview, previewPosition, previewWidth} = state.diff
@@ -35,20 +33,6 @@ export default function DiffContainer({state, actions, minHeight, maxHeight, sho
       setWidth(_ => previewWidth)
     }
   }, [mode])
-
-  useInput((input, key) => {
-    if (input === "v") {
-      setMode(mode === "preview" ? "diff" : "preview")
-    }
-
-    if (mode === "preview") {
-      scrollPreview(calcuateScrollPosition(input, key))
-    }
-
-    if (mode === "diff") {
-      setWidth(resizePreview(input, key))
-    }
-  })
 
   return (
     <Box height={maxHeight} flexDirection="row">

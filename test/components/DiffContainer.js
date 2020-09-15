@@ -87,7 +87,4 @@ test.serial("should update preview on selecting next file", async t => {
   t.truthy(output.lastFrame().indexOf("   ?? rty") > -1)
   t.truthy(actions.setPreview.calledWith("@@ +0,7 -0,0 @@\n+ preview\n"))
   t.is(actions.setWidth.callCount, 1)
-  output.stdin.write("v")
-  t.truthy(actions.setMode.calledWith("preview"))
-  t.is(actions.setWidth.callCount, 2)
 })

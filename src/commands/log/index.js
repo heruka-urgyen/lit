@@ -1,10 +1,9 @@
 import process from "process"
 import readline from "readline"
 import sliceAnsi from "slice-ansi"
-import stripAnsi from "strip-ansi"
 
 import chalk from "chalk"
-import {renderHint, calculateListView, delay, pipe, statusStrToList} from "utils"
+import {renderHint, calculateListView, pipe, statusStrToList, parseCommitHash} from "utils"
 import {isGitRepo, gitLog, gitCommittedFiles, getPager, gitShow} from "git-utils"
 
 import {selectedBackground} from "colors"
@@ -66,8 +65,6 @@ export const preRender = hint => lines => maxHeight => minHeight => {
 
 export const getComponent = () => import("./View.js").then(x => x.default)
 
-export const parseCommitHash = str => stripAnsi(str.split(" ")[0])
-
 export const getCommitFiles =
   commit => gitCommittedFiles([parseCommitHash(commit)])
     .then(x => x
@@ -79,42 +76,4 @@ export const getCommitFiles =
 export const showPreview = commit => async (update, file) => {
   const pager = await getPager()
   pipe(gitShow([parseCommitHash(commit), "--", file]), pager).then(update)
-}
-
-export const handleInput = props => async (input, key) => {
-  const {
-    exit,
-    gitCheckout,
-    gitRebase,
-    commit,
-    mode,
-    setMode,
-    setFiles,
-  } = props
-
-  if (input === "q") {
-    await delay(0)
-    exit()
-  }
-
-  if (input === "o") {
-    await gitCheckout([parseCommitHash(commit)])
-    exit()
-  }
-
-  if (input === "r") {
-    await gitRebase(["--interactive", parseCommitHash(commit)])
-    exit()
-  }
-
-  if ((input === "l" || key.return) && mode === "log") {
-    await delay(0)
-    setFiles([])
-    setMode("diff")
-  }
-
-  if ((input === "b" || key.backspace) && mode === "diff") {
-    await delay(0)
-    setMode("log")
-  }
 }

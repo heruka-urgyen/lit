@@ -1,50 +1,25 @@
 import React from "react"
 import PropTypes from "prop-types"
-import {useApp, useInput} from "ink"
 import chalk from "chalk"
 
 import Selectable from "components/Selectable"
 import Log from "components/Log"
 
 import {identity} from "utils"
-import {runCommand, commit, commitAmend, commitFixup, updateLog, handleInput} from "commands/status"
 
 export default function Status({state, actions, minHeight, maxHeight}) {
-  const {exit} = useApp()
   const {mode} = state.app
-  const {selected, allSelected, log, files} = state.status
+  const {selected, allSelected, files} = state.status
+  const {data} = state.log
   const {
-    setMode,
     selectItem,
-    toggleSelectAll,
-    setLog,
-    setFiles,
   } = actions
-
-  useInput(handleInput({
-    exit,
-    mode,
-    selectItem,
-    setMode,
-    files,
-    setFiles,
-    selected,
-    log,
-    setLog,
-    allSelected,
-    toggleSelectAll,
-    runCommand,
-    commit,
-    commitAmend,
-    commitFixup,
-    updateLog,
-  }))
 
   if (mode === "log") {
     return (
       <Log
         actions={actions}
-        state={{log: {data: log, selected: state.log.selected}}}
+        state={{log: {data, selected: state.log.selected}}}
         minHeight={minHeight}
         maxHeight={maxHeight}
       />

@@ -83,68 +83,6 @@ export const showPreview = async (update, file) => {
   })
 }
 
-let t
-let timesPressed = 0
-const press = n => {
-  clearTimeout(t)
-  t = setTimeout(() => press(0), 500)
-  timesPressed = n
-}
-
-export const calcuateScrollPosition = (input, key) => state => {
-  const {previewPosition, previewLength, maxHeight} = state
-
-  if (input === "j" || key.downArrow) {
-    return Math.max(0, Math.min(previewPosition + 1, previewLength - maxHeight + 1))
-  }
-
-  if (input === "k" || key.upArrow) {
-    return Math.max(0, previewPosition - 1)
-  }
-
-  if (input === "d") {
-    return Math.max(
-      0,
-      Math.min(previewPosition + maxHeight / 2, previewLength - maxHeight + 1),
-    )
-  }
-
-  if (input === "u") {
-    return Math.max(0, previewPosition - maxHeight / 2)
-  }
-
-  if (input === "G" && key.shift) {
-    return Math.max(0, previewLength - maxHeight + 1)
-  }
-
-  if (input === "g") {
-    const p = timesPressed + 1
-    press(p)
-
-    if (p > 1) {
-      return 0
-    }
-  }
-
-  return previewPosition
-}
-
-export const resizePreview = (input, key) => w => {
-  if (input === "l" || key.rightArrow) {
-    return Math.max(5, w - 10)
-  }
-
-  if (input === "h" || key.leftArrow) {
-    return Math.min(95, w + 10)
-  }
-
-  if (input === "f") {
-    return 0
-  }
-
-  return w
-}
-
 const splitToWidth = (limit, str, arr) => {
   const res = sliceAnsi(str, 0, limit)
   const next = sliceAnsi(str, limit)

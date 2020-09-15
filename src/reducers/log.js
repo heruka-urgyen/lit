@@ -3,6 +3,12 @@
 import {getActions, createReducer} from "utils"
 
 export const handlers = {
+  setLog: (s, {payload}) => {
+    return {
+      ...s,
+      data: payload,
+    }
+  },
   selectLogItem: (s, {payload}) => {
     return {
       ...s,

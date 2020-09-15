@@ -7,6 +7,7 @@ const handlers = {
     return {
       ...s,
       mode: payload,
+      modes: s.modes.concat(s.mode),
     }
   },
 }
