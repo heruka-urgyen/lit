@@ -24,9 +24,10 @@ const printHelp = () => {
 }
 
 const showVersion = () => {
+  console.log()
   try {
-    const p = fs.readFileSync("./package.json", {encoding: "utf8"})
-    const version = p.match(/"version":\s"(.+)",/)[1]
+    const p = fs.readFileSync(`${__dirname}/package.json`, {encoding: "utf8"})
+    const version = p.match(/"version":\s"(.+)"/)[1]
 
     console.log(version)
   } catch (e) {
