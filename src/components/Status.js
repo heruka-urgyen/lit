@@ -47,11 +47,10 @@ const {shape, arrayOf, string, number, bool, func} = PropTypes
 Status.propTypes = {
   state: shape({
     app: shape({mode: string.isRequired}).isRequired,
-    log: shape({selected: number.isRequired}).isRequired,
+    log: shape({data: arrayOf(string).isRequired, selected: number.isRequired}).isRequired,
     status: shape({
       selected: number.isRequired,
       allSelected: bool.isRequired,
-      log: arrayOf(string).isRequired,
       files: arrayOf(string).isRequired,
     }).isRequired,
   }).isRequired,

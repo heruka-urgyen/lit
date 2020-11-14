@@ -1,10 +1,11 @@
+import path from "path"
 import process from "process"
 import readline from "readline"
 import sliceAnsi from "slice-ansi"
 
 import chalk from "chalk"
 import {renderHint, calculateListView, pipe, statusStrToList, parseCommitHash} from "utils"
-import {isGitRepo, gitLog, gitCommittedFiles, getPager, gitShow} from "git-utils"
+import {gitRoot, isGitRepo, gitLog, gitCommittedFiles, getPager, gitShow} from "git-utils"
 
 import {selectedBackground} from "colors"
 import {logHint as lh, diffHint as dh} from "hints"
@@ -73,7 +74,10 @@ export const getCommitFiles =
       .replace(/A\t/g, `${chalk.green("A")} `))
     .then(statusStrToList)
 
-export const showPreview = commit => async (update, file) => {
+export const showPreview = commit => async (update, f) => {
+  const root = await gitRoot()
   const pager = await getPager()
+  const file = path.resolve(root, f)
+
   pipe(gitShow([parseCommitHash(commit), "--", file]), pager).then(update)
 }

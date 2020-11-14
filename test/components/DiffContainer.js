@@ -47,7 +47,6 @@ test.serial("should update preview on selecting next file", async t => {
       files: ["M zbc", "A xcv", "?? rty"],
       selected: 0,
       allSelected: false,
-      log: [],
     },
     diff: {
       width: 0,
@@ -56,6 +55,7 @@ test.serial("should update preview on selecting next file", async t => {
       previewWidth: 95,
     },
     log: {
+      data: [],
       selected: 0,
     },
   }
@@ -82,9 +82,13 @@ test.serial("should update preview on selecting next file", async t => {
   )
 
   await delay()
-  t.truthy(output.lastFrame().indexOf(" ❯ M zbc") > -1)
-  t.truthy(output.lastFrame().indexOf("   A xcv") > -1)
-  t.truthy(output.lastFrame().indexOf("   ?? rty") > -1)
-  t.truthy(actions.setPreview.calledWith("@@ +0,7 -0,0 @@\n+ preview\n"))
+  t.true(output.lastFrame().indexOf(" ❯ M zbc") > -1)
+  await delay()
+  t.true(output.lastFrame().indexOf("   A xcv") > -1)
+  await delay()
+  t.true(output.lastFrame().indexOf("   ?? rty") > -1)
+  await delay(500)
+  t.true(actions.setPreview.calledWith("@@ +0,7 -0,0 @@\n+ preview\n"))
+  await delay()
   t.is(actions.setWidth.callCount, 1)
 })

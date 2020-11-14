@@ -81,3 +81,6 @@ export const gitLog =
   )
 
 export const isGitRepo = () => exec("git rev-parse --is-inside-work-tree")
+export const gitRoot =
+  () => exec("git rev-parse --show-toplevel").then(x => x.replace("\n", ""))
+export const isPathRelative = () => exec("git config status.relativePaths")

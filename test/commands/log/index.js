@@ -1,3 +1,4 @@
+import path from "path"
 import test from "ava"
 import {testProp, fc} from "ava-fast-check"
 import sinon from "sinon"
@@ -87,7 +88,7 @@ testProp.serial(
     pipeStub.resolves(diff)
 
     await showPreview(commit)(updateSpy, file)
-    t.truthy(gitShowStub.calledWith([hash, "--", file]))
+    t.truthy(gitShowStub.calledWith([hash, "--", path.resolve(process.cwd(), file)]))
     t.truthy(updateSpy.calledWith(diff))
   },
 )

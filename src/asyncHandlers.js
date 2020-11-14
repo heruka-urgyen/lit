@@ -1,7 +1,10 @@
+import path from "path"
 import {statusStrToList} from "utils"
 import stripAnsi from "strip-ansi"
 
 import {
+  isPathRelative,
+  gitRoot,
   runCmd,
   gitStatus,
   gitHasStagedFiles,
@@ -12,7 +15,10 @@ import {
 } from "git-utils"
 
 export const runCommand = async (cmd, fs, update) => {
+  const rel = await isPathRelative()
+  const root = await gitRoot()
   const files = fs.map(f => f.split(" ").slice(-1)[0].replace("\r", ""))
+    .map(file => rel ? file : path.resolve(root, file))
 
   await runCmd({params: [cmd, ...files]})
   const data = await gitStatus()

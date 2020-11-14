@@ -41,8 +41,10 @@ test.serial("should render view", t => {
         status: {
           selected: 0,
           allSelected: false,
-          log: [],
           files: initialLines,
+        },
+        log: {
+          data: [],
         },
       }}
     />,

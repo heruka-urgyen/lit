@@ -1,9 +1,18 @@
+import path from "path"
 import process from "process"
 import readline from "readline"
 import sliceAnsi from "slice-ansi"
 import ansiToJson from "ansi-to-json"
 
-import {isGitRepo, gitStatus, getPager, gitDiff, gitStatusPorcelain} from "git-utils"
+import {
+  isPathRelative,
+  gitRoot,
+  isGitRepo,
+  gitStatus,
+  getPager,
+  gitDiff,
+  gitStatusPorcelain,
+} from "git-utils"
 import {pipe, renderHint, statusStrToList, calculateListView} from "utils"
 import {selectedBackground} from "colors"
 import {diffHint} from "hints"
@@ -62,7 +71,10 @@ export const getHint = mode => {
   ])
 }
 
-export const showPreview = async (update, file) => {
+export const showPreview = async (update, f) => {
+  const rel = await isPathRelative()
+  const root = await gitRoot()
+  const file = rel ? f : path.resolve(root, f)
   const status = await gitStatusPorcelain(file)
 
   status.split("\n").forEach(async f => {

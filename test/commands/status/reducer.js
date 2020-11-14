@@ -18,12 +18,6 @@ testProp("should select all", [fc.boolean()], (t, allSelected) => {
   t.is(res.allSelected, !allSelected)
 })
 
-testProp("should set log", [fc.base64String(), fc.base64String()], (t, l1, l2) => {
-  const res = handlers.setLog({log: l1}, {payload: l2})
-
-  t.is(res.log, l2)
-})
-
 testProp("should set files", [fc.base64String(), fc.base64String()], (t, s1, s2) => {
   const files1 = s1.split(/./)
   const files2 = s2.split(/./)

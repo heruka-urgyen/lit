@@ -11,3 +11,9 @@ testProp("should select item", [fc.nat(), fc.nat()], (t, item1, item2) => {
   t.is(res2.selected, item1 - item2)
   t.is(res3.selected, item2)
 })
+
+testProp("should set log", [fc.base64String(), fc.base64String()], (t, l1, l2) => {
+  const res = handlers.setLog({data: l1}, {payload: l2})
+
+  t.is(res.data, l2)
+})

@@ -32,6 +32,7 @@ test.afterEach(_ => {
 test.serial("should run command", async t => {
   gs.runCmd.resolves(1)
   gs.gitStatus.resolves("A 1.js\n")
+  gs.isPathRelative.resolves(true)
   const update = sinon.spy()
 
   await runCommand("git add", ["A 1.js\r"], update)

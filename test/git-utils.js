@@ -15,6 +15,8 @@ import {
   getPager,
   gitCheckout,
   gitRebase,
+  gitRoot,
+  isPathRelative,
 } from "git-utils"
 
 let spawnSpy
@@ -39,37 +41,37 @@ test.afterEach(_ => {
 
 test.serial("should runCmd w/ no args", t => {
   runCmd({})
-  t.truthy(spawnSpy.calledWith("git"))
+  t.true(spawnSpy.calledWith("git"))
 })
 
 test.serial("should runCmd w/ args", t => {
   runCmd({params: ["status"]})
-  t.truthy(spawnSpy.calledWith("git", ["status"]))
+  t.true(spawnSpy.calledWith("git", ["status"]))
 })
 
 test.serial("should show gitStatus", t => {
   gitStatus()
-  t.truthy(spawnSpy.calledWith("git", ["-c", "color.ui=always", "status", "-s", "-u"]))
+  t.true(spawnSpy.calledWith("git", ["-c", "color.ui=always", "status", "-s", "-u"]))
 })
 
 test.serial("should gitCommit w/ no args", t => {
   gitCommit()
-  t.truthy(cpSpawnSpy.calledWith("git", ["commit"], {stdio: "inherit"}))
+  t.true(cpSpawnSpy.calledWith("git", ["commit"], {stdio: "inherit"}))
 })
 
 test.serial("should gitCommit", t => {
   gitCommit(["1.js", "2.js"])
-  t.truthy(cpSpawnSpy.calledWith("git", ["commit", "1.js", "2.js"], {stdio: "inherit"}))
+  t.true(cpSpawnSpy.calledWith("git", ["commit", "1.js", "2.js"], {stdio: "inherit"}))
 })
 
 test.serial("should gitCommitFixup", t => {
   gitCommitFixup("123zxc")
-  t.truthy(cpSpawnSpy.calledWith("git", ["commit", "--fixup", "123zxc"], {stdio: "inherit"}))
+  t.true(cpSpawnSpy.calledWith("git", ["commit", "--fixup", "123zxc"], {stdio: "inherit"}))
 })
 
 test.serial("should gitCommitAmend", t => {
   gitCommitAmend(["1.js"])
-  t.truthy(cpSpawnSpy.calledWith("git", ["commit", "--amend"], {stdio: "inherit"}))
+  t.true(cpSpawnSpy.calledWith("git", ["commit", "--amend"], {stdio: "inherit"}))
 })
 
 test.serial("should gitHasStagedFiles", async t => {
@@ -111,25 +113,37 @@ test.serial("should call getPager", async t => {
   const pager2 = await getPager()
   const pager3 = await getPager()
 
-  t.truthy(spawnSpy.calledWith("git", ["config", "--get", "core.pager"]))
+  t.true(spawnSpy.calledWith("git", ["config", "--get", "core.pager"]))
   t.is(pager1, null)
   t.is(pager2, null)
-  t.truthy(cpSpawnSpy.calledWith("delta", ["--color-only"]))
+  t.true(cpSpawnSpy.calledWith("delta", ["--color-only"]))
   t.is(pager3, pagerSpy)
 })
 
 test.serial("should gitCheckout", async t => {
   await gitCheckout(["123bc50"])
 
-  t.truthy(cpSpawnSpy.calledWith("git", ["checkout", "123bc50"], {stdio: "inherit"}))
+  t.true(cpSpawnSpy.calledWith("git", ["checkout", "123bc50"], {stdio: "inherit"}))
 })
 
 test.serial("should gitRebase", async t => {
   await gitRebase(["--interactive", "123bc50"])
 
-  t.truthy(cpSpawnSpy.calledWith(
+  t.true(cpSpawnSpy.calledWith(
     "git",
     ["rebase", "--interactive", "123bc50"],
     {stdio: "inherit"},
   ))
+})
+
+test.serial("should gitRoot", async t => {
+  gitRoot()
+
+  t.deepEqual(cpExecSpy.lastCall.args[0], "git rev-parse --show-toplevel")
+})
+
+test.serial("should isPathRelative", async t => {
+  isPathRelative()
+
+  t.deepEqual(cpExecSpy.lastCall.args[0], "git config status.relativePaths")
 })

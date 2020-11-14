@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+import path from "path"
 import test from "ava"
 import {testProp, fc} from "ava-fast-check"
 import sinon from "sinon"
@@ -18,6 +19,7 @@ let pipe
 let update
 let file
 let diff
+let isPathRelativeStub
 
 const delay = (n = 0) => new Promise(r => setTimeout(r, n))
 const ARROW_UP = "\u001B[A"
@@ -28,6 +30,7 @@ test.beforeEach(() => {
   gitDiff = sinon.stub(g, "gitDiff")
   pipe = sinon.stub(u, "pipe")
   gitStatusPorcelain = sinon.stub(g, "gitStatusPorcelain")
+  isPathRelativeStub = sinon.stub(g, "isPathRelative")
 
   update = sinon.spy()
   file = fc.string()
@@ -39,6 +42,7 @@ test.afterEach(() => {
   gitDiff.restore()
   pipe.restore()
   gitStatusPorcelain.restore()
+  isPathRelativeStub.restore()
 })
 
 test.serial("should show preview for new files", async t => {
@@ -46,10 +50,11 @@ test.serial("should show preview for new files", async t => {
   gitDiff.resolves(diff)
   getPager.resolves(null)
   pipe.resolves(diff)
+  isPathRelativeStub.resolves(true)
 
   await showPreview(update, file)
   await delay()
-  t.truthy(update.calledWith(diff))
+  t.true(update.calledWith(diff))
 })
 
 test.serial("should show preview for modified staged files", async t => {
@@ -57,10 +62,11 @@ test.serial("should show preview for modified staged files", async t => {
   gitDiff.resolves(diff)
   getPager.resolves(null)
   pipe.resolves(diff)
+  isPathRelativeStub.resolves(true)
 
-  showPreview(update, file)
+  await showPreview(update, file)
   await delay()
-  t.truthy(update.calledWith(diff))
+  t.true(update.calledWith(diff))
 })
 
 test.serial("should show preview for new staged files", async t => {
@@ -68,10 +74,11 @@ test.serial("should show preview for new staged files", async t => {
   gitDiff.resolves(diff)
   getPager.resolves(null)
   pipe.resolves(diff)
+  isPathRelativeStub.resolves(true)
 
-  showPreview(update, file)
+  await showPreview(update, file)
   await delay()
-  t.truthy(update.calledWith(diff))
+  t.true(update.calledWith(diff))
 })
 
 test.serial("should show preview for unstaged files", async t => {
@@ -79,10 +86,11 @@ test.serial("should show preview for unstaged files", async t => {
   gitDiff.resolves(diff)
   getPager.resolves(null)
   pipe.resolves(diff)
+  isPathRelativeStub.resolves(true)
 
-  showPreview(update, file)
+  await showPreview(update, file)
   await delay()
-  t.truthy(update.calledWith(diff))
+  t.true(update.calledWith(diff))
 })
 
 test.serial("should show preview for deleted files", async t => {
@@ -90,10 +98,11 @@ test.serial("should show preview for deleted files", async t => {
   gitDiff.resolves(diff)
   getPager.resolves(null)
   pipe.resolves(diff)
+  isPathRelativeStub.resolves(true)
 
-  showPreview(update, file)
+  await showPreview(update, file)
   await delay()
-  t.truthy(update.calledWith(diff))
+  t.true(update.calledWith(diff))
 })
 
 testProp.serial(
@@ -111,9 +120,9 @@ testProp.serial(
     const res = calculatePreviewWindow(preview, width, height, position)
     const compactRes = res.flat().reduce((xs, s) => xs + s.content, "")
 
-    t.truthy(res.length <= height)
+    t.true(res.length <= height)
     t.is(res.flat().filter(x => typeof x.id === "string").length, res.flat().length)
-    t.truthy(compactRes.length <= preview.replace(/\n/g, "").length)
-    t.truthy(compactRes.length <= (height - 2) * (width - 2))
+    t.true(compactRes.length <= preview.replace(/\n/g, "").length)
+    t.true(compactRes.length <= (height - 2) * (width - 2))
   },
 )
