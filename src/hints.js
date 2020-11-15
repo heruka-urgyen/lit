@@ -1,51 +1,49 @@
-import chalk from "chalk"
-
-const ub = chalk.underline.bold
+import {hint1, hint2, hint3, hint4} from "colors"
 
 export const statusHint = {
   quit: {
     keys: ["q"],
-    style: ub.yellow,
+    style: hint1,
     hint: "quit ",
   },
   back: {
     keys: ["b"],
-    style: ub.yellow,
+    style: hint1,
     hint: "back to status",
   },
   toggleAll: {
     keys: ["a"],
-    style: ub.yellow,
+    style: hint1,
     hint: "toggle all",
   },
   stage: {
     keys: ["s"],
-    style: ub.green,
+    style: hint4,
     hint: "stage",
   },
   reset: {
     keys: ["r"],
-    style: ub.red,
+    style: hint2,
     hint: "reset",
   },
   checkout: {
     keys: ["o"],
-    style: ub.red,
+    style: hint2,
     hint: "checkout",
   },
   commit: {
     keys: ["c"],
-    style: ub.blue,
+    style: hint3,
     hint: "commit",
   },
   amend: {
     keys: ["m"],
-    style: ub.blue,
+    style: hint3,
     hint: "amend",
   },
   fixup: {
     keys: ["f"],
-    style: ub.blue,
+    style: hint3,
     hint: "fixup",
   },
 }
@@ -54,22 +52,22 @@ export const diffHint = {
   ...statusHint,
   showPreview: {
     keys: ["v"],
-    style: ub.yellow,
+    style: hint1,
     hint: "show preview",
   },
   hidePreview: {
     keys: ["v"],
-    style: ub.yellow,
+    style: hint1,
     hint: "hide preview",
   },
   resize: {
     keys: ["h", "l"],
-    style: ub.yellow,
+    style: hint1,
     hint: "resize",
   },
   scrollPreview: {
     keys: ["j", "k"],
-    style: ub.yellow,
+    style: hint1,
     hint: "scroll preview",
   },
 }
@@ -77,27 +75,27 @@ export const diffHint = {
 export const logHint = {
   quit: {
     keys: ["q"],
-    style: ub.yellow,
+    style: hint1,
     hint: "quit",
   },
   commitDiff: {
     keys: ["l"],
-    style: ub.yellow,
+    style: hint1,
     hint: "view commit diff",
   },
   backToLog: {
     keys: ["b"],
-    style: ub.yellow,
+    style: hint1,
     hint: "back to log",
   },
   checkout: {
     keys: ["o"],
-    style: ub.red,
+    style: hint2,
     hint: "checkout",
   },
   rebase: {
     keys: ["r"],
-    style: ub.red,
+    style: hint2,
     hint: "rebase",
   },
 }

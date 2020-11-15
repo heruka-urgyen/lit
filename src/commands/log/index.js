@@ -3,11 +3,10 @@ import process from "process"
 import readline from "readline"
 import sliceAnsi from "slice-ansi"
 
-import chalk from "chalk"
 import {renderHint, calculateListView, pipe, statusStrToList, parseCommitHash} from "utils"
 import {gitRoot, isGitRepo, gitLog, gitCommittedFiles, getPager, gitShow} from "git-utils"
 
-import {selectedBackground} from "colors"
+import {selectedBackground, added, deleted, modified} from "colors"
 import {logHint as lh, diffHint as dh} from "hints"
 
 import Selector from "components/Selector"
@@ -69,9 +68,9 @@ export const getComponent = () => import("./View.js").then(x => x.default)
 export const getCommitFiles =
   commit => gitCommittedFiles([parseCommitHash(commit)])
     .then(x => x
-      .replace(/M\t/g, `${chalk.red("M")} `)
-      .replace(/D\t/g, `${chalk.grey("D")} `)
-      .replace(/A\t/g, `${chalk.green("A")} `))
+      .replace(/M\t/g, `${modified("M")} `)
+      .replace(/D\t/g, `${deleted("D")} `)
+      .replace(/A\t/g, `${added("A")} `))
     .then(statusStrToList)
 
 export const showPreview = commit => async (update, f) => {
