@@ -55,7 +55,7 @@ export const getHint = mode => {
 
   if (mode === "diff") {
     return renderHint(style)([
-      [quit, toggleAll, showPreview, showPreview, resize],
+      [quit, toggleAll, showPreview, resize],
       [stage, reset, checkout, commit, amend, fixup],
     ])
   }

@@ -15,7 +15,7 @@ export default function Status({state, actions, minHeight, maxHeight}) {
     selectItem,
   } = actions
 
-  if (mode === "log") {
+  if (mode === "fixup") {
     return (
       <Log
         actions={actions}

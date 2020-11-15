@@ -134,10 +134,10 @@ testProp.serial(
     t.is(runCommand.callCount, 0)
 
     await press(outputS1)("s")
-    t.truthy(runCommand.calledWith("add", ["M 1"], actions.setFiles))
+    t.true(runCommand.calledWith("add", ["M 1"], actions.setFiles))
 
     await press(outputS2)("s")
-    t.truthy(runCommand.calledWith("add", ["M 1", "M 2"], actions.setFiles))
+    t.true(runCommand.calledWith("add", ["M 1", "M 2"], actions.setFiles))
 
     runCommand.restore()
   },
@@ -189,10 +189,10 @@ testProp.serial(
     t.is(runCommand.callCount, 0)
 
     await press(outputS1)("r")
-    t.truthy(runCommand.calledWith("reset", ["M 1"], actions.setFiles))
+    t.true(runCommand.calledWith("reset", ["M 1"], actions.setFiles))
 
     await press(outputS2)("r")
-    t.truthy(runCommand.calledWith("reset", ["M 1", "M 2"], actions.setFiles))
+    t.true(runCommand.calledWith("reset", ["M 1", "M 2"], actions.setFiles))
 
     runCommand.restore()
   },
@@ -257,15 +257,15 @@ testProp.serial(
     t.is(runCommand.callCount, 0)
 
     await press(outputS1)("o")
-    t.truthy(runCommand.calledWith("checkout", ["M 1"], actions.setFiles))
+    t.true(runCommand.calledWith("checkout", ["M 1"], actions.setFiles))
     t.is(actions.selectItem.callCount, 1)
 
     await press(outputS2)("o")
-    t.truthy(runCommand.calledWith("checkout", ["M 2"], actions.setFiles))
+    t.true(runCommand.calledWith("checkout", ["M 2"], actions.setFiles))
     t.is(actions.exit.callCount, 1)
 
     await press(outputS3)("o")
-    t.truthy(runCommand.calledWith("checkout", ["M 1", "M 2"], actions.setFiles))
+    t.true(runCommand.calledWith("checkout", ["M 1", "M 2"], actions.setFiles))
     t.is(actions.exit.callCount, 2)
 
     runCommand.restore()
@@ -297,7 +297,7 @@ testProp.serial(
     t.is(commit.callCount, 0)
 
     await press(outputS)("c")
-    t.truthy(commit.calledWith(actions.exit))
+    t.true(commit.calledWith(actions.exit))
 
     commit.restore()
   },
@@ -328,7 +328,7 @@ testProp.serial(
     t.is(commitAmend.callCount, 0)
 
     await press(outputS)("m")
-    t.truthy(commitAmend.calledWith(actions.exit))
+    t.true(commitAmend.calledWith(actions.exit))
 
     commitAmend.restore()
   },
@@ -343,8 +343,7 @@ testProp.serial(
   async (t, passMode, failMode) => {
     const updateLog = sinon.stub(ah, "updateLog")
     const gitHasStagedFiles = sinon.stub(gu, "gitHasStagedFiles")
-    gitHasStagedFiles.onCall(0).resolves(true)
-    gitHasStagedFiles.onCall(1).resolves(false)
+    gitHasStagedFiles.resolves(true)
 
     const actions = {
       exit: sinon.spy(),
@@ -373,15 +372,11 @@ testProp.serial(
     t.is(actions.setWidth.callCount, 0)
 
     await press(outputS)("f")
-    t.truthy(updateLog.calledWith(actions.setLog))
-    t.truthy(actions.setMode.calledWith("log"))
+    t.true(actions.setMode.calledWith("fixup"))
+    await delay(0)
+    t.true(updateLog.calledWith(actions.setLog))
     t.is(actions.selectItem.callCount, 1)
-
-    if (passMode === "diff") {
-      t.is(actions.setWidth.callCount, 1)
-    } else {
-      t.is(actions.setWidth.callCount, 0)
-    }
+    t.is(actions.setWidth.callCount, 1)
 
     updateLog.restore()
     gitHasStagedFiles.restore()
@@ -402,7 +397,7 @@ testProp.serial(
 
     await press(output)("v")
     if (mode === "diff") {
-      t.truthy(actions.setMode.calledWith("preview"))
+      t.true(actions.setMode.calledWith("preview"))
     } else {
       t.is(actions.setMode.callCount, 0)
     }
@@ -428,7 +423,7 @@ testProp.serial(
 
     await press(output)("v")
     if (mode === "preview") {
-      t.truthy(actions.setMode.calledWith("diff"))
+      t.true(actions.setMode.calledWith("diff"))
     } else {
       t.is(actions.setMode.callCount, 0)
     }
@@ -449,7 +444,7 @@ testProp.serial(
 
     await press(output)("b")
     if (mode === "diff") {
-      t.truthy(actions.setMode.calledWith("log"))
+      t.true(actions.setMode.calledWith("log"))
     } else {
       t.is(actions.setMode.callCount, 0)
     }
@@ -572,8 +567,8 @@ testProp.serial(
 )
 
 testProp.serial(
-  "should select commit for fixup in log mode",
-  [fc.oneof(fc.constant("status"), fc.constant("log"), fc.hexaString())],
+  "should select commit for fixup in fixup mode",
+  [fc.oneof(fc.constant("status"), fc.constant("fixup"), fc.hexaString())],
   async (t, mode) => {
     const commitFixup = sinon.stub(ah, "commitFixup")
     const actions = {
@@ -610,15 +605,15 @@ testProp.serial(
     t.is(commitFixup.callCount, 0)
 
     await press(output1)("return")
-    if (mode === "log") {
-      t.truthy(commitFixup.calledWith("123zxc1", actions.exit))
+    if (mode === "fixup") {
+      t.true(commitFixup.calledWith("123zxc1", actions.exit))
     } else {
       t.is(commitFixup.callCount, 0)
     }
 
     await press(output2)("return")
-    if (mode === "log") {
-      t.truthy(commitFixup.calledWith("123zxc1", actions.exit))
+    if (mode === "fixup") {
+      t.true(commitFixup.calledWith("123zxc1", actions.exit))
     } else {
       t.is(commitFixup.callCount, 0)
     }
@@ -628,20 +623,21 @@ testProp.serial(
 )
 
 testProp.serial(
-  "should go back to status in log mode",
-  [fc.oneof(fc.constant("status"), fc.constant("log"), fc.hexaString())],
+  "should go back to status in fixup mode",
+  [fc.oneof(fc.constant("status"), fc.constant("fixup"), fc.hexaString())],
   async (t, mode) => {
     const actions = {
       setMode: sinon.spy(),
     }
 
-    const output = render(<App actions={actions} mode={mode} />)
+    const output = render(<App actions={actions} mode={mode} modes={["status"]} />)
 
     await delay(0)
 
     await press(output)("b")
-    if (mode === "log") {
-      t.truthy(actions.setMode.calledWith("status"))
+
+    if (mode === "fixup") {
+      t.true(actions.setMode.calledWith("status"))
     } else {
       t.is(actions.setMode.callCount, 0)
     }
@@ -683,7 +679,7 @@ testProp.serial(
     await delay(0)
 
     await press(output)("o")
-    t.truthy(gitCheckout.calledWith([commits[selected][0]]))
+    t.true(gitCheckout.calledWith([commits[selected][0]]))
     t.is(actions.exit.callCount, 1)
 
     gitCheckout.restore()
@@ -726,7 +722,7 @@ testProp.serial(
 
     await delay(0)
     await press(output)("r")
-    t.truthy(gitRebase.calledWith(["--interactive", commits[selected][0]]))
+    t.true(gitRebase.calledWith(["--interactive", commits[selected][0]]))
     t.is(actions.exit.callCount, 1)
 
     gitRebase.restore()
@@ -768,11 +764,11 @@ testProp.serial(
     await delay(0)
 
     await press(output)("l")
-    t.truthy(actions.setFiles.calledWith([]))
-    t.truthy(actions.setMode.calledWith("diff"))
+    t.true(actions.setFiles.calledWith([]))
+    t.true(actions.setMode.calledWith("diff"))
 
     await press(output)("return")
-    t.truthy(actions.setFiles.calledWith([]))
-    t.truthy(actions.setMode.calledWith("diff"))
+    t.true(actions.setFiles.calledWith([]))
+    t.true(actions.setMode.calledWith("diff"))
   },
 )

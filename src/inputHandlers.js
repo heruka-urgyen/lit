@@ -129,15 +129,16 @@ const getKeyMap = as => ({
   fixup: {
     modes: ["status", "diff"],
     keys: ["f"],
-    action: async state => {
-      const {setLog, setMode, selectItem} = as
-      const {modes} = state.app
+    action: async _ => {
+      const {setLog, setMode, selectItem, setWidth} = as
       const hasStagedFiles = await gitHasStagedFiles()
 
-      if (last(modes) !== "log" && hasStagedFiles) {
+      if (hasStagedFiles) {
+        setMode("fixup")
+        await delay(0)
+        setWidth(_ => 0)
         updateLog(setLog)
-        setMode("log")
-        selectItem(() => 0)
+        selectItem(_ => 0)
       }
     },
   },
@@ -146,13 +147,6 @@ const getKeyMap = as => ({
     keys: ["v"],
     action: _ => {
       as.setMode("preview")
-    },
-  },
-  hide: {
-    modes: ["diff"],
-    keys: ["f"],
-    action: _ => {
-      as.setWidth(_ => 0)
     },
   },
   resizeLeft: {
@@ -246,7 +240,7 @@ const getKeyMap = as => ({
     },
   },
   selectCommit: {
-    modes: ["log"],
+    modes: ["fixup"],
     keys: ["return"],
     action: state => {
       const lastMode = last(state.app.modes)
@@ -258,10 +252,12 @@ const getKeyMap = as => ({
     },
   },
   back: {
-    modes: ["log"],
+    modes: ["fixup"],
     keys: ["b"],
-    action: _ => {
-      as.setMode("status")
+    action: state => {
+      const lastMode = last(state.app.modes)
+
+      as.setMode(lastMode)
     },
   },
   checkoutCommit: {
