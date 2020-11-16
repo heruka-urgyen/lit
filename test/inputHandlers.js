@@ -389,6 +389,7 @@ testProp.serial(
   async (t, mode) => {
     const actions = {
       setMode: sinon.spy(),
+      setWidth: sinon.spy(),
     }
 
     const output = render(<App actions={actions} mode={mode} />)

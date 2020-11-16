@@ -147,6 +147,7 @@ const getKeyMap = as => ({
     keys: ["v"],
     action: _ => {
       as.setMode("preview")
+      as.setWidth(_ => 95)
     },
   },
   resizeLeft: {

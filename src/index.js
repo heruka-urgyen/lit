@@ -46,7 +46,6 @@ export default async function App(initialMode) {
           minHeight,
           maxHeight,
           width: 0,
-          previewWidth: 95,
           preview: "",
           previewPosition: 0,
         },

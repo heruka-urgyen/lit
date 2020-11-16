@@ -12,7 +12,7 @@ export default function DiffContainer({state, actions, minHeight, maxHeight, sho
   const {setWidth, setPreview} = actions
   const {mode} = state.app
   const {selected, files} = state.status
-  const {width, preview, previewPosition, previewWidth} = state.diff
+  const {width, preview, previewPosition} = state.diff
 
   useEffect(() => {
     if (mode === "diff" && files[selected] != null) {
@@ -27,10 +27,6 @@ export default function DiffContainer({state, actions, minHeight, maxHeight, sho
         Math.max(20, ((screenWidth - longestName - 5) * 100) / screenWidth),
       )
       setWidth(_ => width)
-    }
-
-    if (mode === "preview") {
-      setWidth(_ => previewWidth)
     }
   }, [mode])
 
@@ -71,7 +67,6 @@ DiffContainer.propTypes = {
       width: PropTypes.number.isRequired,
       preview: PropTypes.string.isRequired,
       previewPosition: PropTypes.number.isRequired,
-      previewWidth: PropTypes.number.isRequired,
     }).isRequired,
     status: shape({
       selected: number.isRequired,
