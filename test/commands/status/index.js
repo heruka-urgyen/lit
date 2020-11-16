@@ -37,9 +37,9 @@ test.serial("should run command", async t => {
 
   await runCommand("git add", ["A 1.js\r"], update)
 
-  t.truthy(gs.runCmd.calledWith({params: ["git add", "1.js"]}))
-  t.truthy(gs.gitStatus.called)
-  t.truthy(update.calledWith(["A 1.js"]))
+  t.true(gs.runCmd.calledWith({params: ["git add", "1.js"]}))
+  t.true(gs.gitStatus.called)
+  t.true(update.calledWith(["A 1.js"]))
 })
 
 test.serial("should try to commit w/o staging", async t => {
@@ -47,7 +47,7 @@ test.serial("should try to commit w/o staging", async t => {
   const exit = sinon.spy()
 
   commit(exit)
-  await t.truthy(gs.gitHasStagedFiles.called)
+  await t.true(gs.gitHasStagedFiles.called)
   t.falsy(pauseSpy.called)
   await t.falsy(gs.gitCommit.called)
   t.falsy(exit.called)
@@ -58,19 +58,19 @@ test.serial("should commit", async t => {
   const exit = sinon.spy()
 
   commit(exit)
-  await t.truthy(gs.gitHasStagedFiles.called)
-  t.truthy(pauseSpy.called)
-  await t.truthy(gs.gitCommit.called)
-  t.truthy(exit.called)
+  await t.true(gs.gitHasStagedFiles.called)
+  t.true(pauseSpy.called)
+  await t.true(gs.gitCommit.called)
+  t.true(exit.called)
 })
 
 test.serial("should commit fixup", async t => {
   const exit = sinon.spy()
 
   commitFixup("123zxc", exit)
-  t.truthy(pauseSpy.called)
-  await t.truthy(gs.gitCommitFixup.calledWith("123zxc"))
-  t.truthy(exit.called)
+  t.true(pauseSpy.called)
+  await t.true(gs.gitCommitFixup.calledWith("123zxc"))
+  t.true(exit.called)
 })
 
 test.serial("should try to commit amend w/o staging", async t => {
@@ -78,7 +78,7 @@ test.serial("should try to commit amend w/o staging", async t => {
   const exit = sinon.spy()
 
   commitAmend(exit)
-  await t.truthy(gs.gitHasStagedFiles.called)
+  await t.true(gs.gitHasStagedFiles.called)
   t.falsy(pauseSpy.called)
   await t.falsy(gs.gitCommitAmend.called)
   t.falsy(exit.called)
@@ -89,10 +89,10 @@ test.serial("should commit amend", async t => {
   const exit = sinon.spy()
 
   commitAmend(exit)
-  await t.truthy(gs.gitHasStagedFiles.called)
-  t.truthy(pauseSpy.called)
-  await t.truthy(gs.gitCommitAmend.called)
-  t.truthy(exit.called)
+  await t.true(gs.gitHasStagedFiles.called)
+  t.true(pauseSpy.called)
+  await t.true(gs.gitCommitAmend.called)
+  t.true(exit.called)
 })
 
 test.serial("should update log", async t => {
@@ -100,7 +100,7 @@ test.serial("should update log", async t => {
   const update = sinon.spy()
 
   await updateLog(update)
-  t.truthy(update.calledWith(["123zxc commit msg"]))
+  t.true(update.calledWith(["123zxc commit msg"]))
 })
 
 test.serial("should pre-render view", async t => {
@@ -121,7 +121,25 @@ test.serial("should pre-render view", async t => {
     "",
   ].join("\n")
 
-  t.truthy(write.calledWith(res))
+  t.true(write.calledWith(res))
+})
+
+test.serial("should render hint", async t => {
+  const res1 = [
+    "",
+    " q quit  | b back to status",
+    "",
+  ].join("\n")
+
+  const res2 = [
+    "",
+    " q quit  | a toggle all",
+    " s stage | r reset | o checkout | c commit | m amend | f fixup",
+    "",
+  ].join("\n")
+
+  t.is(getHint("log"), res1)
+  t.is(getHint(), res2)
 })
 
 test.serial("should get data", async t => {
@@ -130,9 +148,9 @@ test.serial("should get data", async t => {
 
   await getData()
 
-  t.truthy(gs.isGitRepo.called)
-  t.truthy(gs.gitStatus.called)
-  t.truthy(statusStrToList.calledWith("status"))
+  t.true(gs.isGitRepo.called)
+  t.true(gs.gitStatus.called)
+  t.true(statusStrToList.calledWith("status"))
 
   statusStrToList.restore()
 })

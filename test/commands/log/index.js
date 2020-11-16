@@ -62,8 +62,8 @@ testProp.serial(
 
     await getCommitFiles(commit)
 
-    t.truthy(gitCommittedFilesStub.calledWith([hash]))
-    t.truthy(statusStrToListStub.calledWith(`M ${file1}\nD ${file2}\nA ${file3}`))
+    t.true(gitCommittedFilesStub.calledWith([hash]))
+    t.true(statusStrToListStub.calledWith(`M ${file1}\nD ${file2}\nA ${file3}`))
 
     statusStrToListStub.restore()
     gitCommittedFilesStub.restore()
@@ -88,8 +88,8 @@ testProp.serial(
     pipeStub.resolves(diff)
 
     await showPreview(commit)(updateSpy, file)
-    t.truthy(gitShowStub.calledWith([hash, "--", path.resolve(process.cwd(), file)]))
-    t.truthy(updateSpy.calledWith(diff))
+    t.true(gitShowStub.calledWith([hash, "--", path.resolve(process.cwd(), file)]))
+    t.true(updateSpy.calledWith(diff))
   },
 )
 
@@ -124,7 +124,7 @@ test.serial("should pre-render view", async t => {
     "",
   ].join("\n")
 
-  t.truthy(write.calledWith(res))
+  t.true(write.calledWith(res))
 })
 
 test.serial("should get data", async t => {
@@ -135,9 +135,35 @@ test.serial("should get data", async t => {
 
   await getData()
 
-  t.truthy(isGitRepo.called)
-  t.truthy(gitLog.called)
+  t.true(isGitRepo.called)
+  t.true(gitLog.called)
 
   gitLog.restore()
   isGitRepo.restore()
+})
+
+test.serial("should render hint", async t => {
+  const res1 = [
+    "",
+    " q quit | b back to log",
+    " v show preview | h l resize",
+    "",
+  ].join("\n")
+
+  const res2 = [
+    "",
+    " q quit | v hide preview | j k scroll preview",
+    "",
+  ].join("\n")
+
+  const res3 = [
+    "",
+    " q quit | l view commit diff",
+    " o checkout | r rebase",
+    "",
+  ].join("\n")
+
+  t.is(getHint("diff"), res1)
+  t.is(getHint("preview"), res2)
+  t.is(getHint(), res3)
 })

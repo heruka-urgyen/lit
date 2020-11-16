@@ -11,9 +11,7 @@ export default function Status({state, actions, minHeight, maxHeight}) {
   const {mode} = state.app
   const {selected, allSelected, files} = state.status
   const {data} = state.log
-  const {
-    selectItem,
-  } = actions
+  const {selectItem} = actions
 
   if (mode === "fixup") {
     return (
