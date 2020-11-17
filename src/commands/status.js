@@ -52,4 +52,4 @@ export const getData = async () => {
   return statusStrToList(data)
 }
 
-export const getComponent = () => import("./View.js").then(x => x.default)
+export const getComponent = () => import("components/Status.js").then(x => x.default)

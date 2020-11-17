@@ -63,7 +63,7 @@ export const preRender = hint => lines => maxHeight => minHeight => {
   readline.moveCursor(process.stdout, -items[0].length, -(view.length + spaces.length + 3))
 }
 
-export const getComponent = () => import("./View.js").then(x => x.default)
+export const getComponent = () => import("components/LogContainer.js").then(x => x.default)
 
 export const getCommitFiles =
   commit => gitCommittedFiles([parseCommitHash(commit)])

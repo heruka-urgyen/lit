@@ -11,7 +11,7 @@ import {actions as getDiffActions} from "reducers/diff"
 import {actions as getLogActions} from "reducers/log"
 import inputHandlers from "./inputHandlers"
 
-const prepare = mode => import(`./commands/${mode}/index.js`)
+const prepare = mode => import(`./commands/${mode}.js`)
 
 export default async function App(initialMode) {
   try {

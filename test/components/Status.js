@@ -3,7 +3,7 @@ import test from "ava"
 import {render} from "ink-testing-library"
 import sinon from "sinon"
 
-import Status from "commands/status/View"
+import Status from "components/Status"
 import * as g from "git-utils"
 
 let gitStatus

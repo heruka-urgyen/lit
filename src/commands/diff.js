@@ -39,7 +39,7 @@ export const getData = async () => {
   return statusStrToList(data)
 }
 
-export const getComponent = () => import("./View.js").then(x => x.default)
+export const getComponent = () => import("components/DiffContainer.js").then(x => x.default)
 
 export const getDimensions = () => ({
   minHeight: process.stdout.rows - 6,
