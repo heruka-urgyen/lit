@@ -2,11 +2,46 @@ import chalk from "chalk"
 import ansiToJson from "ansi-to-json"
 import colorize from "ink/build/colorize"
 import stripAnsi from "strip-ansi"
+import {added, deleted, ignored, modified, untracked} from "colors"
 
+export const identity = _ => _
+export const fst = xs => xs[0]
 export const last = xs => xs.length > 0 ? xs[xs.length - 1] : null
+export const colorizeStatus = line => line
+  .replace(".M", modified(" M"))
+  .replace(".D", deleted(" D"))
+  .replace("M.", added("M "))
+  .replace("D.", added("D "))
+  .replace("A.", added("A "))
+  .replace("R.", added("R "))
+  .replace("UD", x => modified(x))
+  .replace("MM", `${added("M")}${modified("M")}`)
+  .replace("??", untracked("??"))
+  .replace(/!!.+/, x => ignored(x))
+
 export const statusStrToList = str => str
-  .split(/[\r\n]+/).slice(0, -1)
-  .sort((x, y) => last(x.split(" ")) < last(y.split(" ")) ? 1 : -1)
+  .split("\n")
+  .filter(identity)
+  .map(line => {
+    const [ordinary, renamed, unmerged] = ["1", "2", "u"]
+    const [mode, ...fields] = line.split(" ")
+    const [xy, path] = [fst, last].map(f => f(fields))
+
+    if (mode === ordinary || mode === unmerged) {
+      return `${xy} ${path}`
+    }
+
+    if (mode === renamed) {
+      return `${xy} ${path.replace(
+        /(.+)\t(.+)/g, (_, path, origPath) => `${origPath} -> ${path}`,
+      )}`
+    }
+
+    // untracked or ignored
+    return `${mode}${mode} ${fields}`
+  })
+  .sort((x, y) => last(x.split(" ")) < last(y.split(" ")) ? -1 : 1)
+  .map(colorizeStatus)
 
 export const calculateListView = (items, viewSize, selectedItem) => {
   if (items.length <= viewSize) {
@@ -76,8 +111,6 @@ export const setBgColor = color => str => {
     c => setFg(setBg(chalk.bold(c.content), color), `rgb(${c.fg})`),
   ).join("")
 }
-
-export const identity = _ => _
 
 const applyHorizonralMargin = m => "\n".repeat(m)
 const applyVerticalMargin = m => " ".repeat(m)

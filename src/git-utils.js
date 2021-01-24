@@ -60,16 +60,21 @@ const sp = (cmd, params) => new Promise(
     c.stdout.on("data", data => {
       res(data.toString("utf8"))
     })
+
+    c.on("close", _ => res(""))
   },
 )
 
 export const gitShow = params => sp("git", ["show", "--color=always", ...params])
 export const gitCommittedFiles = params => sp(
   "git",
-  ["diff-tree", "--no-commit-id", "--name-status", "-r", "--root", ...params],
+  ["diff-tree", "--no-commit-id", "--name-status", "-r", "--root", "-C", "-R", ...params],
 )
 export const gitDiff = params => sp("git", ["diff", "--color=always", ...params])
-export const gitStatusPorcelain = file => exec(`git status --porcelain=2 ${file}`)
+export const gitStatusPorcelain = file => sp(
+  "git",
+  ["status", "--porcelain=2", file].filter(x => x),
+)
 
 export const gitHasStagedFiles =
   () => exec("git diff --cached --name-only", x => x.length > 0)

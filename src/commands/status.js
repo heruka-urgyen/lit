@@ -3,7 +3,7 @@ import readline from "readline"
 import sliceAnsi from "slice-ansi"
 import {statusStrToList, renderHint, calculateListView} from "utils"
 import {
-  gitStatus,
+  gitStatusPorcelain,
   isGitRepo,
 } from "git-utils"
 import {selectedBackground} from "colors"
@@ -47,7 +47,7 @@ export const preRender = hint => lines => maxHeight => minHeight => {
 
 export const getData = async () => {
   await isGitRepo()
-  const data = await gitStatus()
+  const data = await gitStatusPorcelain()
 
   return statusStrToList(data)
 }

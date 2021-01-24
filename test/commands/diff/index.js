@@ -15,7 +15,6 @@ import {
   calculatePreviewWindow,
 } from "commands/diff"
 
-let gitStatus
 let isGitRepo
 let getPager
 let gitDiff
@@ -31,7 +30,6 @@ const ARROW_UP = "\u001B[A"
 const ARROW_DOWN = "\u001B[B"
 
 test.beforeEach(() => {
-  gitStatus = sinon.stub(g, "gitStatus")
   isGitRepo = sinon.stub(g, "isGitRepo")
   getPager = sinon.stub(g, "getPager")
   gitDiff = sinon.stub(g, "gitDiff")
@@ -45,7 +43,6 @@ test.beforeEach(() => {
 })
 
 test.afterEach(() => {
-  gitStatus.restore()
   isGitRepo.restore()
   getPager.restore()
   gitDiff.restore()
@@ -188,12 +185,12 @@ test.serial("should pre-render view", async t => {
 
 test.serial("should get data", async t => {
   const statusStrToList = sinon.stub(u, "statusStrToList")
-  gitStatus.resolves("status")
+  gitStatusPorcelain.resolves("status")
 
   await getData()
 
   t.true(isGitRepo.called)
-  t.true(gitStatus.called)
+  t.true(gitStatusPorcelain.called)
   t.true(statusStrToList.calledWith("status"))
 
   statusStrToList.restore()

@@ -6,12 +6,12 @@ import {
   isPathRelative,
   gitRoot,
   runCmd,
-  gitStatus,
   gitHasStagedFiles,
   gitLog,
   gitCommit,
   gitCommitAmend,
   gitCommitFixup,
+  gitStatusPorcelain,
 } from "git-utils"
 
 export const runCommand = async (cmd, fs, update) => {
@@ -19,10 +19,12 @@ export const runCommand = async (cmd, fs, update) => {
   const root = await gitRoot()
   const files = fs.map(f => f.split(" ").slice(-1)[0].replace("\r", ""))
     .map(file => rel ? file : path.resolve(root, file))
+    .flatMap((file, _, files) => files.length > 1 ? [file] : ["--", file])
 
   await runCmd({params: [cmd, ...files]})
-  const data = await gitStatus()
+  const data = await gitStatusPorcelain()
   const preparedData = statusStrToList(data)
+
   update(preparedData)
 
   return preparedData

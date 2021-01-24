@@ -31,14 +31,14 @@ test.afterEach(_ => {
 
 test.serial("should run command", async t => {
   gs.runCmd.resolves(1)
-  gs.gitStatus.resolves("A 1.js\n")
+  gs.gitStatusPorcelain.resolves("1 A 1.js\n")
   gs.isPathRelative.resolves(true)
   const update = sinon.spy()
 
   await runCommand("git add", ["A 1.js\r"], update)
 
-  t.true(gs.runCmd.calledWith({params: ["git add", "1.js"]}))
-  t.true(gs.gitStatus.called)
+  t.true(gs.runCmd.calledWith({params: ["git add", "--", "1.js"]}))
+  t.true(gs.gitStatusPorcelain.called)
   t.true(update.calledWith(["A 1.js"]))
 })
 
@@ -144,12 +144,12 @@ test.serial("should render hint", async t => {
 
 test.serial("should get data", async t => {
   const statusStrToList = sinon.stub(u, "statusStrToList")
-  gs.gitStatus.resolves("status")
+  gs.gitStatusPorcelain.resolves("status")
 
   await getData()
 
   t.true(gs.isGitRepo.called)
-  t.true(gs.gitStatus.called)
+  t.true(gs.gitStatusPorcelain.called)
   t.true(statusStrToList.calledWith("status"))
 
   statusStrToList.restore()

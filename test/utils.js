@@ -4,13 +4,13 @@ import sinon from "sinon"
 import {statusStrToList, calculateListView, pipe} from "utils"
 
 test("should map status str to list", t => {
-  const s1 = "123\r\n"
-  const s2 = "M filename\n?? filename2\nM filename3\n"
-  const s3 = "M filename\n?? filename2\n"
+  const s1 = "1 .M 123\n"
+  const s2 = "1 .M filename\n? filename2\n1 .M filename3\n"
+  const s3 = "1 .M filename\n? filename2\n"
 
-  const l1 = ["123"]
-  const l2 = ["M filename3", "?? filename2", "M filename"]
-  const l3 = ["?? filename2", "M filename"]
+  const l1 = [" M 123"]
+  const l2 = [" M filename", "?? filename2", " M filename3"]
+  const l3 = [" M filename", "?? filename2"]
 
   t.deepEqual(statusStrToList(s1), l1)
   t.deepEqual(statusStrToList(s2), l2)

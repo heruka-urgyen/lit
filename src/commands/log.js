@@ -3,10 +3,24 @@ import process from "process"
 import readline from "readline"
 import sliceAnsi from "slice-ansi"
 
-import {renderHint, calculateListView, pipe, statusStrToList, parseCommitHash} from "utils"
-import {gitRoot, isGitRepo, gitLog, gitCommittedFiles, getPager, gitShow} from "git-utils"
+import {
+  calculateListView,
+  colorizeStatus,
+  parseCommitHash,
+  pipe,
+  renderHint,
+} from "utils"
 
-import {selectedBackground, added, deleted, modified} from "colors"
+import {
+  gitCommittedFiles,
+  gitLog,
+  getPager,
+  gitRoot,
+  gitShow,
+  isGitRepo,
+} from "git-utils"
+
+import {selectedBackground} from "colors"
 import {logHint as lh, diffHint as dh} from "hints"
 
 import Selector from "components/Selector"
@@ -68,10 +82,11 @@ export const getComponent = () => import("components/LogContainer.js").then(x =>
 export const getCommitFiles =
   commit => gitCommittedFiles([parseCommitHash(commit)])
     .then(x => x
-      .replace(/M\t/g, `${modified("M")} `)
-      .replace(/D\t/g, `${deleted("D")} `)
-      .replace(/A\t/g, `${added("A")} `))
-    .then(statusStrToList)
+      .replace(/M\t/g, ".M ")
+      .replace(/D\t/g, ".D ")
+      .replace(/A\t/g, "A. ")
+      .replace(/R.*\t(.+)\t(.+)/g, (_, x, y) => `R. ${y} -> ${x}`))
+    .then(xs => xs.split("\n").slice(0, -1).map(x => colorizeStatus(x)))
 
 export const showPreview = commit => async (update, f) => {
   const root = await gitRoot()

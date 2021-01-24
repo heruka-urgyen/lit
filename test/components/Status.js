@@ -6,18 +6,15 @@ import sinon from "sinon"
 import Status from "components/Status"
 import * as g from "git-utils"
 
-let gitStatus
 let gitHasStagedFiles
 let gitLog
 
 test.beforeEach(_ => {
-  gitStatus = sinon.stub(g, "gitStatus")
   gitHasStagedFiles = sinon.stub(g, "gitHasStagedFiles")
   gitLog = sinon.stub(g, "gitLog")
 })
 
 test.afterEach(_ => {
-  gitStatus.restore()
   gitHasStagedFiles.restore()
   gitLog.restore()
 })

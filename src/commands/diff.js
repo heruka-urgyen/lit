@@ -8,7 +8,6 @@ import {
   isPathRelative,
   gitRoot,
   isGitRepo,
-  gitStatus,
   getPager,
   gitDiff,
   gitStatusPorcelain,
@@ -34,7 +33,7 @@ export const preRender = hint => lines => maxHeight => minHeight => {
 
 export const getData = async () => {
   await isGitRepo()
-  const data = await gitStatus()
+  const data = await gitStatusPorcelain()
 
   return statusStrToList(data)
 }
