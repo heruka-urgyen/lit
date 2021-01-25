@@ -155,6 +155,7 @@ testProp.serial(
 
     const actions = {
       setFiles,
+      selectItem: sinon.spy(),
     }
     const state1 = {
       modes: [],
@@ -282,6 +283,7 @@ testProp.serial(
     const commit = sinon.stub(ah, "commit")
     const actions = {
       exit: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const outputS = render(<App actions={actions} mode={passMode} modes={[]} />)
@@ -313,6 +315,7 @@ testProp.serial(
     const commitAmend = sinon.stub(ah, "commitAmend")
     const actions = {
       exit: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const outputS = render(<App actions={actions} mode={passMode} modes={[]} />)
@@ -390,6 +393,7 @@ testProp.serial(
     const actions = {
       setMode: sinon.spy(),
       setWidth: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const output = render(<App actions={actions} mode={mode} />)
@@ -416,6 +420,7 @@ testProp.serial(
   async (t, mode) => {
     const actions = {
       setMode: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const output = render(<App actions={actions} mode={mode} />)
@@ -437,6 +442,7 @@ testProp.serial(
   async (t, mode) => {
     const actions = {
       setMode: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const output = render(<App actions={actions} mode={mode} />)
@@ -460,6 +466,7 @@ testProp.serial(
       setWidth: sinon.spy(),
       setFiles: sinon.spy(),
       setMode: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const output = render(<App actions={actions} mode={mode} />)
@@ -502,6 +509,7 @@ testProp.serial(
   async (t, mode) => {
     const actions = {
       scrollPreview: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const output = render(<App actions={actions} mode={mode} />)
@@ -576,6 +584,7 @@ testProp.serial(
       exit: sinon.spy(),
       setFiles: sinon.spy(),
       setMode: sinon.spy(),
+      selectItem: sinon.spy(),
     }
     const state0 = {
       mode,
@@ -629,6 +638,7 @@ testProp.serial(
   async (t, mode) => {
     const actions = {
       setMode: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const output = render(<App actions={actions} mode={mode} modes={["status"]} />)
@@ -667,6 +677,7 @@ testProp.serial(
     const data = commits.map(toCommitMsg)
     const actions = {
       exit: sinon.spy(),
+      selectItem: sinon.spy(),
     }
     const state = {
       mode: "log",
@@ -710,6 +721,7 @@ testProp.serial(
 
     const actions = {
       exit: sinon.spy(),
+      selectItem: sinon.spy(),
     }
 
     const state = {
@@ -752,6 +764,7 @@ testProp.serial(
     const actions = {
       setFiles: sinon.spy(),
       setMode: sinon.spy(),
+      selectItem: sinon.spy(),
     }
     const state = {
       mode: "log",

@@ -178,6 +178,7 @@ const getKeyMap = as => ({
     action: async _ => {
       await delay(0)
       as.setMode("log")
+      as.selectItem(_ => 0)
     },
   },
   hidePreview: {
