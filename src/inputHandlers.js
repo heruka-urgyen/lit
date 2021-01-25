@@ -3,6 +3,8 @@ import {last, delay, parseCommitHash} from "utils"
 import {
   gitHasStagedFiles,
   gitCheckout,
+  gitAdd,
+  gitReset,
   gitRebase,
 } from "git-utils"
 
@@ -45,16 +47,18 @@ const getKeyMap = as => ({
   add: {
     modes: ["status", "diff"],
     keys: ["s"],
-    action: state => {
+    action: async state => {
       const {setFiles} = as
       const {modes} = state.app
       const {allSelected, files, selected} = state.status
 
       if (last(modes) !== "log") {
         if (allSelected) {
-          runCommand("add", files, setFiles)
+          const fs = await runCommand(gitAdd, files)
+          setFiles(fs)
         } else {
-          runCommand("add", [files[selected]], setFiles)
+          const fs = await runCommand(gitAdd, [files[selected]])
+          setFiles(fs)
         }
       }
     },
@@ -62,16 +66,18 @@ const getKeyMap = as => ({
   reset: {
     modes: ["status", "diff"],
     keys: ["r"],
-    action: state => {
+    action: async state => {
       const {setFiles} = as
       const {modes} = state.app
       const {allSelected, files, selected} = state.status
 
       if (last(modes) !== "log") {
         if (allSelected) {
-          runCommand("reset", files, setFiles)
+          const fs = await runCommand(gitReset, files)
+          setFiles(fs)
         } else {
-          runCommand("reset", [files[selected]], setFiles)
+          const fs = await runCommand(gitReset, [files[selected]])
+          setFiles(fs)
         }
       }
     },
@@ -87,9 +93,11 @@ const getKeyMap = as => ({
 
       if (last(modes) !== "log") {
         if (allSelected) {
-          res = await runCommand("checkout", files, setFiles)
+          res = await runCommand(gitCheckout, files)
+          setFiles(res)
         } else {
-          res = await runCommand("checkout", [files[selected]], setFiles)
+          res = await runCommand(gitCheckout, [files[selected]])
+          setFiles(res)
         }
 
         const filesChanged = res.join() !== files.join()

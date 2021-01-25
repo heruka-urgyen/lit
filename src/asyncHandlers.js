@@ -5,7 +5,6 @@ import stripAnsi from "strip-ansi"
 import {
   isPathRelative,
   gitRoot,
-  runCmd,
   gitHasStagedFiles,
   gitLog,
   gitCommit,
@@ -14,20 +13,19 @@ import {
   gitStatusPorcelain,
 } from "git-utils"
 
-export const runCommand = async (cmd, fs, update) => {
+export const runCommand = async (cmd, fs) => {
   const rel = await isPathRelative()
   const root = await gitRoot()
   const files = fs.map(f => f.split(" ").slice(-1)[0].replace("\r", ""))
     .map(file => rel ? file : path.resolve(root, file))
     .flatMap((file, _, files) => files.length > 1 ? [file] : ["--", file])
 
-  await runCmd({params: [cmd, ...files]})
-  const data = await gitStatusPorcelain()
-  const preparedData = statusStrToList(data)
+  await cmd(files)
 
-  update(preparedData)
+  const status = await gitStatusPorcelain()
+  const updatedFiles = statusStrToList(status)
 
-  return preparedData
+  return updatedFiles
 }
 
 export const commit = async exit => {

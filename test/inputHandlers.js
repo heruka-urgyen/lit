@@ -134,10 +134,10 @@ testProp.serial(
     t.is(runCommand.callCount, 0)
 
     await press(outputS1)("s")
-    t.true(runCommand.calledWith("add", ["M 1"], actions.setFiles))
+    t.true(runCommand.calledWith(gu.gitAdd, ["M 1"]))
 
     await press(outputS2)("s")
-    t.true(runCommand.calledWith("add", ["M 1", "M 2"], actions.setFiles))
+    t.true(runCommand.calledWith(gu.gitAdd, ["M 1", "M 2"]))
 
     runCommand.restore()
   },
@@ -189,10 +189,10 @@ testProp.serial(
     t.is(runCommand.callCount, 0)
 
     await press(outputS1)("r")
-    t.true(runCommand.calledWith("reset", ["M 1"], actions.setFiles))
+    t.true(runCommand.calledWith(gu.gitReset, ["M 1"]))
 
     await press(outputS2)("r")
-    t.true(runCommand.calledWith("reset", ["M 1", "M 2"], actions.setFiles))
+    t.true(runCommand.calledWith(gu.gitReset, ["M 1", "M 2"]))
 
     runCommand.restore()
   },
@@ -257,15 +257,15 @@ testProp.serial(
     t.is(runCommand.callCount, 0)
 
     await press(outputS1)("o")
-    t.true(runCommand.calledWith("checkout", ["M 1"], actions.setFiles))
+    t.true(runCommand.calledWith(gu.gitCheckout, ["M 1"]))
     t.is(actions.selectItem.callCount, 1)
 
     await press(outputS2)("o")
-    t.true(runCommand.calledWith("checkout", ["M 2"], actions.setFiles))
+    t.true(runCommand.calledWith(gu.gitCheckout, ["M 2"]))
     t.is(actions.exit.callCount, 1)
 
     await press(outputS3)("o")
-    t.true(runCommand.calledWith("checkout", ["M 1", "M 2"], actions.setFiles))
+    t.true(runCommand.calledWith(gu.gitCheckout, ["M 1", "M 2"]))
     t.is(actions.exit.callCount, 2)
 
     runCommand.restore()
