@@ -57,7 +57,7 @@ export const gitReset = (params = []) => sp("git", ["reset", ...params])
 export const gitShow = params => sp("git", ["show", "--color=always", ...params])
 export const gitCommittedFiles = params => sp(
   "git",
-  ["diff-tree", "--no-commit-id", "--name-status", "-r", "--root", "-C", "-R", ...params],
+  ["diff-tree", "--no-commit-id", "--name-status", "-r", "--root", "-M", ...params],
 )
 export const gitDiff = params => sp("git", ["diff", "--color=always", ...params])
 export const gitStatusPorcelain = file => sp(
