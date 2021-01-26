@@ -46,7 +46,12 @@ export const preRender = hint => lines => maxHeight => minHeight => {
 }
 
 export const getData = async () => {
-  await isGitRepo()
+  try {
+    await isGitRepo()
+  } catch (e) {
+    console.log(e)
+  }
+
   const data = await gitStatusPorcelain()
 
   return statusStrToList(data)

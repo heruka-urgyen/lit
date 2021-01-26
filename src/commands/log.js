@@ -31,7 +31,12 @@ export const getDimensions = () => ({
 })
 
 export const getData = async () => {
-  await isGitRepo()
+  try {
+    await isGitRepo()
+  } catch (e) {
+    console.log(e)
+  }
+
   const data = await gitLog()
 
   return data.split("\n").slice(0, -1)
