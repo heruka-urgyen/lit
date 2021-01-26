@@ -14,16 +14,9 @@ export const gitCommitFixup = hash => gitCommit(["--fixup", hash])
 
 export const gitCommitAmend = () => gitCommit(["--amend"])
 
-const exec = (cmd, resolver = identity) => new Promise(
-  (res, rej) => cp.exec(
-    cmd,
-    {encoding: "utf8"},
-    (e, stdout) => e ? rej(e) : res(resolver(stdout)),
-  ),
-)
-
-const sp = (cmd, params) => new Promise(
+const sp = (cmd, params, resolver = identity) => new Promise(
   (res, rej) => {
+    let buf = ""
     const c = cp.spawn(cmd, params)
 
     c.stderr.on("data", e => {
@@ -31,10 +24,12 @@ const sp = (cmd, params) => new Promise(
     })
 
     c.stdout.on("data", data => {
-      res(data.toString("utf8"))
+      buf = buf + data.toString("utf8")
     })
 
-    c.on("close", _ => res(""))
+    c.on("close", _ => {
+      res(resolver(buf))
+    })
   },
 )
 
@@ -62,19 +57,25 @@ export const gitCommittedFiles = params => sp(
 export const gitDiff = params => sp("git", ["diff", "--color=always", ...params])
 export const gitStatusPorcelain = file => sp(
   "git",
-  ["status", "--porcelain=2", file].filter(x => x),
+  ["status", "--porcelain=2", file].filter(identity),
 )
 
 export const gitHasStagedFiles =
-  () => exec("git diff --cached --name-only", x => x.length > 0)
+  () => sp("git", ["diff", "--cached", "--name-only"], x => x.length > 0)
 
 export const gitLog =
-  () => exec(
-    "git log --color=always --format=" +
-    "'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'",
+  () => sp(
+    "git",
+    [
+      "log",
+      "--color=always",
+      "--format=" +
+        "%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset",
+    ],
   )
 
-export const isGitRepo = () => exec("git rev-parse --is-inside-work-tree")
+export const isGitRepo = () => sp("git", ["rev-parse", "--is-inside-work-tree"])
 export const gitRoot =
-  () => exec("git rev-parse --show-toplevel").then(x => x.replace("\n", ""))
-export const isPathRelative = () => exec("git config status.relativePaths")
+  () => sp("git", ["rev-parse", "--show-toplevel"]).then(x => x.replace("\n", ""))
+export const isPathRelative =
+  () => sp("git", ["config", "status.relativePaths"], JSON.parse)

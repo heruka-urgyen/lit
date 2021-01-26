@@ -20,19 +20,15 @@ import {
 } from "git-utils"
 
 let cpSpawnSpy
-let cpExecSpy
 
 test.beforeEach(_ => {
   cpSpawnSpy = sinon.stub(cp, "spawn")
-  cpExecSpy = sinon.stub(cp, "exec")
 
   cpSpawnSpy.returns({on: _ => _, stdout: {on: _ => _}, stderr: {on: _ => _}})
-  cpExecSpy.returns(0)
 })
 
 test.afterEach(_ => {
   cpSpawnSpy.restore()
-  cpExecSpy.restore()
 })
 
 test.serial("should show gitStatus", t => {
@@ -68,35 +64,35 @@ test.serial("should gitCommitAmend", t => {
 test.serial("should gitHasStagedFiles", async t => {
   gitHasStagedFiles()
 
-  t.deepEqual(cpExecSpy.lastCall.args[0], "git diff --cached --name-only")
-  t.deepEqual(cpExecSpy.lastCall.args[1], {encoding: "utf8"})
-  t.deepEqual(typeof cpExecSpy.lastCall.args[2], "function")
+  t.deepEqual(cpSpawnSpy.lastCall.args[0], "git")
+  t.deepEqual(cpSpawnSpy.lastCall.args[1], ["diff", "--cached", "--name-only"])
 })
 
 test.serial("should gitLog", async t => {
   gitLog()
 
-  t.deepEqual(
-    cpExecSpy.lastCall.args[0],
-    "git log --color=always --format=" +
-    "'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'",
-  )
-  t.deepEqual(cpExecSpy.lastCall.args[1], {encoding: "utf8"})
-  t.deepEqual(typeof cpExecSpy.lastCall.args[2], "function")
+  t.deepEqual(cpSpawnSpy.lastCall.args[0], "git")
+  t.deepEqual(cpSpawnSpy.lastCall.args[1], [
+    "log",
+    "--color=always",
+    "--format=%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset",
+  ])
 })
 
 test.serial("should isGitRepo", async t => {
   isGitRepo()
 
-  t.deepEqual(cpExecSpy.lastCall.args[0], "git rev-parse --is-inside-work-tree")
-  t.deepEqual(cpExecSpy.lastCall.args[1], {encoding: "utf8"})
-  t.deepEqual(typeof cpExecSpy.lastCall.args[2], "function")
+  t.deepEqual(cpSpawnSpy.lastCall.args[0], "git")
+  t.deepEqual(cpSpawnSpy.lastCall.args[1], ["rev-parse", "--is-inside-work-tree"])
 })
 
 test.serial("should call getPager", async t => {
-  cpSpawnSpy.onCall(0).returns({on: _ => _, stdout: {on: (_, f) => f("")}, stderr: {on: _ => _}})
-  cpSpawnSpy.onCall(1).returns({on: _ => _, stdout: {on: (_, f) => f("some-pager")}, stderr: {on: _ => _}})
-  cpSpawnSpy.onCall(2).returns({on: _ => _, stdout: {on: (_, f) => f("delta")}, stderr: {on: _ => _}})
+  cpSpawnSpy.onCall(0)
+    .returns({on: (_, f) => f(), stdout: {on: (_, f) => f("")}, stderr: {on: _ => _}})
+  cpSpawnSpy.onCall(1)
+    .returns({on: (_, f) => f(), stdout: {on: (_, f) => f("some-pager")}, stderr: {on: _ => _}})
+  cpSpawnSpy.onCall(2)
+    .returns({on: (_, f) => f(), stdout: {on: (_, f) => f("delta")}, stderr: {on: _ => _}})
 
   const pagerSpy = {on: sinon.spy()}
   cpSpawnSpy.onCall(3).returns(pagerSpy)
@@ -143,11 +139,13 @@ test.serial("should gitRebase", async t => {
 test.serial("should gitRoot", async t => {
   gitRoot()
 
-  t.deepEqual(cpExecSpy.lastCall.args[0], "git rev-parse --show-toplevel")
+  t.deepEqual(cpSpawnSpy.lastCall.args[0], "git")
+  t.deepEqual(cpSpawnSpy.lastCall.args[1], ["rev-parse", "--show-toplevel"])
 })
 
 test.serial("should isPathRelative", async t => {
   isPathRelative()
 
-  t.deepEqual(cpExecSpy.lastCall.args[0], "git config status.relativePaths")
+  t.deepEqual(cpSpawnSpy.lastCall.args[0], "git")
+  t.deepEqual(cpSpawnSpy.lastCall.args[1], ["config", "status.relativePaths"])
 })
