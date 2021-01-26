@@ -445,7 +445,7 @@ testProp.serial(
       selectItem: sinon.spy(),
     }
 
-    const output = render(<App actions={actions} mode={mode} />)
+    const output = render(<App actions={actions} mode={mode} modes={["log"]} />)
 
     await delay(0)
 

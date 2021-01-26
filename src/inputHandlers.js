@@ -175,10 +175,14 @@ const getKeyMap = as => ({
   backToLog: {
     modes: ["diff"],
     keys: ["b"],
-    action: async _ => {
-      await delay(0)
-      as.setMode("log")
-      as.selectItem(_ => 0)
+    action: async state => {
+      const mode = state.app.modes[0]
+
+      if (mode === "log") {
+        await delay(0)
+        as.setMode("log")
+        as.selectItem(_ => 0)
+      }
     },
   },
   hidePreview: {
