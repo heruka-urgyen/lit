@@ -1,5 +1,5 @@
 import path from "path"
-import {statusStrToList} from "utils"
+import {extractFilename, statusStrToList} from "utils"
 import stripAnsi from "strip-ansi"
 
 import {
@@ -16,7 +16,7 @@ import {
 export const runCommand = async (cmd, fs) => {
   const rel = await isPathRelative()
   const root = await gitRoot()
-  const files = fs.map(f => f.split(" ").slice(-1)[0].replace("\r", ""))
+  const files = fs.map(f => extractFilename(f).replace("\r", ""))
     .map(file => rel ? file : path.resolve(root, file))
     .flatMap((file, _, files) => files.length > 1 ? [file] : ["--", file])
 

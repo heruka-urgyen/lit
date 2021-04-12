@@ -9,15 +9,19 @@ export const fst = xs => xs[0]
 export const last = xs => xs.length > 0 ? xs[xs.length - 1] : null
 export const colorizeStatus = line => line
   .replace(".M", modified(" M"))
+  .replace("RD", deleted(" D"))
   .replace(".D", deleted(" D"))
   .replace("M.", added("M "))
   .replace("D.", added("D "))
   .replace("A.", added("A "))
+  .replace("AM", modified("A "))
   .replace("R.", added("R "))
   .replace("UD", x => modified(x))
   .replace("MM", `${added("M")}${modified("M")}`)
   .replace("??", untracked("??"))
   .replace(/!!.+/, x => ignored(x))
+
+export const extractFilename = str => stripAnsi(str).replace(/..\s/, "")
 
 export const statusStrToList = str => str
   .split("\n")
@@ -25,20 +29,29 @@ export const statusStrToList = str => str
   .map(line => {
     const [ordinary, renamed, unmerged] = ["1", "2", "u"]
     const [mode, ...fields] = line.split(" ")
-    const [xy, path] = [fst, last].map(f => f(fields))
 
-    if (mode === ordinary || mode === unmerged) {
-      return `${xy} ${path}`
+    if (mode === ordinary) {
+      const [xy, _1, _2, _3, _4, _5, _6, ...path] = fields
+
+      return `${xy} ${path.join(" ")}`
+    }
+
+    if (mode === unmerged) {
+      const [xy, _1, _2, _3, _4, _5, _6, _7, _8, ...path] = fields
+
+      return `${xy} ${path.join(" ")}`
     }
 
     if (mode === renamed) {
-      return `${xy} ${path.replace(
+      const [xy, _1, _2, _3, _4, _5, _6, _7, ...path] = fields
+
+      return `${xy} ${path.join(" ").replace(
         /(.+)\t(.+)/g, (_, path, origPath) => `${origPath} -> ${path}`,
       )}`
     }
 
     // untracked or ignored
-    return `${mode}${mode} ${fields}`
+    return `${mode}${mode} ${fields.join(" ")}`
   })
   .sort((x, y) => last(x.split(" ")) < last(y.split(" ")) ? -1 : 1)
   .map(colorizeStatus)

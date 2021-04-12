@@ -5,6 +5,7 @@ import stripAnsi from "strip-ansi"
 
 import Preview from "components/Preview"
 import Status from "components/Status"
+import {extractFilename} from "utils"
 
 export default function DiffContainer({state, actions, minHeight, maxHeight, showPreview}) {
   const {stdout} = useStdout()
@@ -16,7 +17,7 @@ export default function DiffContainer({state, actions, minHeight, maxHeight, sho
 
   useEffect(() => {
     if (mode === "diff" && files[selected] != null) {
-      showPreview(setPreview, files[selected].split(" ").slice(-1)[0])
+      showPreview(setPreview, extractFilename(files[selected]))
     }
   }, [selected, files.length])
 
