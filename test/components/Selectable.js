@@ -9,7 +9,7 @@ const delay = (n = 100) => new Promise(r => setTimeout(r, n))
 
 test("should display selected file", t => {
   const data = ["M file1", "A file2", "?? file3"]
-  const r = render(<Selectable data={data} selected={1} maxHeight={10} />)
+  const r = render(<Selectable data={data} selected={1} minHeight={3} maxHeight={10} />)
 
   t.deepEqual(
     r.lastFrame(), [
@@ -54,4 +54,12 @@ test("should select items in status on j, k, g, G", async t => {
   output.stdin.write("G")
   await delay()
   t.is(selectItem.callCount, 4)
+
+  output.stdin.write(ARROW_DOWN)
+  await delay()
+  t.is(selectItem.callCount, 5)
+
+  output.stdin.write(ARROW_UP)
+  await delay()
+  t.is(selectItem.callCount, 6)
 })

@@ -2,11 +2,15 @@ import React from "react"
 import PropTypes from "prop-types"
 import {Box, Text} from "ink"
 
-import {calculatePreviewWindow} from "./utils"
+import {calculatePreviewWindow} from "commands/diff"
 
 export default function Preview({preview, width, height, previewPosition}) {
-  if (preview.length === 0 || width === 0) {
+  if (width === 0) {
     return <Box />
+  }
+
+  if (preview.length === 0) {
+    return <Text>(empty file)</Text>
   }
 
   const lines = calculatePreviewWindow(preview, width, height, previewPosition)

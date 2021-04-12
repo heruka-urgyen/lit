@@ -24,9 +24,10 @@ const printHelp = () => {
 }
 
 const showVersion = () => {
+  console.log()
   try {
-    const p = fs.readFileSync("./package.json", {encoding: "utf8"})
-    const version = p.match(/"version":\s"(.+)",/)[1]
+    const p = fs.readFileSync(`${__dirname}/package.json`, {encoding: "utf8"})
+    const version = p.match(/"version":\s"(.+)"/)[1]
 
     console.log(version)
   } catch (e) {
@@ -35,6 +36,8 @@ const showVersion = () => {
 }
 
 const runCli = command => {
+  const app = require("./dist/index").default
+
   if (!command || command === "--help") {
     return printHelp()
   }
@@ -44,15 +47,15 @@ const runCli = command => {
   }
 
   if (command === "status") {
-    return require("./dist/status")
+    return app("status")
   }
 
   if (command === "diff") {
-    return require("./dist/diff")
+    return app("diff")
   }
 
   if (command === "log") {
-    return require("./dist/log")
+    return app("log")
   }
 
   return printUsage()

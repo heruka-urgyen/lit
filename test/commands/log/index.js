@@ -1,13 +1,15 @@
+import path from "path"
 import test from "ava"
 import {testProp, fc} from "ava-fast-check"
 import sinon from "sinon"
 
 import {
-  parseCommitHash,
+  getHint,
+  preRender,
+  getData,
   getCommitFiles,
   showPreview,
-  handleInput,
-} from "commands/log/log-utils"
+} from "commands/log"
 import * as u from "utils"
 import * as gu from "git-utils"
 
@@ -33,7 +35,7 @@ testProp.serial(
   async (t, hash, msg, timestamp, author) => {
     const commit = `${hash} - ${msg} (${timestamp} time ago) <${author}>`
 
-    const res = parseCommitHash(commit)
+    const res = u.parseCommitHash(commit)
 
     t.deepEqual(res, hash)
   },
@@ -51,7 +53,6 @@ testProp.serial(
     fc.base64String(1),
   ],
   async (t, hash, msg, timestamp, author, file1, file2, file3) => {
-    const statusStrToListStub = sinon.stub(u, "statusStrToList")
     const gitCommittedFilesStub = sinon.stub(gu, "gitCommittedFiles")
     const commit = `${hash} - ${msg} (${timestamp} time ago) <${author}>`
     const filesStr = `M\t${file1}\nD\t${file2}\nA\t${file3}`
@@ -60,10 +61,8 @@ testProp.serial(
 
     await getCommitFiles(commit)
 
-    t.truthy(gitCommittedFilesStub.calledWith([hash]))
-    t.truthy(statusStrToListStub.calledWith(`M ${file1}\nD ${file2}\nA ${file3}`))
+    t.true(gitCommittedFilesStub.calledWith([hash]))
 
-    statusStrToListStub.restore()
     gitCommittedFilesStub.restore()
   },
 )
@@ -86,48 +85,82 @@ testProp.serial(
     pipeStub.resolves(diff)
 
     await showPreview(commit)(updateSpy, file)
-    t.truthy(gitShowStub.calledWith([hash, "--", file]))
-    t.truthy(updateSpy.calledWith(diff))
+    t.true(gitShowStub.calledWith([hash, "--", path.resolve(process.cwd(), file)]))
+    t.true(updateSpy.calledWith(diff))
   },
 )
 
-test.serial("should handle input", async t => {
-  const props = {
-    exit: sinon.spy(),
-    gitCheckout: sinon.spy(),
-    gitRebase: sinon.spy(),
-    commit: "",
-    mode: "log",
-    setMode: sinon.spy(),
-    setFiles: sinon.spy(),
-  }
+test.serial("should return hint", async t => {
+  const hint = getHint()
 
-  const hi = handleInput(props)
+  const res = [
+    "",
+    " q quit | l view commit diff",
+    " o checkout | r rebase",
+    "",
+  ].join("\n")
 
-  await hi("q", {})
-  t.is(props.exit.callCount, 1)
+  t.deepEqual(hint, res)
+})
 
-  await hi("o", {})
-  t.is(props.gitCheckout.callCount, 1)
-  t.is(props.exit.callCount, 2)
+test.serial("should pre-render view", async t => {
+  const stdout = sinon.stub(process.stdout)
+  const write = sinon.spy()
+  stdout.columns = 50
+  stdout.write = write
 
-  await hi("r", {})
-  t.is(props.gitRebase.callCount, 1)
-  t.is(props.exit.callCount, 3)
+  preRender(getHint())(["123fab0 - commit msg (2 hours ago) <author>"])(20)(0)
 
-  await hi("l", {})
-  t.truthy(props.setMode.calledWith("diff"))
+  const res = [
+    "",
+    " q quit | l view commit diff",
+    " o checkout | r rebase",
+    "",
+    " ❯ 123fab0 - commit msg (2 hours ago) <author>",
+    "",
+    "",
+  ].join("\n")
 
-  await hi("", {return: true})
-  t.truthy(props.setMode.calledWith("diff"))
+  t.true(write.calledWith(res))
+})
 
-  const hi2 = handleInput({...props, mode: "diff"})
+test.serial("should get data", async t => {
+  const gitLog = sinon.stub(gu, "gitLog")
+  const isGitRepo = sinon.stub(gu, "isGitRepo")
 
-  await hi2("b", {})
-  t.truthy(props.setFiles.calledWith([]))
-  t.truthy(props.setMode.calledWith("log"))
+  gitLog.resolves("123fab0 - commit msg (2 hours ago) <author>\n")
 
-  await hi2("", {backspace: true})
-  t.truthy(props.setFiles.calledWith([]))
-  t.truthy(props.setMode.calledWith("log"))
+  await getData()
+
+  t.true(isGitRepo.called)
+  t.true(gitLog.called)
+
+  gitLog.restore()
+  isGitRepo.restore()
+})
+
+test.serial("should render hint", async t => {
+  const res1 = [
+    "",
+    " q quit | b back to log",
+    " v show preview | h l resize",
+    "",
+  ].join("\n")
+
+  const res2 = [
+    "",
+    " q quit | v hide preview | j k scroll preview",
+    "",
+  ].join("\n")
+
+  const res3 = [
+    "",
+    " q quit | l view commit diff",
+    " o checkout | r rebase",
+    "",
+  ].join("\n")
+
+  t.is(getHint("diff"), res1)
+  t.is(getHint("preview"), res2)
+  t.is(getHint(), res3)
 })

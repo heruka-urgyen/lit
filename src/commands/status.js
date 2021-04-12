@@ -1,12 +1,20 @@
 import process from "process"
 import readline from "readline"
 import sliceAnsi from "slice-ansi"
-
-import Selector from "components/Selector"
-import {isGitRepo, gitStatus} from "git-utils"
-import {renderHint, statusStrToList, calculateListView} from "utils"
+import {statusStrToList, renderHint, calculateListView} from "utils"
+import {
+  gitStatusPorcelain,
+  isGitRepo,
+} from "git-utils"
 import {selectedBackground} from "colors"
 import {statusHint as sh} from "hints"
+
+import Selector from "components/Selector"
+
+export const getDimensions = () => ({
+  minHeight: 0,
+  maxHeight: process.stdout.rows - 6,
+})
 
 export const getHint = (mode = "status") => {
   const style = {marginLeft: 1, marginTop: 1, marginBottom: 1}
@@ -38,10 +46,15 @@ export const preRender = hint => lines => maxHeight => minHeight => {
 }
 
 export const getData = async () => {
-  await isGitRepo()
-  const data = await gitStatus()
+  try {
+    await isGitRepo()
+  } catch (e) {
+    console.log(e)
+  }
+
+  const data = await gitStatusPorcelain()
 
   return statusStrToList(data)
 }
 
-export const getComponent = () => import("./View.js").then(x => x.default)
+export const getComponent = () => import("components/Status.js").then(x => x.default)
